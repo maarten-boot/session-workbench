@@ -20,6 +20,7 @@ import {SERVICES, addService, hasService} from './services';
 import {fmtSize} from './format';
 import {idleLabel, idleOptions} from './idle';
 import {costParts, costRows, dollars, sessionCost, usageText, warnings} from './cost';
+import {keepKnown, matches, parseTags, tagCounts, toggleTag} from './tags';
 import {
     BackupNow, BackupStatus, OpenBackupFolder, RestoreBackup, Notify, ClearNotification,
     BrowseDirectory, CreateSession, DeleteHost, DeleteSession, InstanceProblem, KillRemote, MoveSession,
@@ -930,18 +931,58 @@ const app = {
             this.renderFolder({...root, hosts: []}, body, 1);
         }
         const byName = (a, b) => a.data.name.localeCompare(b.data.name, undefined, {sensitivity: 'base', numeric: true});
+        const filter = this.renderTagFilter(list);
+        const shown = filter.tags.length ? filter.tags.join(filter.any ? ' or ' : ' and ') : '';
         for (const [key, label, inactive, title] of [
             ['active', 'Active', false, 'Every active session, by name (also listed above)'],
             ['inactive', 'Inactive', true, 'Every inactive session, by name (also listed above)'],
         ]) {
-            const list2 = this.state.sessions.filter(d => !!d.inactive === inactive)
+            const all = this.state.sessions.filter(d => !!d.inactive === inactive);
+            if (!all.length) continue;
+            const list2 = all.filter(d => matches(d, filter.tags, filter.any))
                 .map(d => this.sessions.get(d.id)).filter(Boolean).sort(byName);
-            if (!list2.length) continue;
-            const {body} = this.heading(list, key, label, list2.length, title, true);
+            const {body} = this.heading(list, key, label, shown ? `${list2.length}/${all.length}` : all.length,
+                shown ? `${title}\nFiltered: tags ${shown}` : title, true);
             const items = el('div', {className: 'sessions'});
             for (const s of list2) items.append(this.sessionItem(s, 0, true));
+            if (!list2.length) items.append(el('div', {className: 'folder-empty', textContent: `None with ${shown}`}));
             body.append(items);
         }
+    },
+
+    // renderTagFilter adds the heading "Filter by tag" (SPEC F5a): a button
+    // per tag (own ones, hosts, folders) with how many sessions have it;
+    // the selected ones narrow Active and Inactive to the sessions with all
+    // of them, or any with the switch. Remembered. Left out with fewer than
+    // two tags. Returns {tags, any}.
+    renderTagFilter(list) {
+        const counts = tagCounts(this.state.sessions);
+        const stored = store.get('tagFilter', {tags: [], any: false});
+        const filter = {tags: keepKnown(stored.tags, counts), any: !!stored.any};
+        if (counts.length < 2) return {tags: [], any: false}; // one tag (a single host) filters nothing
+        const set = f => {
+            store.set('tagFilter', f);
+            this.render();
+        };
+        const {body} = this.heading(list, 'tags', 'Filter by tag', filter.tags.length || '',
+            'Show only the sessions with these tags in Active and Inactive (a host and a folder count as tags)', true);
+        const on = t => filter.tags.some(x => x.toLowerCase() === t.toLowerCase());
+        const chips = counts.map(c => {
+            const b = el('button', {type: 'button', className: 'tag-chip' + (on(c.tag) ? ' on' : ''),
+                textContent: `${on(c.tag) ? '✓ ' : ''}${c.tag} ${c.count}`,
+                title: `${c.from === 'host' ? 'The host' : c.from === 'folder' ? 'The folder' : 'A tag'} “${c.tag}”: ${c.count} session${c.count === 1 ? '' : 's'}`});
+            b.setAttribute('aria-pressed', on(c.tag) ? 'true' : 'false');
+            b.onclick = () => set({...filter, tags: toggleTag(filter.tags, c.tag)});
+            return b;
+        });
+        const mode = el('button', {type: 'button', className: 'tag-mode', textContent: filter.any ? 'any of them' : 'all of them',
+            title: filter.any ? 'Sessions with at least one of the tags (click: with all of them)' : 'Sessions with all the tags (click: with any of them)'});
+        mode.onclick = () => set({...filter, any: !filter.any});
+        const clear = el('button', {type: 'button', className: 'tag-mode', textContent: 'none', title: 'Show every session again',
+            disabled: !filter.tags.length});
+        clear.onclick = () => set({...filter, tags: []});
+        body.append(el('div', {className: 'tag-chips'}, ...chips), el('div', {className: 'tag-modes'}, mode, clear));
+        return filter;
     },
 
     // renderFolder adds folder f's sessions (by host) and then its
@@ -1102,6 +1143,7 @@ const app = {
             el('div', {className: 'balloon-path', textContent: where(d)}),
             flat ? el('div', {className: 'balloon-path', textContent: `Host ${d.host} · ${d.group ? 'folder ' + d.group : 'no folder'}`}) : '',
             d.description ? el('div', {className: 'balloon-text', textContent: d.description}) : '',
+            d.tags?.length ? el('div', {className: 'balloon-text', textContent: 'Tags: ' + d.tags.join(', ')}) : '',
             d.inactive ? el('div', {className: 'balloon-text', textContent: '⏸ Inactive: nothing connects until you activate it.'}) : '',
             this.idleStopped?.has(d.id) ? el('div', {className: 'balloon-text', textContent: '💤 claude was stopped after waiting for input; it resumes when you open the session.'}) : '',
             this.state.ui.cost_per_session && sessionCost(this.cost?.sessions?.[d.id])
@@ -1837,6 +1879,7 @@ async function sessionDialog(s = null, presetHost = null, presetGroup = null) {
     f.elements.name.value = s?.data.name ?? '';
     f.elements.name.placeholder = '';
     f.elements.description.value = s?.data.description ?? '';
+    f.elements.tags.value = (s?.data.tags ?? []).join(', ');
     const starts = app.state.ui.start_commands ?? [];
     f.elements.mode.replaceChildren(...starts.map(c => el('option', {value: c.name,
         textContent: c.command.trim() && c.command !== c.name ? `${c.name}  (${c.command})` : c.command.trim() ? c.name : `${c.name}  (a login shell)`})));
@@ -1964,6 +2007,7 @@ async function sessionDialog(s = null, presetHost = null, presetGroup = null) {
                 name: f.elements.name.value || s.data.name, start_mode: f.elements.mode.value,
                 color_mode: f.elements.colors.value, group: f.elements.group.value, record: f.elements.record.value,
                 history: f.elements.history.value, commands: cmdList.value, description: f.elements.description.value,
+                tags: parseTags(f.elements.tags.value),
                 idle_stop: f.elements.idle_stop.value,
                 ...(inBox ? {own_claude_volume: f.elements.claude_volume.value === 'own'} : {}),
                 ...(s.data.plain ? {remote_dir: f.elements.remotedir.value} : {}),
@@ -1973,7 +2017,7 @@ async function sessionDialog(s = null, presetHost = null, presetGroup = null) {
             created = await CreateSession({
                 host: f.elements.host.value, local_path: f.elements.dir.value, name: f.elements.name.value,
                 start_mode: f.elements.mode.value, color_mode: '', group: f.elements.group.value,
-                description: f.elements.description.value,
+                description: f.elements.description.value, tags: parseTags(f.elements.tags.value),
                 local_dir: !plain(), remote_dir: plain() ? f.elements.remotedir.value : '',
                 tmux: {host: null, yes: true, no: false}[f.elements.tmux.value],
             });

@@ -17,6 +17,7 @@ import (
 	"slices"
 	"strings"
 	"sync"
+	"unicode"
 	"unicode/utf8"
 
 	"session-workbench/internal/config"
@@ -38,13 +39,15 @@ type View struct {
 	StartMode   string `json:"start_mode"`
 	ColorMode   string `json:"color_mode"` // "" = follow the global setting
 	Group       string `json:"group"`
-	TrustedGit  string `json:"trusted_git"`
-	Files       string `json:"files"` // the host's file access mode; "container" for a container host
-	RemotePath  string `json:"remote_path"`
-	TmuxName    string `json:"tmux_name"`
-	Record      string `json:"record"`    // "on", "off", "" = follow the global setting
-	History     string `json:"history"`   // "on", "off", "" = follow private_history
-	IdleStop    string `json:"idle_stop"` // a duration, "off", "" = follow idle_stop
+	// Tags are the session's own (the frontend adds its host and folder).
+	Tags       []string `json:"tags"`
+	TrustedGit string   `json:"trusted_git"`
+	Files      string   `json:"files"` // the host's file access mode; "container" for a container host
+	RemotePath string   `json:"remote_path"`
+	TmuxName   string   `json:"tmux_name"`
+	Record     string   `json:"record"`    // "on", "off", "" = follow the global setting
+	History    string   `json:"history"`   // "on", "off", "" = follow private_history
+	IdleStop   string   `json:"idle_stop"` // a duration, "off", "" = follow idle_stop
 	// OwnClaudeVolume: a container session's own ~/.claude volume.
 	OwnClaudeVolume bool `json:"own_claude_volume"`
 	// Commands is the session's own command menu (before the global one).
@@ -124,13 +127,14 @@ func (r Resolved) LogPath() string {
 
 // NewSession is the input for Create.
 type NewSession struct {
-	Host        string `json:"host"`
-	LocalPath   string `json:"local_path"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	StartMode   string `json:"start_mode"`
-	ColorMode   string `json:"color_mode"` // "" = follow the global setting
-	Group       string `json:"group"`
+	Host        string   `json:"host"`
+	LocalPath   string   `json:"local_path"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	StartMode   string   `json:"start_mode"`
+	ColorMode   string   `json:"color_mode"` // "" = follow the global setting
+	Group       string   `json:"group"`
+	Tags        []string `json:"tags"`
 	// LocalDir: null follows the host (local_dir); false is a plain login
 	// (no directory), starting in RemoteDir ("" = home).
 	LocalDir  *bool  `json:"local_dir"`
@@ -148,8 +152,10 @@ type Edit struct {
 	StartMode   string  `json:"start_mode"`
 	ColorMode   string  `json:"color_mode"`
 	Group       string  `json:"group"`
-	Record      string  `json:"record"`
-	History     string  `json:"history"` // "on", "off", "" = follow private_history
+	// Tags replaces the session's tags; null (left out) keeps them.
+	Tags    []string `json:"tags"`
+	Record  string   `json:"record"`
+	History string   `json:"history"` // "on", "off", "" = follow private_history
 	// IdleStop: a duration, "off", "" = follow idle_stop; null (left out)
 	// keeps it.
 	IdleStop *string `json:"idle_stop"`
@@ -243,7 +249,7 @@ func (m *Manager) State() State {
 	s.Problems = Problems(m.cfg)
 	for _, se := range m.cfg.Sessions {
 		v := View{ID: se.ID, Name: se.Name, Description: se.Description, Host: se.Host, LocalPath: se.LocalPath, StartMode: se.StartMode,
-			ColorMode: se.ColorMode, Group: se.Group, TrustedGit: se.TrustedGit, TmuxName: remote.TmuxName(se.ID), Record: se.Record,
+			ColorMode: se.ColorMode, Group: se.Group, Tags: se.Tags, TrustedGit: se.TrustedGit, TmuxName: remote.TmuxName(se.ID), Record: se.Record,
 			History: se.History, IdleStop: se.IdleStop, Commands: se.Commands, OwnClaudeVolume: se.OwnClaudeVolume, RemoteDir: se.RemoteDir,
 			Inactive: se.Inactive, Hosts: se.Hosts}
 		v.TmuxOwn = se.Tmux
@@ -465,6 +471,12 @@ func Problems(c *config.Config) []string {
 		if _, err := tidyDescription(s.Description); err != nil {
 			out = append(out, fmt.Sprintf("session %q: %v; Edit… cannot save it until it is shorter", label, err))
 		}
+		if t, err := TidyTags(s.Tags); err != nil || !slices.Equal(t, s.Tags) {
+			if err == nil {
+				err = errors.New("empty, repeated or untrimmed tags")
+			}
+			out = append(out, fmt.Sprintf("session %q: tags: %v; Edit… tidies them", label, err))
+		}
 		for _, l := range s.Links {
 			if err := forge.ValidLink(forge.Link{Name: l.Name, URL: l.URL}); err != nil {
 				out = append(out, fmt.Sprintf("session %q: link: %v; it is not shown", label, err))
@@ -551,7 +563,7 @@ func (m *Manager) Create(in NewSession) (View, error) {
 		return View{}, err
 	}
 	v := View{ID: s.ID, Name: s.Name, Description: s.Description, Host: s.Host, LocalPath: s.LocalPath, StartMode: s.StartMode,
-		ColorMode: s.ColorMode, Group: s.Group, Files: viewFiles(r.Host), RemotePath: r.RemotePath,
+		ColorMode: s.ColorMode, Group: s.Group, Tags: s.Tags, Files: viewFiles(r.Host), RemotePath: r.RemotePath,
 		TmuxName: remote.TmuxName(s.ID), Plain: r.Plain, RemoteDir: s.RemoteDir, Tmux: r.Tmux, TmuxOwn: s.Tmux,
 		Claude: r.Tmux && idle.Runs(r.StartCommand)}
 	if r.Plain {
@@ -602,6 +614,9 @@ func (m *Manager) newSession(in NewSession) (config.Session, error) {
 		return s, err
 	}
 	s.Description = d
+	if s.Tags, err = TidyTags(in.Tags); err != nil {
+		return s, err
+	}
 	if _, ok := config.FindStartCommand(m.cfg.UI, s.StartMode); !ok {
 		return s, fmt.Errorf("unknown start mode %q", s.StartMode)
 	}
@@ -652,6 +667,9 @@ func (m *Manager) newLogin(s config.Session, h config.Host, in NewSession) (conf
 		return s, err
 	}
 	s.Description = d
+	if s.Tags, err = TidyTags(in.Tags); err != nil {
+		return s, err
+	}
 	if _, ok := config.FindStartCommand(m.cfg.UI, s.StartMode); !ok {
 		return s, fmt.Errorf("unknown start mode %q", s.StartMode)
 	}
@@ -701,6 +719,41 @@ func Records(s config.Session, ui config.UI) bool {
 		return false
 	}
 	return ui.RecordRemote
+}
+
+// MaxTags is how many tags a session can have; MaxTagLen their length.
+const (
+	MaxTags   = 20
+	MaxTagLen = 40
+)
+
+// TidyTags trims tags and leaves out empty and repeated ones (ignoring
+// case; the first spelling stays). A tag has no commas (the dialog
+// separates them with commas) and no control characters. nil for none.
+func TidyTags(tags []string) ([]string, error) {
+	var out []string
+	seen := map[string]bool{}
+	for _, t := range tags {
+		t = strings.TrimSpace(t)
+		k := strings.ToLower(t)
+		if t == "" || seen[k] {
+			continue
+		}
+		switch {
+		case strings.ContainsRune(t, ','):
+			return nil, fmt.Errorf("tag %q has a comma", t)
+		case strings.IndexFunc(t, unicode.IsControl) >= 0:
+			return nil, fmt.Errorf("tag %q has control characters", t)
+		case utf8.RuneCountInString(t) > MaxTagLen:
+			return nil, fmt.Errorf("tag %q is longer than %d characters", t, MaxTagLen)
+		}
+		seen[k] = true
+		out = append(out, t)
+	}
+	if len(out) > MaxTags {
+		return nil, fmt.Errorf("%d tags: at most %d", len(out), MaxTags)
+	}
+	return out, nil
 }
 
 // MaxDescription is the longest description, in characters.
@@ -764,6 +817,10 @@ func (m *Manager) Update(id string, e Edit) error {
 	if err := config.ValidateCommands(e.Commands); err != nil {
 		return err
 	}
+	tags, err := TidyTags(e.Tags)
+	if err != nil {
+		return err
+	}
 	var desc string
 	if e.Description != nil {
 		var err error
@@ -787,6 +844,9 @@ func (m *Manager) Update(id string, e Edit) error {
 			return fmt.Errorf("folder %q does not exist", e.Group)
 		}
 		c.Sessions[i].Name = name
+		if e.Tags != nil { // left out: unchanged
+			c.Sessions[i].Tags = tags
+		}
 		if e.Description != nil { // left out: unchanged
 			c.Sessions[i].Description = desc
 		}

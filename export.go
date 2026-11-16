@@ -553,7 +553,7 @@ func (a *App) ImportSession(req ImportRequest) (ImportResult, error) {
 	var notes []string
 	src := m.Session
 	in := session.NewSession{Host: strings.TrimSpace(req.Host), LocalPath: local, Name: strings.TrimSpace(req.Name),
-		Description: src.Description, ColorMode: src.ColorMode, RemoteDir: src.RemoteDir}
+		Description: src.Description, ColorMode: src.ColorMode, RemoteDir: src.RemoteDir, Tags: src.Tags}
 	// What the archive's session was, whatever the chosen host's default.
 	hasDir := !plain
 	in.LocalDir = &hasDir

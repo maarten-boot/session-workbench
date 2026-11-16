@@ -176,6 +176,21 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- v1.1.20 (2026-11-16): tags and a tag filter for Active and Inactive (SPEC F5a). The user:
+  "currently we can organize sessions by group, what about adding tags? it would allow
+  grouping and sessions can automatically be part of multiple tag groups we could then later
+  either remove groups completely or keep them but allow views both in active and inactive by
+  tags (possibly by selecting multiple tags)". Answers: a session with several tags shows under
+  each; the host and the folder are tags automatically; several selected tags narrow the list
+  (all of them), with a switch to any of them; remembered; asked what a Tags heading versus a
+  filter means, then "start with B, the filter". Groups stay (removing them later is an open
+  question). My choices: Tags next to Folder in the session dialog (one row, so no field below
+  moves); a tag is the folder's full path; tags compare ignoring case; the filter is left out
+  with fewer than two tags; selected tags marked with ✓, bold and a heavier border (no colour);
+  filtered headings count "shown/all", an empty one says "None with …". Tests: session
+  TestTags and TestTagsProblem, tags.test.mjs, gui-smoke-tags (Edit… tidies the tags; all
+  narrows, any widens, remembered after a restart, none), gui-smoke-lists (positions below
+  the new heading), the tutorial (demo sessions tagged, a filter screenshot).
 - v1.1.19 (2026-11-12): a tutorial, docs/TUTORIAL.md, with screenshots and a PDF export.
   The user: "start working on a Tutorial: download the app; prepare your shared data (when using
   nfs/cifs), how to prepare kvm virtio sharing, how docker sharing works; start the first time

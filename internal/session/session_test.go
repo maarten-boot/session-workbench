@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"regexp"
 	"runtime"
 	"slices"
 	"strings"
@@ -1291,5 +1292,63 @@ func TestExampleCommandsFirstStartOnly(t *testing.T) {
 	m = Open(empty)
 	if m.Fresh() || len(m.Config().UI.Commands) != 0 {
 		t.Fatalf("existing file: fresh %v, %d commands", m.Fresh(), len(m.Config().UI.Commands))
+	}
+}
+
+// Tags (SPEC F5a): trimmed, repeats left out ignoring case, kept by an Edit
+// without them, replaced by one with them; bad ones refused.
+func TestTags(t *testing.T) {
+	got, err := TidyTags([]string{" client-x ", "go", "", "Go", "client-X", "urgent"})
+	if err != nil || !slices.Equal(got, []string{"client-x", "go", "urgent"}) {
+		t.Fatalf("TidyTags = %q, %v", got, err)
+	}
+	for _, bad := range [][]string{{"a,b"}, {"x\ty"}, {strings.Repeat("x", MaxTagLen+1)}} {
+		if _, err := TidyTags(bad); err == nil {
+			t.Errorf("%q accepted", bad)
+		}
+	}
+	many := make([]string, MaxTags+1)
+	for i := range many {
+		many[i] = fmt.Sprint("t", i)
+	}
+	if _, err := TidyTags(many); err == nil {
+		t.Error("too many tags accepted")
+	}
+
+	m, root, cfgPath := setup(t)
+	v, err := m.Create(NewSession{Host: "h", LocalPath: mkdir(t, root, "p"), StartMode: "claude", Tags: []string{"go ", "go"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !slices.Equal(v.Tags, []string{"go"}) {
+		t.Fatalf("created with %q", v.Tags)
+	}
+	if err := m.Update(v.ID, Edit{Name: "p", StartMode: "claude"}); err != nil { // left out: kept
+		t.Fatal(err)
+	}
+	if err := m.Update(v.ID, Edit{Name: "p", StartMode: "claude", Tags: []string{"urgent", "client-x"}}); err != nil {
+		t.Fatal(err)
+	}
+	if err := m.Update(v.ID, Edit{Name: "p", StartMode: "claude", Tags: []string{"a,b"}}); err == nil {
+		t.Error("a tag with a comma saved")
+	}
+	re := Open(cfgPath)
+	if s := re.State().Sessions[0]; !slices.Equal(s.Tags, []string{"urgent", "client-x"}) {
+		t.Errorf("after reopening: %q", s.Tags)
+	}
+	if err := m.Update(v.ID, Edit{Name: "p", StartMode: "claude", Tags: []string{}}); err != nil {
+		t.Fatal(err)
+	}
+	if b, _ := os.ReadFile(cfgPath); regexp.MustCompile(`(?m)^ *tags = `).Match(b) {
+		t.Errorf("no tags, yet in the file:\n%s", b)
+	}
+}
+
+// A hand-edited file with repeated tags is listed as a problem.
+func TestTagsProblem(t *testing.T) {
+	c := &config.Config{Hosts: []config.Host{{Name: "h", SSHTarget: "h"}},
+		Sessions: []config.Session{{ID: "s-1", Name: "p", Host: "h", LocalPath: "/p", StartMode: "claude", Tags: []string{"go", "Go"}}}}
+	if ps := Problems(c); !slices.ContainsFunc(ps, func(p string) bool { return strings.Contains(p, "tags") }) {
+		t.Errorf("no problem for repeated tags: %q", ps)
 	}
 }

@@ -611,6 +611,13 @@ dialog label {
     font-size: 0.923rem;
 }
 
+/* Two fields side by side (Folder and Tags in the session dialog). */
+dialog .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
 dialog label.check {
     display: flex;
     gap: 8px;
@@ -2702,4 +2709,35 @@ dialog h2.drag-handle {
 
 .error-text {
     color: var(--danger);
+}
+
+/* The tag filter above Active and Inactive (SPEC F5a): black text; the
+   selected tags are bold with a ✓ and a heavier border, not a colour. */
+.tag-chips, .tag-modes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 4px 8px 4px 14px;
+}
+
+.tag-chip, .tag-mode {
+    padding: 1px 7px;
+    border: 1px solid var(--btn-border);
+    border-radius: 10px;
+    background: var(--btn-bg);
+    color: var(--text-strong);
+    font: inherit;
+    font-size: 0.923rem;
+    cursor: pointer;
+}
+
+.tag-chip.on {
+    border: 2px solid var(--text-strong);
+    padding: 0 6px;
+    font-weight: 600;
+}
+
+.tag-mode:disabled {
+    cursor: default;
+    font-style: italic;
 }

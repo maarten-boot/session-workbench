@@ -91,6 +91,7 @@ export namespace config {
 	    local_init: string;
 	    color_mode: string;
 	    group: string;
+	    tags: string[];
 	    trusted_git: string;
 	    links: Link[];
 	    record: string;
@@ -120,6 +121,7 @@ export namespace config {
 	        this.local_init = source["local_init"];
 	        this.color_mode = source["color_mode"];
 	        this.group = source["group"];
+	        this.tags = source["tags"];
 	        this.trusted_git = source["trusted_git"];
 	        this.links = this.convertValues(source["links"], Link);
 	        this.record = source["record"];
@@ -1318,6 +1320,7 @@ export namespace session {
 	    start_mode: string;
 	    color_mode: string;
 	    group: string;
+	    tags: string[];
 	    record: string;
 	    history: string;
 	    idle_stop?: string;
@@ -1337,6 +1340,7 @@ export namespace session {
 	        this.start_mode = source["start_mode"];
 	        this.color_mode = source["color_mode"];
 	        this.group = source["group"];
+	        this.tags = source["tags"];
 	        this.record = source["record"];
 	        this.history = source["history"];
 	        this.idle_stop = source["idle_stop"];
@@ -1372,6 +1376,7 @@ export namespace session {
 	    start_mode: string;
 	    color_mode: string;
 	    group: string;
+	    tags: string[];
 	    local_dir?: boolean;
 	    remote_dir: string;
 	    tmux?: boolean;
@@ -1389,6 +1394,7 @@ export namespace session {
 	        this.start_mode = source["start_mode"];
 	        this.color_mode = source["color_mode"];
 	        this.group = source["group"];
+	        this.tags = source["tags"];
 	        this.local_dir = source["local_dir"];
 	        this.remote_dir = source["remote_dir"];
 	        this.tmux = source["tmux"];
@@ -1421,6 +1427,7 @@ export namespace session {
 	    start_mode: string;
 	    color_mode: string;
 	    group: string;
+	    tags: string[];
 	    trusted_git: string;
 	    files: string;
 	    remote_path: string;
@@ -1453,6 +1460,7 @@ export namespace session {
 	        this.start_mode = source["start_mode"];
 	        this.color_mode = source["color_mode"];
 	        this.group = source["group"];
+	        this.tags = source["tags"];
 	        this.trusted_git = source["trusted_git"];
 	        this.files = source["files"];
 	        this.remote_path = source["remote_path"];

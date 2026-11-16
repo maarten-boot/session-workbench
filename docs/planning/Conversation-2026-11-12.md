@@ -107,3 +107,8 @@
 - Fixed: SPEC T7 now says a second instance writes no Prompts page (the code only seeds when
   it holds the lock); the PDF kept the new link to commands.toml as a dead file link — now
   every relative link but pictures and in-page links becomes its text (20 pictures still in).
+
+## CI v1.1.19 (user: "pushed and tagged v1.1.19, check the CI build")
+- The tag points at eaedf10. Run 43311854516: linux, windows, macOS and release passed; the
+  release has the five assets (rpm, deb, linux tar.gz, macOS zip, Windows zip), all 1.1.19.
+  Also passed on main: a7a7ad0 (run 43305003879) and eaedf10 (run 43311237018).

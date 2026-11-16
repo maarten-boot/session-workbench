@@ -124,6 +124,7 @@ local_path = "$P/webshop"
 start_mode = "claude"
 env = { PS1 = 'me@laptop:\\W\\$ ' }
 group = "Work"
+tags = ["client-x", "go"]
 links = [{ name = "Staging", url = "https://staging.example.com" }]
 
 [[sessions]]
@@ -134,6 +135,7 @@ local_path = "$P/api-server"
 start_mode = "claude"
 env = { PS1 = 'me@laptop:\\W\\$ ' }
 group = "Work"
+tags = ["client-x", "go", "urgent"]
 
 [[sessions]]
 id = "s-blog"
@@ -143,6 +145,7 @@ local_path = "$P/blog"
 start_mode = "claude"
 env = { PS1 = 'me@laptop:\\W\\$ ' }
 group = "Private"
+tags = ["hugo"]
 
 [[sessions]]
 id = "s-proto"
@@ -151,6 +154,7 @@ host = "agent-vm"
 local_path = "$P/prototype"
 start_mode = "claude"
 env = { PS1 = 'me@laptop:\\W\\$ ' }
+tags = ["go"]
 inactive = true
 TOML
 }
@@ -209,14 +213,17 @@ if [ $STEP = all ] || [ $STEP = main ]; then
 	xdotool mousemove 1 1; click 75 84 3; click 200 175 0   # the host's menu, the mouse in it
 	shot 22-host-menu
 	k Escape
-	click 44 457; click 44 620; sleep 0.5           # Active and Inactive open
+	click 44 492; click 44 655; sleep 0.5           # Active and Inactive open (below Filter by tag)
 	xdotool mousemove 600 600; sleep 0.3
 	shot 21-sidebar
 	click 100 260; sleep 1                          # webshop again
 	xdotool mousemove 600 600; click 100 255 0; sleep 2.5   # its balloon
 	shot 23-balloon
-	click 70 656; sleep 1.5                         # the inactive prototype (under Inactive)
+	click 70 691; sleep 1.5                         # the inactive prototype (under Inactive)
 	shot 24-inactive
+	click 44 457; xdotool mousemove 600 600; sleep 1.5   # Filter by tag open
+	click 130 486; xdotool mousemove 600 600; sleep 1.5  # client-x
+	shot 25-tag-filter
 	click 100 260; sleep 1
 	k ctrl+shift+n; sleep 1
 	shot 03-new-session

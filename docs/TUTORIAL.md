@@ -612,6 +612,18 @@ Rest the mouse on a session for its balloon:
   so you find one without knowing its folder.
   Its balloon then also says the host and folder.
 
+**Tags** sort sessions in more than one way at once:
+  give a session tags in *Edit…* (next to *Folder*, with commas between),
+  such as `client-x, go, urgent`.
+Its host and its folder count as tags too, without typing them.
+**Filter by tag**, above Active, has a button per tag with how many sessions have it.
+Click one or more: Active and Inactive then show only the sessions with **all** of them,
+  so each extra tag narrows the list.
+*all of them* switches to *any of them*, and *none* shows every session again.
+The app remembers the filter.
+
+![Filter by tag: client-x selected](tutorial/25-tag-filter.png)
+
 Click a heading to fold it.
 The **quick switcher** (Ctrl+Shift+P) finds a session:
   type a few letters of its name, folder or description.

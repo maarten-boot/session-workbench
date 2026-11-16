@@ -1,6 +1,6 @@
 # Session Workbench — Specification
 
-Status: v1.28 (2026-11-12, app v1.1.19) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
+Status: v1.29 (2026-11-16, app v1.1.20) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
 narrow and resizable sidebar (F6), Claude backups (F7), one instance per config (F8), working
 copies and backups without rsync (F9), desktop notifications (F4), git status and the
 repository check in the Files tab (B5, B6), Notes and Web tabs (N1, W1), notes for all sessions
@@ -19,8 +19,8 @@ next to a container session's dev container with Compose (C7), inactive sessions
 Hosts heading above the folders (F5), one project on several agent hosts (F16), stopping
 claude (F17; also in containers and by hand), what claude cost at API prices with the
 subscription usage, warnings and a Cost page in Settings (F18), and the sidebar headings
-Groups, Active and Inactive (F5), a tutorial (docs/TUTORIAL.md, also as PDF), and example
-commands and prompts (T7).
+Groups, Active and Inactive (F5), a tutorial (docs/TUTORIAL.md, also as PDF), example
+commands and prompts (T7), and tags with a filter for Active and Inactive (F5a).
 Sections describe the implemented behaviour.
 
 ## 1. Problem
@@ -203,6 +203,19 @@ host's `local_prefix`), e.g. `~/share-local/workspace`.
   Sessions move between folders via the session dialog, "Move to folder…", or drag onto a
   folder header. A folder whose parent is not in `groups` is reported and shown under a
   "(missing)" parent.
+- F5a. Tags: `tags` on a session (Edit… and New session: *Tags*, next to *Folder*, with commas
+  between) — trimmed, a repeat (ignoring case) left out, at most 20 of at most 40 characters,
+  no commas or control characters; a hand-edited list that is not tidy is reported (Edit…
+  tidies it). A session's host and its folder (the path, e.g. "Work/Client A") count as tags
+  too, without being stored. *Filter by tag*, a collapsible heading above *Active* (collapsed
+  at first; left out with fewer than two tags), has a button per tag with how many sessions
+  have it (sorted by name; the tooltip says whether it is a tag, the host or the folder); a
+  click selects or deselects it (✓, bold, a heavier border: no colour). The selected tags
+  narrow *Active* and *Inactive* to the sessions with all of them; *all of them* switches to
+  *any of them* (at least one) and back; *none* deselects all. Filtered, the headings count
+  "shown/all", their tooltip names the tags, and an empty one says "None with <tags>".
+  Selection and mode are remembered (web view storage); tags no session has any more are
+  dropped from it. The balloon shows a session's own tags. Export and import keep them.
 - F6. Sidebar width: drag the sidebar's right edge (or ←/→ on the focused edge; 12 rem to 60% of
   the window), double-click for the default (18.5 rem); stored in rem, so it scales with the font
   size, and remembered. Narrow sidebar: a toggle (header button, `toggle_sidebar` key) shrinks the sidebar to a rail

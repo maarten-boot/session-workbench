@@ -54,17 +54,17 @@ APP=$!
 wait_window
 sleep 3; xdotool windowactivate --sync $W 2>/dev/null; sleep 2
 shot 1-start
-xdotool mousemove 100 573 click 1; sleep 0.8               # open Active
+xdotool mousemove 100 608 click 1; sleep 0.8               # open Active
 shot 2-active
-xdotool mousemove 110 646 click 1; sleep 2                 # "beta private" in Active
+xdotool mousemove 110 681 click 1; sleep 2                 # "beta private" in Active
 k ctrl+shift+1; sleep 1.5; t 'pwd >$SW_OUT/opened'
-xdotool mousemove 110 650; sleep 2
+xdotool mousemove 110 685; sleep 2
 shot 3-balloon
 xdotool mousemove 700 400; sleep 0.5
-xdotool mousemove 100 738 click 1; sleep 0.8               # open Inactive
+xdotool mousemove 100 773 click 1; sleep 0.8               # open Inactive
 xdotool mousemove 700 400; sleep 0.5                       # (its tooltip would take the click)
 shot 4-inactive
-xdotool mousemove 110 768 click 1; sleep 1.5               # "client old" there
+xdotool mousemove 110 803 click 1; sleep 1.5               # "client old" there
 shot 5-inactive-session
 xdotool mousemove 403 189 click 1; sleep 2                 # Activate session
 shot 6-activated

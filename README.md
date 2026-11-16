@@ -12,7 +12,7 @@ read its security section if the agent host can write to your repositories.
 New here? **[docs/TUTORIAL.md](docs/TUTORIAL.md)** takes you from the download to your first
 claude session, with screenshots (`make tutorial-pdf` makes a PDF of it).
 
-Status: v1.1.19: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
+Status: v1.1.20: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
 Notes (page trees with formatting, lists and check lists, spelling), Web and Q&A tabs, Remote tab recordings, session folders,
 themes and color modes, quick switcher, a command menu and a prompts menu in the Local and Remote tabs, editable
 start commands, private shell history per session, activity badges, desktop notifications,
@@ -632,10 +632,19 @@ session there to see its host and folder. A `/` in a folder name makes subfolder
 (*Clients/Acme* adds *Clients* too if needed). In `config.toml` a subfolder is a path:
 `groups = ["Work", "Work/Client A"]`.
 
+**Tags.** Where a folder holds a session in one place, tags put it in several: give it tags in
+*Edit…* or New session (*Tags*, next to *Folder*, with commas between: `client-x, go, urgent`).
+Its host and its folder count as tags too. **Filter by tag**, a heading above *Active* (closed
+at first), has a button per tag with how many sessions have it; click one or more, and
+*Active* and *Inactive* show only the sessions with all of them (each tag narrows the list;
+the headings count "shown/all"). *all of them* switches to *any of them*, *none* clears the
+selection. The app remembers the filter. In the config: `tags = ["client-x", "go"]` on the
+session (at most 20, each up to 40 characters, no commas).
+
 Right-click a session (or its ⋯) for its menu. The top line names how the agent host gets at
 the files (*Files: shared folder*, *live share (sshfs), mounted* / *not mounted*, or
 *working copy (sync)*; hover it for a short explanation; not shown for a session that cannot
-work); then *Edit…* (name, description, folder, start mode, colors, own commands, recording, shell history; for a plain login its remote folder),
+work); then *Edit…* (name, description, folder, tags, start mode, colors, own commands, recording, shell history; for a plain login its remote folder),
 *Move up*, *Move down*, *Move to folder…*, *Use mono colors (no colors)* / *Use full colors*,
 *Record the Remote tab* / *Stop recording the Remote tab*, *Open recordings folder*,
 *Export…* (see *Export and import a session*), *Switch host…* and *Requirements…* (see *One project on two agent hosts*), *Disconnect*, *Stop claude now* / *Resume claude* (see *Stopping claude*), *Deactivate session…* (see *Inactive sessions*), *End remote session…* (not for a session without tmux) and *Delete session…* (optionally ending its tmux
@@ -1055,6 +1064,7 @@ host = "vibe"
 local_path = "~/share-local/DEV/github.com/maarten-boot/multi-session-ssh-dev"
 start_mode = "claude-continue"            # the name of one of [[ui.start_commands]]
 group = "Work"                            # optional: sidebar folder (listed in groups)
+tags = ["client-x", "go"]                 # optional: for Filter by tag (the host and folder count too)
 color_mode = "mono"                       # optional: overrides [ui] color_mode
 record = "on"                             # optional: "on" / "off" overrides [ui] record_remote
 history = "off"                           # optional: "on" / "off" overrides [ui] private_history

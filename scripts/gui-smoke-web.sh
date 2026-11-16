@@ -61,8 +61,10 @@ k ctrl+alt+2; sleep 1
 shot 4-other-session                            # highlight moves to the other session
 alive
 kill $APP; wait $APP 2>/dev/null
-GH=https://github.com/maarten-boot/session-workbench
-expect "opened in the browser: Actions page, second run" "$GH/actions|$GH/actions/runs/7|" "$(tr '\n' '|' <$LOG)"
+# The repository page as the app reads it from this repository's remote (it may still use
+# an older name of the repository: GitHub redirects).
+GH=$(git -C "$REPO" remote get-url origin | sed -E 's#^git@github.com:#https://github.com/#; s#^ssh://git@github.com(:22)?/#https://github.com/#; s#\.git$##')
+expect "opened in the browser: Actions page, second run" "$GH/actions|https://github.com/maarten-boot/session-workbench/actions/runs/7|" "$(tr '\n' '|' <$LOG)"
 expect "own link saved, javascript: refused" 'name = "Staging"|url = "https://staging.example.com/app"|' \
 	"$(grep -A2 '\[\[sessions.links\]\]' $CFG | grep -E 'name|url' | sed 's/^ *//' | tr '\n' '|')"
 for id in s-web s-web2; do ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-$id'" 2>/dev/null; done
