@@ -1,6 +1,6 @@
 #!/bin/bash
 # Headless GUI test of tags (SPEC F5a): Edit… saves a session's tags
-# (tidied); Filter by tag lists the tags (own ones and the host) and
+# (tidied); Filter by tag lists the tags (own ones, the host, the state) and
 # narrows Active and Inactive to the sessions with all the selected tags,
 # or any with the switch; none shows all again; the filter is remembered.
 # The window title names the session a row opens.
@@ -64,15 +64,18 @@ expect "Edit… saves the tags, tidied" "go urgent" \
 	"$(python3 -c 'import sys,tomllib; c=tomllib.load(open(sys.argv[1],"rb")); print(*[s.get("tags") for s in c["sessions"] if s["name"]=="gamma"][0])' $CFG)"
 click 130 311 1.5                                     # open Filter by tag
 shot 2-filter
-click 105 365                                         # urgent
-click 107 340                                         # client-x: all of client-x and urgent
+# Positions: Your tags at y 357 (client-x 107, go 165, urgent 219), State at y 449
+# (active 105, inactive 170), all/any 113,476, none 176,476, Active heading at y 511
+# with rows at 549, 584, 619.
+click 219 357                                         # urgent
+click 107 357                                         # client-x: all of client-x and urgent
 shot 3-both
-click 100 429                                         # open Active: only alpha
+click 100 511                                         # open Active: only alpha
 shot 4-active
-click 110 467 2; expect "client-x and urgent: alpha" alpha "$(title)"
-click 111 394                                         # all of them → any of them
+click 110 549 2; expect "client-x and urgent: alpha" alpha "$(title)"
+click 113 476                                         # all of them → any of them
 shot 5-any
-click 110 537 2; expect "client-x or urgent: the third is gamma" gamma "$(title)"
+click 110 619 2; expect "client-x or urgent: the third is gamma" gamma "$(title)"
 alive
 kill $APP; wait $APP 2>/dev/null
 $BIN -config $CFG >>$OUT/app.log 2>&1 &               # the filter is remembered
@@ -80,14 +83,19 @@ APP=$!
 wait_window
 sleep 3; xdotool windowactivate --sync $W 2>/dev/null; sleep 2
 shot 6-restart
-click 110 502 2; expect "after a restart, still any: the second is beta" beta "$(title)"
-click 105 365                                         # urgent off: client-x only
+click 110 584 2; expect "after a restart, still any: the second is beta" beta "$(title)"
+click 219 357                                         # urgent off: client-x only
 shot 7-client-x
-click 110 467 2; expect "client-x: alpha first" alpha "$(title)"
-click 110 537 2; expect "client-x: no third row (gamma left out)" alpha "$(title)"
-click 175 394                                         # none: every session again
+click 110 549 2; expect "client-x: alpha first" alpha "$(title)"
+click 110 619 2; expect "client-x: no third row (gamma left out)" alpha "$(title)"
+click 176 476                                         # none: every session again
 shot 8-none
-click 110 537 2; expect "none: gamma is back" gamma "$(title)"
+click 110 619 2; expect "none: gamma is back" gamma "$(title)"
+click 113 476                                         # any → all of them
+click 105 449                                         # the state tag active (automatic, italic)
+click 165 357                                         # and go: beta and gamma
+shot 9-state
+click 110 549 2; expect "active and go: beta first" beta "$(title)"
 alive
 kill $APP; wait $APP 2>/dev/null
 finish

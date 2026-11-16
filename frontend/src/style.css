@@ -2717,7 +2717,17 @@ dialog h2.drag-handle {
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
-    padding: 4px 8px 4px 14px;
+    padding: 2px 8px 4px 14px;
+}
+
+.tag-group {
+    padding: 4px 8px 0 14px;
+    font-size: 0.846rem;
+    font-weight: 600;
+}
+
+.tag-chip.auto {
+    font-style: italic;
 }
 
 .tag-chip, .tag-mode {

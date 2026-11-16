@@ -176,6 +176,15 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- v1.1.21 (2026-11-16): automatic state tags, grouped in the filter (SPEC F5a). The user:
+  "can we add a dynamic tag for Active, Inactive ?"; offered more (container, login, stopped,
+  todo, warning) and a different look for automatic tags; "1: all. 2: italic is a good idea",
+  then "possibly group them by static/dynamic or auto". The filter now has rows Your tags,
+  Host and folder, State; the automatic ones in italics; it shows with two or more sessions
+  (with the state tags there are always two tags). The sidebar is drawn again when a TODO or
+  a repository warning comes or goes (stopped already did), so counts and lists follow.
+  Tests: tags.test.mjs (state tags, counts with the app's state), gui-smoke-tags (new
+  positions; active + go), tutorial (todo shows as a state tag).
 - v1.1.20 (2026-11-16): tags and a tag filter for Active and Inactive (SPEC F5a). The user:
   "currently we can organize sessions by group, what about adding tags? it would allow
   grouping and sessions can automatically be part of multiple tag groups we could then later

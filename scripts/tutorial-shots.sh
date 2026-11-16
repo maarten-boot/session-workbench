@@ -222,7 +222,7 @@ if [ $STEP = all ] || [ $STEP = main ]; then
 	click 70 691; sleep 1.5                         # the inactive prototype (under Inactive)
 	shot 24-inactive
 	click 44 457; xdotool mousemove 600 600; sleep 1.5   # Filter by tag open
-	click 130 486; xdotool mousemove 600 600; sleep 1.5  # client-x
+	click 47 503; xdotool mousemove 600 600; sleep 1.5   # client-x (first of Your tags)
 	shot 25-tag-filter
 	click 100 260; sleep 1
 	k ctrl+shift+n; sleep 1

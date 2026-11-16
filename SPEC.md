@@ -1,6 +1,6 @@
 # Session Workbench — Specification
 
-Status: v1.29 (2026-11-16, app v1.1.20) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
+Status: v1.30 (2026-11-16, app v1.1.21) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
 narrow and resizable sidebar (F6), Claude backups (F7), one instance per config (F8), working
 copies and backups without rsync (F9), desktop notifications (F4), git status and the
 repository check in the Files tab (B5, B6), Notes and Web tabs (N1, W1), notes for all sessions
@@ -20,7 +20,8 @@ Hosts heading above the folders (F5), one project on several agent hosts (F16), 
 claude (F17; also in containers and by hand), what claude cost at API prices with the
 subscription usage, warnings and a Cost page in Settings (F18), and the sidebar headings
 Groups, Active and Inactive (F5), a tutorial (docs/TUTORIAL.md, also as PDF), example
-commands and prompts (T7), and tags with a filter for Active and Inactive (F5a).
+commands and prompts (T7), and tags (also automatic ones for host, folder and state) with a
+filter for Active and Inactive (F5a).
 Sections describe the implemented behaviour.
 
 ## 1. Problem
@@ -206,11 +207,16 @@ host's `local_prefix`), e.g. `~/share-local/workspace`.
 - F5a. Tags: `tags` on a session (Edit… and New session: *Tags*, next to *Folder*, with commas
   between) — trimmed, a repeat (ignoring case) left out, at most 20 of at most 40 characters,
   no commas or control characters; a hand-edited list that is not tidy is reported (Edit…
-  tidies it). A session's host and its folder (the path, e.g. "Work/Client A") count as tags
-  too, without being stored. *Filter by tag*, a collapsible heading above *Active* (collapsed
-  at first; left out with fewer than two tags), has a button per tag with how many sessions
-  have it (sorted by name; the tooltip says whether it is a tag, the host or the folder); a
-  click selects or deselects it (✓, bold, a heavier border: no colour). The selected tags
+  tidies it). Automatic tags, never stored: the host, the folder (the path, e.g. "Work/Client
+  A") and the state — *active* or *inactive*, *container* (a container host), *login* (a
+  plain login), *stopped* (claude stopped after waiting, 💤), *todo* (a TODO line in its
+  notes, ▲) and *warning* (the repository check, ⚠); the state ones follow the app (the list
+  is drawn again when a TODO or a warning comes or goes). *Filter by tag*, a collapsible
+  heading above *Active* (collapsed at first; left out with fewer than two sessions), has a
+  button per tag with how many sessions have it, in rows *Your tags*, *Host and folder* and
+  *State* (sorted by name within a row; empty rows left out; the automatic ones in italics;
+  the tooltip says what a tag is); a click selects or deselects it (✓, bold, a heavier border:
+  no colour). The selected tags
   narrow *Active* and *Inactive* to the sessions with all of them; *all of them* switches to
   *any of them* (at least one) and back; *none* deselects all. Filtered, the headings count
   "shown/all", their tooltip names the tags, and an empty one says "None with <tags>".

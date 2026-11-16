@@ -20,7 +20,7 @@ import {SERVICES, addService, hasService} from './services';
 import {fmtSize} from './format';
 import {idleLabel, idleOptions} from './idle';
 import {costParts, costRows, dollars, sessionCost, usageText, warnings} from './cost';
-import {keepKnown, matches, parseTags, tagCounts, toggleTag} from './tags';
+import {STATES, keepKnown, matches, parseTags, tagCounts, toggleTag} from './tags';
 import {
     BackupNow, BackupStatus, OpenBackupFolder, RestoreBackup, Notify, ClearNotification,
     BrowseDirectory, CreateSession, DeleteHost, DeleteSession, InstanceProblem, KillRemote, MoveSession,
@@ -939,7 +939,7 @@ const app = {
         ]) {
             const all = this.state.sessions.filter(d => !!d.inactive === inactive);
             if (!all.length) continue;
-            const list2 = all.filter(d => matches(d, filter.tags, filter.any))
+            const list2 = all.filter(d => matches(d, filter.tags, filter.any, this.tagState(d)))
                 .map(d => this.sessions.get(d.id)).filter(Boolean).sort(byName);
             const {body} = this.heading(list, key, label, shown ? `${list2.length}/${all.length}` : all.length,
                 shown ? `${title}\nFiltered: tags ${shown}` : title, true);
@@ -956,10 +956,11 @@ const app = {
     // of them, or any with the switch. Remembered. Left out with fewer than
     // two tags. Returns {tags, any}.
     renderTagFilter(list) {
-        const counts = tagCounts(this.state.sessions);
+        const counts = tagCounts(this.state.sessions, d => this.tagState(d));
+        this.tagSig = this.tagSignature();
         const stored = store.get('tagFilter', {tags: [], any: false});
         const filter = {tags: keepKnown(stored.tags, counts), any: !!stored.any};
-        if (counts.length < 2) return {tags: [], any: false}; // one tag (a single host) filters nothing
+        if (this.state.sessions.length < 2) return {tags: [], any: false}; // one session: nothing to filter
         const set = f => {
             store.set('tagFilter', f);
             this.render();
@@ -967,22 +968,47 @@ const app = {
         const {body} = this.heading(list, 'tags', 'Filter by tag', filter.tags.length || '',
             'Show only the sessions with these tags in Active and Inactive (a host and a folder count as tags)', true);
         const on = t => filter.tags.some(x => x.toLowerCase() === t.toLowerCase());
-        const chips = counts.map(c => {
-            const b = el('button', {type: 'button', className: 'tag-chip' + (on(c.tag) ? ' on' : ''),
-                textContent: `${on(c.tag) ? '✓ ' : ''}${c.tag} ${c.count}`,
-                title: `${c.from === 'host' ? 'The host' : c.from === 'folder' ? 'The folder' : 'A tag'} “${c.tag}”: ${c.count} session${c.count === 1 ? '' : 's'}`});
+        const n = c => `${c.count} session${c.count === 1 ? '' : 's'}`;
+        const what = c => c.from === 'host' ? `The host “${c.tag}”` : c.from === 'folder' ? `The folder “${c.tag}”`
+            : c.from === 'state' ? `${STATES[c.tag]} (automatic)` : `Your tag “${c.tag}”`;
+        const chip = c => {
+            const b = el('button', {type: 'button', className: 'tag-chip' + (c.from ? ' auto' : '') + (on(c.tag) ? ' on' : ''),
+                textContent: `${on(c.tag) ? '✓ ' : ''}${c.tag} ${c.count}`, title: `${what(c)}: ${n(c)}`});
             b.setAttribute('aria-pressed', on(c.tag) ? 'true' : 'false');
             b.onclick = () => set({...filter, tags: toggleTag(filter.tags, c.tag)});
             return b;
-        });
+        };
+        // Grouped: your own tags, then the host and folder (automatic, fixed),
+        // then the state (automatic, changing); the automatic ones in italics.
+        const rows = [['Your tags', c => !c.from], ['Host and folder', c => c.from === 'host' || c.from === 'folder'],
+            ['State', c => c.from === 'state']].map(([label, pick]) => [label, counts.filter(pick)])
+            .filter(([, cs]) => cs.length)
+            .map(([label, cs]) => el('div', {className: 'tag-row'}, el('div', {className: 'tag-group', textContent: label}),
+                el('div', {className: 'tag-chips'}, ...cs.map(chip))));
         const mode = el('button', {type: 'button', className: 'tag-mode', textContent: filter.any ? 'any of them' : 'all of them',
             title: filter.any ? 'Sessions with at least one of the tags (click: with all of them)' : 'Sessions with all the tags (click: with any of them)'});
         mode.onclick = () => set({...filter, any: !filter.any});
         const clear = el('button', {type: 'button', className: 'tag-mode', textContent: 'none', title: 'Show every session again',
             disabled: !filter.tags.length});
         clear.onclick = () => set({...filter, tags: []});
-        body.append(el('div', {className: 'tag-chips'}, ...chips), el('div', {className: 'tag-modes'}, mode, clear));
+        body.append(...rows, el('div', {className: 'tag-modes'}, mode, clear));
         return filter;
+    },
+
+    // tagState is what the app knows now of a session for its state tags.
+    tagState(d) {
+        const s = this.sessions.get(d.id);
+        return {stopped: !!this.idleStopped?.has(d.id), todo: !!s?.todoCount?.(), warning: !!s?.repoWarn?.()};
+    },
+
+    tagSignature() {
+        return this.state.sessions.map(d => JSON.stringify(this.tagState(d))).join();
+    },
+
+    // tagsChanged redraws the list when a TODO or a repository warning came
+    // or went, so the state tags' counts and the filtered lists follow.
+    tagsChanged() {
+        if (this.tagSig !== undefined && this.tagSignature() !== this.tagSig) this.render();
     },
 
     // renderFolder adds folder f's sessions (by host) and then its
@@ -1190,6 +1216,7 @@ const app = {
     renderRepoWarn(s) {
         for (const it of s.items ?? []) it.querySelector('.repo-warn').hidden = !s.repoWarn();
         s.tab('files')?.view?.renderRepoBanner?.();
+        this.tagsChanged();
     },
 
     // checkTodos finds the TODO lines in every session's notes (the files,
@@ -1209,6 +1236,7 @@ const app = {
             w.title = s.todoText();
         }
         if (s === this.active) this.renderBadges(s);
+        this.tagsChanged();
     },
 
     // checkAll checks every session's repository, one after another.

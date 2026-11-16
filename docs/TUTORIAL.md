@@ -617,8 +617,13 @@ Rest the mouse on a session for its balloon:
 **Tags** sort sessions in more than one way at once:
   give a session tags in *Edit…* (next to *Folder*, with commas between),
   such as `client-x, go, urgent`.
-Its host and its folder count as tags too, without typing them.
-**Filter by tag**, above Active, has a button per tag with how many sessions have it.
+The app adds tags by itself, shown in italics:
+  the host and the folder,
+  and the state: *active* or *inactive*, *container*, *login*,
+  *stopped* (💤), *todo* (▲) and *warning* (⚠).
+The state tags change along with the sessions.
+**Filter by tag**, above Active, has a button per tag with how many sessions have it,
+  in three rows: your own tags, host and folder, and state.
 Click one or more: Active and Inactive then show only the sessions with **all** of them,
   so each extra tag narrows the list.
 *all of them* switches to *any of them*, and *none* shows every session again.

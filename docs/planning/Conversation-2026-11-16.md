@@ -36,3 +36,25 @@
   hand-edited list — all match.
 - Fixed: SPEC F2 (the New session dialog's fields) and the tutorial's New session list did
   not mention the Tags field next to Folder.
+
+## CI (user: "pushed, check the CI build")
+- Run 43849022018 on ef7f17f and run 43849632812 on 3126ebb: linux, windows, macOS passed;
+  release skipped (no tag).
+
+## CI v1.1.20 (user: "pushed and tagged v1.1.20, check the CI build")
+- The tag points at 3126ebb. Run 43851958027: linux, windows, macOS and release passed; the
+  release has the five assets (rpm, deb, linux tar.gz, macOS zip, Windows zip), all 1.1.20.
+
+## Cross-check (user: "do a crosscheck; can we add a dynamic tag for Active, Inactive ?")
+- Nothing changed since the v1.1.20 cross-check (3126ebb) but this log; versions agree (1.1.20).
+- Asked: an automatic Active / Inactive tag (cheap; most useful with "any" or later in a Tags
+  heading or the quick switcher); offered also container, login, stopped, todo, warning, and
+  whether automatic tags should look different.
+- User: "1: all. 2: italic is a good idea"; while working: "possibly group them by
+  static/dynamic or auto".
+- Done (v1.1.21): state tags active/inactive, container, login, stopped, todo, warning
+  (following the app: the list is drawn again when a TODO or a warning changes); the filter
+  in rows Your tags / Host and folder / State, the automatic ones in italics; shown with two
+  or more sessions. Tests: npm test 80 pass, gui-smoke-tags pass (9 checks, new positions,
+  active + go), gui-smoke-lists pass, tutorial-shots pass (todo 1 visible).
+- Full GUI run (all but the container tests): 46 pass, none fail.

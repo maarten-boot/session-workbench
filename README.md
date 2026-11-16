@@ -12,7 +12,7 @@ read its security section if the agent host can write to your repositories.
 New here? **[docs/TUTORIAL.md](docs/TUTORIAL.md)** takes you from the download to your first
 claude session, with screenshots (`make tutorial-pdf` makes a PDF of it).
 
-Status: v1.1.20: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
+Status: v1.1.21: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
 Notes (page trees with formatting, lists and check lists, spelling), Web and Q&A tabs, Remote tab recordings, session folders,
 themes and color modes, quick switcher, a command menu and a prompts menu in the Local and Remote tabs, editable
 start commands, private shell history per session, activity badges, desktop notifications,
@@ -634,8 +634,11 @@ session there to see its host and folder. A `/` in a folder name makes subfolder
 
 **Tags.** Where a folder holds a session in one place, tags put it in several: give it tags in
 *Edit…* or New session (*Tags*, next to *Folder*, with commas between: `client-x, go, urgent`).
-Its host and its folder count as tags too. **Filter by tag**, a heading above *Active* (closed
-at first), has a button per tag with how many sessions have it; click one or more, and
+Automatic tags come on top, in italics: the host, the folder and the state — *active* or
+*inactive*, *container*, *login* (a plain login), *stopped* (💤), *todo* (▲) and *warning*
+(⚠), which follow the app as they change. **Filter by tag**, a heading above *Active* (closed
+at first), has a button per tag with how many sessions have it, in the rows *Your tags*,
+*Host and folder* and *State*; click one or more, and
 *Active* and *Inactive* show only the sessions with all of them (each tag narrows the list;
 the headings count "shown/all"). *all of them* switches to *any of them*, *none* clears the
 selection. The app remembers the filter. In the config: `tags = ["client-x", "go"]` on the
