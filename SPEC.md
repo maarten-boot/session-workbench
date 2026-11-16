@@ -138,7 +138,7 @@ host's `local_prefix`), e.g. `~/share-local/workspace`.
   session last. Rows show the description's first line and a tooltip with the full path and
   description. It can be resized from its corner; the size is kept (web view storage).
 - F2. "New session" dialog: pick host profile → local directory yes / no (F2a) → pick directory (Browse… starts at the first
-  workspace root; any path under `local_prefix`) → name → description (optional) → folder → start mode (one of the start commands,
+  workspace root; any path under `local_prefix`) → name → description (optional) → folder and tags (F5a) → start mode (one of the start commands,
   R2; the default list is claude, claude-continue, shell). It previews the remote path or why the directory can't be
   used; one session per directory and host. Host and directory are fixed afterwards.
 - F2a. Plain login sessions (no local directory). A host's *Sessions on this host*

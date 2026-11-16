@@ -325,6 +325,8 @@ You can add as many hosts as you like;
 - **Name** (defaults to the directory's name) and a **description**,
   shown when the mouse rests on the session in the list.
 - **Folder**: put it in a group such as *Work* (section 14).
+- **Tags**: optional, with commas between, such as `client-x, go`;
+  they filter the session list (section 14).
 - **Start in new remote session**: what the Remote tab starts, see below.
 
 **Create**, and the session opens.

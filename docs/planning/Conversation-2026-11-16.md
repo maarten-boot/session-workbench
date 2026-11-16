@@ -27,3 +27,12 @@
   expected the renamed repo URL while the local git remote still has the old name (the Web
   tab reads it from the remote); it now takes the expected URL from the remote. Also fixed for
   the Tags field's Tab stop: gui-smoke-sessions, -startmode, -hosts.
+
+## Cross-check (user: "pushed, do a crosscheck")
+- ef7f17f is on GitHub; its CI run 43849022018 was in progress.
+- Checked SPEC F5a, README, the tutorial and Tests.md against the code: tidying rules, the
+  automatic host and folder tags, all/any/none, remembered, the filter left out with fewer
+  than two tags, "shown/all" counts, the balloon, export/import, the problem for an untidy
+  hand-edited list — all match.
+- Fixed: SPEC F2 (the New session dialog's fields) and the tutorial's New session list did
+  not mention the Tags field next to Folder.
