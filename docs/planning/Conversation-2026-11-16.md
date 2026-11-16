@@ -58,3 +58,10 @@
   or more sessions. Tests: npm test 80 pass, gui-smoke-tags pass (9 checks, new positions,
   active + go), gui-smoke-lists pass, tutorial-shots pass (todo 1 visible).
 - Full GUI run (all but the container tests): 46 pass, none fail.
+
+## Cross-check after v1.1.21 (2d50969)
+- SPEC F5a, README, the tutorial and PLAN describe the state tags and the grouped filter as the code does (tags.js, main.js: shown with two or more sessions, redrawn on a TODO, a warning or an idle stop).
+- Tests.md lacked three rows; added:
+  the frontend unit test tags.test.mjs (F5a),
+  the Go package examples (T7),
+  and F5a/T7 in the session row (TestTags, TestTagsProblem, TestExampleCommandsFirstStartOnly).
