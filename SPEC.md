@@ -1,6 +1,6 @@
 # Session Workbench — Specification
 
-Status: v1.30 (2026-11-16, app v1.1.21) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
+Status: v1.30 (2026-11-16, app v1.1.22) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
 narrow and resizable sidebar (F6), Claude backups (F7), one instance per config (F8), working
 copies and backups without rsync (F9), desktop notifications (F4), git status and the
 repository check in the Files tab (B5, B6), Notes and Web tabs (N1, W1), notes for all sessions
@@ -502,8 +502,10 @@ host's `local_prefix`), e.g. `~/share-local/workspace`.
   warnings (with their notifications) stay current, and claude still gets the usage status line.
   - Settings → Cost: the two settings, the warning limits, the usage in words ("5-hour 23%
     (resets 20:15), 7-day 41% (resets Fri 19:15) — reported 2 min ago on <host>"), a table of
-    every session (name, host, today, total; amounts right-aligned) with a Sum row and a Top bar
-    row (the figure's today and total, since the reset), a note that the sum can be more (two
+    every session (name, host, today, total; amounts right-aligned; a click on a heading sorts by
+    that column — names A to Z, amounts largest first — and again turns it round, ▲/▼ in the
+    heading and aria-sort; equal ones by name; remembered in the web view storage; the list
+    order until then) with a Sum row and a Top bar row (the figure's today and total, since the reset), a note that the sum can be more (two
     sessions in one folder share its transcripts) and *Reset the total…* (asks; the top bar's
     total counts from then on; today and the sessions' own stay).
   - Warnings: `cost_daily_limit` (dollars), `usage_5h_limit` and `usage_7d_limit` (percent);

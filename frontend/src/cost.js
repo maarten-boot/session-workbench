@@ -100,3 +100,30 @@ export function costRows(sessions, s) {
     const sum = rows.reduce((a, r) => ({today: a.today + r.today, total: a.total + r.total}), {today: 0, total: 0});
     return {rows, sum};
 }
+
+// COST_COLUMNS are the Cost table's sortable columns; the names go up
+// first (A to Z), the amounts down (largest first).
+export const COST_COLUMNS = [
+    {key: 'name', label: 'Session', desc: false},
+    {key: 'host', label: 'Host', desc: false},
+    {key: 'today', label: 'Today', desc: true, num: true},
+    {key: 'total', label: 'Total', desc: true, num: true},
+];
+
+// sortCostRows sorts the rows by sort = {key, desc} (no key: list order);
+// equal ones by name. The rows are not changed.
+export function sortCostRows(rows, sort) {
+    const col = COST_COLUMNS.find(c => c.key === sort?.key);
+    if (!col) return rows;
+    const text = (a, b) => String(a ?? '').localeCompare(String(b ?? ''), undefined, {sensitivity: 'base', numeric: true});
+    const cmp = (a, b) => col.num ? (a[col.key] ?? 0) - (b[col.key] ?? 0) : text(a[col.key], b[col.key]);
+    return [...rows].sort((a, b) => (sort.desc ? -cmp(a, b) : cmp(a, b)) || text(a.name, b.name));
+}
+
+// nextCostSort is the sort after a click on column key: the same column
+// turns round, another starts in its own first direction.
+export function nextCostSort(sort, key) {
+    const col = COST_COLUMNS.find(c => c.key === key);
+    if (!col) return sort ?? {};
+    return sort?.key === key ? {key, desc: !sort.desc} : {key, desc: col.desc};
+}

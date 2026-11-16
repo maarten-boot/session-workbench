@@ -19,7 +19,7 @@ import {TOOLCHAINS, addToolchain} from './dockerfile';
 import {SERVICES, addService, hasService} from './services';
 import {fmtSize} from './format';
 import {idleLabel, idleOptions} from './idle';
-import {costParts, costRows, dollars, sessionCost, usageText, warnings} from './cost';
+import {COST_COLUMNS, costParts, costRows, dollars, nextCostSort, sessionCost, sortCostRows, usageText, warnings} from './cost';
 import {STATES, keepKnown, matches, parseTags, tagCounts, toggleTag} from './tags';
 import {
     BackupNow, BackupStatus, OpenBackupFolder, RestoreBackup, Notify, ClearNotification,
@@ -2993,9 +2993,29 @@ function costPage(dlg, f, ui) {
         const now = Date.now() / 1000;
         page.querySelector('.usage-text').textContent = usageText(s?.usage, now);
         const {rows, sum} = costRows(app.state.sessions, s);
+        const sort = store.get('costSort', {});
         const td = (text, className = '') => el('td', {textContent: text, className});
         const row = (cells, className = '') => el('tr', {className}, ...cells);
-        page.querySelector('.cost-table tbody').replaceChildren(...rows.map(r =>
+        // The headings sort (SPEC F18): a click sorts by that column, again
+        // turns it round; ▲/▼ and aria-sort say how, not only a colour.
+        page.querySelector('.cost-table thead').replaceChildren(row(COST_COLUMNS.map(c => {
+            const on = sort.key === c.key;
+            const th = el('th', {className: c.num ? 'num' : ''},
+                el('button', {
+                    type: 'button',
+                    className: 'cost-sort',
+                    textContent: c.label + (on ? (sort.desc ? ' ▼' : ' ▲') : ''),
+                    title: `Sort by ${c.label.toLowerCase()}` + (on ? `, now ${sort.desc ? 'down' : 'up'}: click to turn round` : ''),
+                    onclick: () => {
+                        store.set('costSort', nextCostSort(sort, c.key));
+                        fill();
+                        page.querySelector(`.cost-table thead th:nth-child(${COST_COLUMNS.indexOf(c) + 1}) button`)?.focus();
+                    },
+                }));
+            th.setAttribute('aria-sort', on ? (sort.desc ? 'descending' : 'ascending') : 'none');
+            return th;
+        })));
+        page.querySelector('.cost-table tbody').replaceChildren(...sortCostRows(rows, sort).map(r =>
             row([td(r.name), td(r.host), td(dollars(r.today), 'num'), td(dollars(r.total), 'num')])));
         page.querySelector('.cost-table tfoot').replaceChildren(
             row([td('Sum'), td(''), td(dollars(sum.today), 'num'), td(dollars(sum.total), 'num')], 'sum'),

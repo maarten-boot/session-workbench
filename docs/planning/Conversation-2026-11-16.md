@@ -65,3 +65,17 @@
   the frontend unit test tags.test.mjs (F5a),
   the Go package examples (T7),
   and F5a/T7 in the session row (TestTags, TestTagsProblem, TestExampleCommandsFirstStartOnly).
+
+## CI
+- 2d50969 (v1.1.21, run 43894490769) and 79700ac (cross-check, run 43895128436): linux-amd64, windows-amd64, macos-universal pass; release skipped (no tag).
+- v1.1.21 tag (79700ac, run 43896725550): all three builds pass; release with 5 assets (.rpm, .deb, linux tar.gz, macOS zip, Windows zip).
+
+## Sorting the Cost table (v1.1.22)
+- The user: "can we add sorting up/down to the cost fields: Session Host Today Total in Settings ?"
+- The headings of Settings → Cost are buttons:
+  a click sorts by that column (names A to Z, amounts largest first),
+  a second click turns it round.
+- ▲ or ▼ in the heading and aria-sort show the order, not only a colour;
+  equal rows go by name; the choice is remembered.
+- Tests: npm test 82 pass (cost.test.mjs: sortCostRows, nextCostSort);
+  gui-smoke-cost pass (Total twice, the rows compared, kept after reopening).

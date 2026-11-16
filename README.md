@@ -12,7 +12,7 @@ read its security section if the agent host can write to your repositories.
 New here? **[docs/TUTORIAL.md](docs/TUTORIAL.md)** takes you from the download to your first
 claude session, with screenshots (`make tutorial-pdf` makes a PDF of it).
 
-Status: v1.1.21: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
+Status: v1.1.22: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
 Notes (page trees with formatting, lists and check lists, spelling), Web and Q&A tabs, Remote tab recordings, session folders,
 themes and color modes, quick switcher, a command menu and a prompts menu in the Local and Remote tabs, editable
 start commands, private shell history per session, activity badges, desktop notifications,
@@ -584,7 +584,8 @@ status line, so the app gives the claudes it starts a small status line command 
 usage there). It uses no tokens, and it is as fresh as the last reply of any of your claudes
 (older than two minutes: "(12 min ago)").
 
-Click the figure for **Settings → Cost**: each session's cost today and in total, with the sum
+Click the figure for **Settings → Cost**: each session's cost today and in total (click a heading
+to sort by it, again to turn it round), with the sum
 and the top bar's own numbers, the usage with its reset times, *Reset the total…* (today
 stays), the settings (hide the figure, or show each session's cost in its balloon in the list) and
 warnings: a daily dollar limit and percentages for the 5-hour and 7-day usage. A reached limit

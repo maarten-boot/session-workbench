@@ -664,6 +664,7 @@ Click the figure for Settings → Cost:
 ![Settings → Cost](tutorial/32-settings-cost.png)
 
 Each session's cost, a sum, a reset of the total,
+  a table you sort by clicking a heading (again turns it round),
   and **warnings**: when today's cost or the usage reaches a limit you set,
   that part of the figure turns red with a ⚠, and a desktop notification tells you once.
 

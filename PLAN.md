@@ -176,6 +176,12 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- v1.1.22 (2026-11-16): the Cost table in Settings sorts by a column (SPEC F18). The user:
+  "can we add sorting up/down to the cost fields: Session Host Today Total in Settings ?".
+  The headings are buttons: a click sorts by that column (names A to Z, amounts largest first),
+  again turns it round; ▲/▼ in the heading and aria-sort (not only a colour); equal ones by
+  name; remembered (web view storage, `costSort`). Tests: cost.test.mjs (sortCostRows,
+  nextCostSort), gui-smoke-cost (Total twice, the rows compared, kept after reopening).
 - v1.1.21 (2026-11-16): automatic state tags, grouped in the filter (SPEC F5a). The user:
   "can we add a dynamic tag for Active, Inactive ?"; offered more (container, login, stopped,
   todo, warning) and a different look for automatic tags; "1: all. 2: italic is a good idea",

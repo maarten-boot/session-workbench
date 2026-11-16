@@ -5,7 +5,8 @@
 # (SW_IDLE_TICK): the top bar shows today and the total at API prices, the
 # list balloon the session's own; a new reply adds to it; a model without
 # a price makes the amounts a lower bound (≥); clicking the figure resets
-# the total (today stays); Settings hides it, and it is still counted.
+# the total (today stays); the table sorts by a column heading (kept);
+# Settings hides it, and it is still counted.
 # usage: xvfb-run -a -s "-screen 0 1400x900x24" scripts/gui-smoke-cost.sh <binary> <outdir>
 BIN=$1; OUT=$2; mkdir -p $OUT
 . "$(dirname "$0")/smoke-lib.sh"
@@ -79,6 +80,21 @@ shot 4-unpriced
 cost_page() { xdotool mousemove 1300 66 click 1; sleep 1; xdotool mousemove 700 860; sleep 1; }
 cost_page
 shot 5-cost-page
+# The headings sort: Total first largest first (costs, other), again
+# smallest first (other, costs); a row is cropped and compared.
+row() { convert $OUT/$1.png -crop 414x22+381+$2 +repage $OUT/$1-r$2.png; }
+same() { [ "$(compare -metric AE $OUT/$1.png $OUT/$2.png null: 2>&1 | cut -d" " -f1)" = 0 ]; }
+differ() { ! same "$@"; }
+xdotool mousemove 745 412 click 1; sleep 1; xdotool mousemove 700 860; sleep 0.5
+shot 5a-total-down; row 5a-total-down 428; row 5a-total-down 453
+xdotool mousemove 745 412 click 1; sleep 1; xdotool mousemove 700 860; sleep 0.5
+shot 5b-total-up; row 5b-total-up 428; row 5b-total-up 453
+check "Total sorts largest first, then smallest first" same 5a-total-down-r453 5b-total-up-r428
+check "the second click turns the order round" same 5a-total-down-r428 5b-total-up-r453
+check "the rows differ (so the order shows)" differ 5b-total-up-r428 5b-total-up-r453
+k Escape; cost_page
+shot 5c-reopened; row 5c-reopened 428
+check "the sort is kept" same 5b-total-up-r428 5c-reopened-r428
 xdotool mousemove 520 276 click 1; xdotool type --delay 20 '10'      # today: warn at $10
 xdotool mousemove 850 276 click 1; xdotool type --delay 20 '20'      # 5-hour: warn at 20%
 xdotool mousemove 990 680 click 1; sleep 2                          # Save

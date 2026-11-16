@@ -453,6 +453,34 @@ button.link:hover {
     font-variant-numeric: tabular-nums;
 }
 
+/* The headings are buttons that sort: they look like headings (bold,
+   black), with a focus ring for the keyboard. */
+.cost-table th:has(.cost-sort) {
+    padding: 0;
+}
+
+.cost-table .cost-sort {
+    width: 100%;
+    padding: 3px 8px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--text-strong);
+    font: inherit;
+    font-weight: 600;
+    text-align: inherit;
+    cursor: pointer;
+}
+
+.cost-table .cost-sort:hover {
+    text-decoration: underline;
+}
+
+.cost-table .cost-sort:focus-visible {
+    outline: 2px solid var(--focus, currentColor);
+    outline-offset: -2px;
+}
+
 .cost-table tfoot .sum td {
     font-weight: 600;
     border-top: 2px solid var(--border-strong);

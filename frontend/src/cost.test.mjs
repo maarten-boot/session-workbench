@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {age, costParts, costRows, costText, dollars, sessionCost, usageText, used, warnings} from './cost.js';
+import {age, costParts, costRows, costText, dollars, nextCostSort, sortCostRows, sessionCost, usageText, used, warnings} from './cost.js';
 
 test('dollars', () => {
     assert.equal(dollars(0), '$0.00');
@@ -73,4 +73,30 @@ test('costRows', () => {
         {sessions: {a: {today: 1, total: 5}}});
     assert.deepEqual(rows, [{name: 'A', host: 'h', today: 1, total: 5}, {name: 'B', host: 'h', today: 0, total: 0}]);
     assert.deepEqual(sum, {today: 1, total: 5});
+});
+
+test('the Cost table sorts by a column', () => {
+    const rows = [
+        {name: 'web10', host: 'b', today: 1, total: 5},
+        {name: 'Api', host: 'a', today: 3, total: 5},
+        {name: 'web9', host: 'b', today: 0, total: 9},
+    ];
+    const names = sort => sortCostRows(rows, sort).map(r => r.name);
+    assert.deepEqual(names(undefined), ['web10', 'Api', 'web9']); // list order
+    assert.deepEqual(names({key: 'name'}), ['Api', 'web9', 'web10']); // ignoring case, numbers as numbers
+    assert.deepEqual(names({key: 'name', desc: true}), ['web10', 'web9', 'Api']);
+    assert.deepEqual(names({key: 'host'}), ['Api', 'web9', 'web10']); // equal hosts by name
+    assert.deepEqual(names({key: 'today', desc: true}), ['Api', 'web10', 'web9']);
+    assert.deepEqual(names({key: 'total', desc: true}), ['web9', 'Api', 'web10']); // 5 and 5 by name
+    assert.deepEqual(names({key: 'total'}), ['Api', 'web10', 'web9']);
+    assert.deepEqual(names({key: 'gone'}), ['web10', 'Api', 'web9']);
+    assert.equal(rows[0].name, 'web10'); // not changed
+});
+
+test('a click on a column heading', () => {
+    assert.deepEqual(nextCostSort(undefined, 'name'), {key: 'name', desc: false});
+    assert.deepEqual(nextCostSort({key: 'name', desc: false}, 'name'), {key: 'name', desc: true});
+    assert.deepEqual(nextCostSort({key: 'name', desc: true}, 'total'), {key: 'total', desc: true});
+    assert.deepEqual(nextCostSort({key: 'total', desc: true}, 'total'), {key: 'total', desc: false});
+    assert.deepEqual(nextCostSort({key: 'host', desc: false}, 'nope'), {key: 'host', desc: false});
 });
