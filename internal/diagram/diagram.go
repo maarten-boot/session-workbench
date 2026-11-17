@@ -1,5 +1,5 @@
 // Package diagram draws D2 diagrams (```d2 blocks in Notes and Q&A,
-// SPEC N1c) as SVG, in the app: no d2 program needed. Only the free layout
+// SPEC N1d) as SVG, in the app: no d2 program needed. Only the free layout
 // engines (dagre, the default, and elk); imports read nothing from disk.
 package diagram
 

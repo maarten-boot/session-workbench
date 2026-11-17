@@ -63,3 +63,31 @@
   (Notes and Q&A copies read back by scripts/clipimage as PNGs at twice the size,
   and a text copy still works after an image copy);
   gui-smoke-notes and gui-smoke-qa pass; npm test 85 pass; vet for Windows passes.
+
+## CI of 4646913 (v1.1.23, not tagged)
+
+- Build run 44163007057 passed: linux-amd64, windows-amd64 and macos-universal; release skipped.
+- Dependabot "Graph Update: go_modules" run 44163012778 passed (go.mod changed).
+
+## CI of tag v1.1.23 (4646913)
+
+- Run 44165186127 failed: linux-amd64 and windows-amd64 passed;
+  macos-universal was cancelled after 15 minutes in the queue
+  ("The job was not acquired by Runner of type hosted even after multiple attempts";
+  GitHub notes macOS arm64 capacity constraints), so the release job was skipped.
+- No code fault: the user runs macOS builds of other projects at the same time,
+  which compete for the runners;
+  they will build one project at a time and re-run the failed job.
+- Re-run of the failed jobs (attempt 2) passed: macos-universal and release;
+  the release has the 5 assets (rpm, deb, linux tar.gz, macOS zip, Windows zip).
+
+## Cross-check after v1.1.23
+
+- The user: "do a crosscheck".
+- SPEC used N1c twice: TODO marks (since v0.9.0) and D2 diagrams (v1.1.22).
+  D2 diagrams (with Copy image) are now N1d, placed after N1c;
+  references in SPEC, PLAN, Tests.md, the code comments and gui-smoke-d2 follow.
+  Earlier entries in this log keep N1c for D2.
+- README layout lists scripts/clipimage/.
+- SPEC v1.33.
+  Otherwise SPEC N1d, README, TUTORIAL, Tests.md and PLAN match the code of v1.1.23.

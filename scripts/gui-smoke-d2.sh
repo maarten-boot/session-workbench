@@ -1,5 +1,5 @@
 #!/bin/bash
-# Headless GUI test of D2 diagrams (SPEC N1c): a ```d2 block in Notes is
+# Headless GUI test of D2 diagrams (SPEC N1d): a ```d2 block in Notes is
 # drawn below its text, an error shows D2's message, an edit draws it again;
 # a ```d2 block in a Q&A answer is drawn with its source folded below;
 # right-click → Copy image puts a drawing on the clipboard as a PNG at twice

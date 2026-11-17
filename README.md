@@ -1172,6 +1172,7 @@ docs/                  CONNECTIVITY.md: agent host setup, file access modes, sec
 scripts/deps.sh        make check / make deps
 scripts/gui-smoke*.sh  headless GUI tests; scripts/smoke-lib.sh holds their shared checks,
                        scripts/fake-notifyd.py stands in for the desktop's notification service
+scripts/clipimage/     reads the clipboard (an image or text) to a file for gui-smoke-d2
 .github/workflows      CI: test + build on Linux/Windows/macOS, release on v* tags
 ```
 

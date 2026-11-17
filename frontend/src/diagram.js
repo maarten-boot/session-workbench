@@ -1,4 +1,4 @@
-// D2 diagrams (SPEC N1c): ```d2 blocks in Notes and Q&A answers are drawn
+// D2 diagrams (SPEC N1d): ```d2 blocks in Notes and Q&A answers are drawn
 // by the app (App.DrawD2) and shown as an <img> (an SVG loaded as an image
 // runs no scripts and loads nothing).
 import {CopyImage, DrawD2} from '../wailsjs/go/main/App';

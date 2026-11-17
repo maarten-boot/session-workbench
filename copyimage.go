@@ -36,7 +36,7 @@ func pngImage(b64 string) ([]byte, error) {
 }
 
 // CopyImage puts a PNG (base64, drawn by the frontend from a diagram or
-// picture) on the clipboard (SPEC N1c): Wails copies text only.
+// picture) on the clipboard (SPEC N1d): Wails copies text only.
 func (a *App) CopyImage(b64 string) error {
 	png, err := pngImage(b64)
 	if err != nil {

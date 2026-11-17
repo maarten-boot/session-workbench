@@ -228,7 +228,7 @@ const tasks = ViewPlugin.define(view => ({
     },
 });
 
-// D2 diagrams (SPEC N1c): below each closed ```d2 block its drawing,
+// D2 diagrams (SPEC N1d): below each closed ```d2 block its drawing,
 // redrawn shortly after typing in it stops; the text stays as it is.
 class D2Diagram extends WidgetType {
     constructor(source) {
@@ -376,7 +376,7 @@ export class Editor {
         this.view.contentDOM.addEventListener('blur', () => onBlur?.());
         this.view.dom.addEventListener('contextmenu', e => {
             e.preventDefault();
-            // On a D2 drawing: its own menu (SPEC N1c).
+            // On a D2 drawing: its own menu (SPEC N1d).
             const pic = e.target.closest?.('.cm-d2 .d2-picture');
             if (pic) return showMenu(e.clientX, e.clientY, [{label: 'Copy image', action: () => copyImage(pic)}]);
             this.contextMenu(e.clientX, e.clientY);

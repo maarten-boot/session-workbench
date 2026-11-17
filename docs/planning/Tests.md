@@ -33,8 +33,8 @@ README.md "Development" lists the make targets.
 | instance    | F8                                                                      |
 | xfer        | F9                                                                      |
 | profile     | F14 (default names, a name's folder, tag and title, bad names refused and not taken) |
-| main        | N1c (TestPNGImage: a PNG passes; not base64, not a PNG, too large refused) |
-| diagram     | N1c (TestSVG: the labels, no XML declaration, no embedded fonts, system fonts with bold, black text, dark differs; TestSVGErrors: empty, D2's line:column, TALA refused, an import reads no file, too large; TestSVGElk; TestSystemFonts: regular/bold/italic/semibold/mono rules, font faces removed) |
+| main        | N1d (TestPNGImage: a PNG passes; not base64, not a PNG, too large refused) |
+| diagram     | N1d (TestSVG: the labels, no XML declaration, no embedded fonts, system fonts with bold, black text, dark differs; TestSVGErrors: empty, D2's line:column, TALA refused, an import reads no file, too large; TestSVGElk; TestSystemFonts: regular/bold/italic/semibold/mono rules, font faces removed) |
 | examples    | T7 (the example commands pass ValidateCommands; the Claude, Git and Text groups exist; prompt names unique, each with text) |
 | sessionarchive | F13 (.zip and .tar.gz round trip, existing files kept, empty directories back; hostile archives: "..", absolute names, symlinks, no manifest, newer format, not an archive; project files: tracked, untracked, .git with its directories, not ignored; without git all; executable bits kept, skipped on Windows) |
 | reclog      | F10                                                                     |
@@ -55,7 +55,7 @@ README.md "Development" lists the make targets.
 | services.test.mjs    | C7 (service blocks: `services: {}` becomes a section, the volume under volumes:, existing sections and what follows kept, twice changes nothing, an empty file) |
 | cost.test.mjs        | F18 (the Cost table sorted by a column, ignoring case, numbers in names as numbers, equal ones by name, a click turning it round; dollars, the top bar figure and tooltip, ≥ per amount with a model without a price, the session's balloon line); the usage in the figure (its age after 2 min), a reset window at 0%, warnings per limit, the usage sentence, the Cost page rows and sum |
 | idle.test.mjs        | F17 (idle times in words, the choices of the Settings and Edit… selects, a time set in config.toml kept) |
-| qaparse.test.mjs     | Q1 (text, code and SVG parts, closed d2 blocks as diagrams (open or empty ones code), N1c; engine names, token line, Markdown parsing, copying as Markdown) |
+| qaparse.test.mjs     | Q1 (text, code and SVG parts, closed d2 blocks as diagrams (open or empty ones code), N1d; engine names, token line, Markdown parsing, copying as Markdown) |
 | prompts.test.mjs     | T6, N2                             |
 | keys.test.mjs        | §4.6                               |
 | fuzzy.test.mjs       | §4.6 quick switcher                |
@@ -118,7 +118,7 @@ README.md "Development" lists the make targets.
 | gui-smoke-tags.sh         | F5a        | Edit… saves a session's tags tidied ("go, Go , urgent" → go, urgent); Filter by tag: urgent then client-x narrow Active to alpha; any of them widens it (gamma third); after a restart the filter and mode are kept (beta second); urgent off leaves gamma out; none brings it back; the state tag active with go leaves beta first (rows Your tags, Host and folder, State). The window title names the session a row opens |
 | gui-smoke-examples.sh     | T7         | a first start (no config file) writes the example Prompts page and saves the example commands; an existing config (one own git-push) and Prompts page (own crosscheck) are untouched at start; Add example commands… lists the 10 missing ones (git-push left out) and Save keeps them with the own git-push; Add example prompts… adds the 6 missing ones, crosscheck not twice (names ignore case), the own text kept |
 | gui-smoke-copy.sh         | T2a        | a program following every mouse move (mode 1003, as claude): a Shift+drag selection stays after the mouse moves on, Ctrl+Shift+C copies it; OSC 52 from printf puts text on the clipboard; an OSC 52 read changes nothing (each checked by pasting with Ctrl+Shift+V into cat). Fails without the fix |
-| gui-smoke-d2.sh           | N1c        | Notes: a ```d2 block drawn below it (D2's blue lines), a broken one shows ⚠ D2 and the message; right-click → Copy image: the clipboard holds a PNG at twice the drawing's size (read back by scripts/clipimage); the same in Q&A, and a text Copy still works after it; typing in the block draws it again (picture changed) and is saved; Q&A: an answer's ```d2 block drawn, D2 source folded below. A dark-theme run was checked by eye (white text) |
+| gui-smoke-d2.sh           | N1d        | Notes: a ```d2 block drawn below it (D2's blue lines), a broken one shows ⚠ D2 and the message; right-click → Copy image: the clipboard holds a PNG at twice the drawing's size (read back by scripts/clipimage); the same in Q&A, and a text Copy still works after it; typing in the block draws it again (picture changed) and is saved; Q&A: an answer's ```d2 block drawn, D2 source folded below. A dark-theme run was checked by eye (white text) |
 | tutorial-shots.sh         | T3, docs   | the screenshots of docs/TUTORIAL.md (made-up host and sessions on localhost, profile "tutorial", nothing left behind); the empty window's *Add host…* button is blue (white text on light grey before v1.1.19) |
 
 When a feature is added, add or extend a test here and name the SPEC item it covers.
