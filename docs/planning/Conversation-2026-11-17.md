@@ -47,3 +47,19 @@
   the SPEC status summary now names the Cost sort (F18), T2a and N1c;
   the README status names D2 diagrams and tags (tags were missing since v1.1.20);
   the README layout lists internal/examples (missing since v1.1.19).
+
+## CI
+- ba36c0c (cross-check, run 44077600309): linux-amd64, windows-amd64, macos-universal pass; release skipped (no tag).
+
+## Copy image of a D2 drawing (v1.1.23)
+- The user: "could we add a copy image to clipboard of the D2 rendered image ?"
+- Wails copies text only.
+  `golang.design/x/clipboard` v0.11.0 writes images without cgo
+  (X11 and Wayland, Windows, macOS; MIT); the app grows 0.2 MB.
+- Right-click on a drawing (Notes, Q&A, also an SVG picture in Q&A): *Copy image*;
+  the frontend draws it on a canvas at twice its size, on the page's background,
+  and App.CopyImage checks the PNG (at most 32 MB) and puts it on the clipboard.
+- Tests: TestPNGImage; gui-smoke-d2 pass
+  (Notes and Q&A copies read back by scripts/clipimage as PNGs at twice the size,
+  and a text copy still works after an image copy);
+  gui-smoke-notes and gui-smoke-qa pass; npm test 85 pass; vet for Windows passes.

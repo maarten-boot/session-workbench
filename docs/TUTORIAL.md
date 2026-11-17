@@ -472,6 +472,8 @@ api -> db
 
 The app draws it itself with [D2](https://d2lang.com);
   a mistake shows D2's message with the line number instead.
+Right-click the drawing for **Copy image**,
+  to paste it into a document or a chat.
 Notes are stored with the app's config, not in the project:
   they stay out of git and off the agent host.
 

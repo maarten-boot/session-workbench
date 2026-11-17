@@ -1,6 +1,6 @@
 # Session Workbench — Specification
 
-Status: v1.31 (2026-11-17, app v1.1.22) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
+Status: v1.32 (2026-11-17, app v1.1.23) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
 narrow and resizable sidebar (F6), Claude backups (F7), one instance per config (F8), working
 copies and backups without rsync (F9), desktop notifications (F4), git status and the
 repository check in the Files tab (B5, B6), Notes and Web tabs (N1, W1), notes for all sessions
@@ -808,7 +808,11 @@ host's `local_prefix`), e.g. `~/share-local/workspace`.
   Notes: the drawing below the block, the text stays editable; redrawn 0.6 s after typing in it
   stops, the old drawing shown meanwhile; an unclosed block is not drawn. Q&A: the drawing with
   *D2 source* folded below; copying gives the block. Drawings are cached by text and theme
-  (last 64).
+  (last 64). Right-click on a drawing (Notes, Q&A; also an SVG picture in Q&A): *Copy image*
+  puts it on the clipboard as a PNG at twice its size, on the page's background (drawn on a
+  canvas in the frontend; `App.CopyImage` checks it is a PNG of at most 32 MB and writes it with
+  `golang.design/x/clipboard` v0.11.0: no cgo; X11 or Wayland, Windows, macOS — Wails copies
+  text only); "Image copied", or the reason it was not.
 - N1c. TODO marks: a line of a page with the word `TODO` (capitals, not part of a longer word:
   not `TODOs`, `MYTODO`, `TODO_LIST`; `notes.CountTodos`) is a TODO. A session with any gets a
   red ▲ in the sidebar (F1), on its Notes tab and on each such page in the tree (a folded page

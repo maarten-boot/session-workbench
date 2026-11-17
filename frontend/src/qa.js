@@ -1,6 +1,6 @@
 import {QAAsk, QAChoose, QAClear, QALoad, QAModels, QAOpenLog, QAStop} from '../wailsjs/go/main/App';
 import {BrowserOpenURL, ClipboardGetText, ClipboardSetText, EventsOff, EventsOn} from '../wailsjs/runtime/runtime';
-import {fillDiagram} from './diagram';
+import {copyImage, fillDiagram} from './diagram';
 import {el, showMenu, textMenu, toast} from './ui';
 import {engineName, parseAnswer, parseMarkdown, svgURL, toMarkdown, tokens} from './qaparse';
 
@@ -108,7 +108,7 @@ export class QAView {
         });
         this.listEl.addEventListener('contextmenu', e => {
             e.preventDefault();
-            this.listMenu(e.clientX, e.clientY);
+            this.listMenu(e.clientX, e.clientY, e.target.closest?.('.d2-picture, .qa-svg'));
         });
         this.input.addEventListener('contextmenu', e => {
             e.preventDefault();
@@ -204,12 +204,14 @@ export class QAView {
         this.focus();
     }
 
-    // listMenu is the right-click menu of the questions and answers.
-    listMenu(x, y) {
+    // listMenu is the right-click menu of the questions and answers; on a
+    // picture (a D2 drawing, an SVG) Copy image comes first.
+    listMenu(x, y, pic) {
         const k = isMac ? '⌘' : 'Ctrl+';
         const sel = window.getSelection();
         const text = this.selectedMarkdown();
         showMenu(x, y, [
+            ...(pic ? [{label: 'Copy image', action: () => copyImage(pic)}, '-'] : []),
             {label: `Copy   ${k}C`, disabled: !text, action: () => ClipboardSetText(text).then(() => toast('Copied'))},
             {label: 'Copy to the question', disabled: !text, action: () => {
                 this.insert(text);

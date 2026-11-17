@@ -62,6 +62,10 @@ export function ContainerStopBuild(arg1) {
   return window['go']['main']['App']['ContainerStopBuild'](arg1);
 }
 
+export function CopyImage(arg1) {
+  return window['go']['main']['App']['CopyImage'](arg1);
+}
+
 export function CostSummary() {
   return window['go']['main']['App']['CostSummary']();
 }

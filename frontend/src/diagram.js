@@ -1,7 +1,8 @@
 // D2 diagrams (SPEC N1c): ```d2 blocks in Notes and Q&A answers are drawn
 // by the app (App.DrawD2) and shown as an <img> (an SVG loaded as an image
 // runs no scripts and loads nothing).
-import {DrawD2} from '../wailsjs/go/main/App';
+import {CopyImage, DrawD2} from '../wailsjs/go/main/App';
+import {toast} from './ui';
 import {svgURL} from './qaparse';
 
 // dark: the app's theme (dark unless set to light), so a diagram matches it.
@@ -41,4 +42,26 @@ export async function fillDiagram(box, source, onDone) {
         box.replaceChildren(Object.assign(document.createElement('div'), {className: 'd2-error', textContent: `⚠ D2: ${r.error}`}));
     }
     onDone?.();
+}
+
+// copyImage puts a picture (a D2 drawing, an SVG from an answer) on the
+// clipboard as a PNG at twice its size, so it stays sharp when pasted;
+// a picture without its own background gets the page's.
+export async function copyImage(img) {
+    try {
+        await img.decode();
+        const scale = 2;
+        const w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
+        if (!w || !h) throw new Error('the picture has no size');
+        const canvas = Object.assign(document.createElement('canvas'), {width: w * scale, height: h * scale});
+        const g = canvas.getContext('2d');
+        const bg = getComputedStyle(img).backgroundColor;
+        g.fillStyle = bg && bg !== 'rgba(0, 0, 0, 0)' ? bg : getComputedStyle(document.body).backgroundColor;
+        g.fillRect(0, 0, canvas.width, canvas.height);
+        g.drawImage(img, 0, 0, canvas.width, canvas.height);
+        await CopyImage(canvas.toDataURL('image/png').split(',')[1]);
+        toast('Image copied');
+    } catch (err) {
+        toast(`The image was not copied: ${err?.message ?? err}`, true);
+    }
 }

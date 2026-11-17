@@ -6,7 +6,7 @@ import {markdown, markdownLanguage} from '@codemirror/lang-markdown';
 import {tags as t} from '@lezer/highlight';
 import {AddSpellWord, RemoveSpellWord, SpellDictionary} from '../wailsjs/go/main/App';
 import {ClipboardGetText, ClipboardSetText} from '../wailsjs/runtime/runtime';
-import {fillDiagram} from './diagram';
+import {copyImage, fillDiagram} from './diagram';
 import {LISTS, MARKUP, continueList, listItem, toggleList, toggleMarkup, toggleTasks} from './markup';
 import {Speller, words} from './spelling';
 import {showMenu, toast} from './ui';
@@ -376,6 +376,9 @@ export class Editor {
         this.view.contentDOM.addEventListener('blur', () => onBlur?.());
         this.view.dom.addEventListener('contextmenu', e => {
             e.preventDefault();
+            // On a D2 drawing: its own menu (SPEC N1c).
+            const pic = e.target.closest?.('.cm-d2 .d2-picture');
+            if (pic) return showMenu(e.clientX, e.clientY, [{label: 'Copy image', action: () => copyImage(pic)}]);
             this.contextMenu(e.clientX, e.clientY);
         });
     }

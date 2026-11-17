@@ -12,7 +12,7 @@ read its security section if the agent host can write to your repositories.
 New here? **[docs/TUTORIAL.md](docs/TUTORIAL.md)** takes you from the download to your first
 claude session, with screenshots (`make tutorial-pdf` makes a PDF of it).
 
-Status: v1.1.22: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
+Status: v1.1.23: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
 Notes (page trees with formatting, lists and check lists, spelling, D2 diagrams), Web and Q&A tabs, Remote tab recordings, session folders and tags,
 themes and color modes, quick switcher, a command menu and a prompts menu in the Local and Remote tabs, editable
 start commands, private shell history per session, activity badges, desktop notifications,
@@ -225,7 +225,8 @@ open page); a right-click on empty space in the tree makes a *New page…*;
   of a longer selection separately).
   **Diagrams**: a ```` ```d2 ```` block is drawn below its text with [D2](https://d2lang.com)
   (built into the app, no `d2` program needed), drawn again shortly after you stop typing in it;
-  a mistake shows D2's message with the line. Also in Q&A answers.
+  a mistake shows D2's message with the line. Also in Q&A answers. Right-click a drawing for
+  *Copy image* (a PNG at twice the size, to paste into a document or chat).
   **Lists and check lists**: the **•** and **☐** buttons, or Ctrl+Shift+8 and Ctrl+Shift+9
   (⌘⇧8 and ⌘⇧9 on macOS),
   make the selected lines (or the cursor's line) `- item` or `- [ ] item`, and plain lines again
@@ -1177,4 +1178,5 @@ scripts/gui-smoke*.sh  headless GUI tests; scripts/smoke-lib.sh holds their shar
 ## Third-party code
 
 The app is MIT-licensed (LICENSE). It includes, among others,
-[D2](https://github.com/terrastruct/d2) (Mozilla Public License 2.0, unchanged) to draw diagrams.
+[D2](https://github.com/terrastruct/d2) (Mozilla Public License 2.0, unchanged) to draw diagrams
+and [golang.design/x/clipboard](https://github.com/golang-design/clipboard) (MIT) to copy them as images.

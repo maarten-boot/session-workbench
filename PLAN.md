@@ -176,6 +176,11 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- v1.1.23 (2026-11-17): Copy image on a D2 drawing or SVG picture (SPEC N1c). The user: "could
+  we add a copy image to clipboard of the D2 rendered image ?". Wails copies text only, so
+  `golang.design/x/clipboard` v0.11.0 (no cgo; X11/Wayland, Windows, macOS) writes the PNG the
+  frontend draws on a canvas at twice the size. The app grows 0.2 MB. Tests: TestPNGImage,
+  gui-smoke-d2 (Notes and Q&A copies read back by scripts/clipimage; text copy still works).
 - v1.1.22 (2026-11-17): D2 diagrams in Notes and Q&A (SPEC N1c). The user: "could we embed
   D2 graphs in the Notes tab ?"; offered D2's Go library in the app (A) or a `d2` program
   (B), and Mermaid (drawn by GitHub); "A with D2, also in Q&A". D2 v0.8+ (`github.com/d2lang/d2`)
