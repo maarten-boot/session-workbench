@@ -60,6 +60,8 @@ export function DeletePage(arg1:string,arg2:string):Promise<void>;
 
 export function DeleteSession(arg1:string):Promise<void>;
 
+export function DrawD2(arg1:string,arg2:boolean):Promise<string>;
+
 export function ExampleCommands():Promise<Array<config.Command>>;
 
 export function ExamplePrompts():Promise<string>;

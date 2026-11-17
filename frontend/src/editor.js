@@ -1,4 +1,4 @@
-import {EditorSelection, EditorState, RangeSetBuilder, StateEffect} from '@codemirror/state';
+import {EditorSelection, EditorState, RangeSetBuilder, StateEffect, StateField} from '@codemirror/state';
 import {Decoration, EditorView, MatchDecorator, ViewPlugin, WidgetType, drawSelection, keymap, placeholder} from '@codemirror/view';
 import {defaultKeymap, history, historyKeymap, indentLess, indentMore, insertNewline} from '@codemirror/commands';
 import {HighlightStyle, indentUnit, syntaxHighlighting, syntaxTree} from '@codemirror/language';
@@ -6,6 +6,7 @@ import {markdown, markdownLanguage} from '@codemirror/lang-markdown';
 import {tags as t} from '@lezer/highlight';
 import {AddSpellWord, RemoveSpellWord, SpellDictionary} from '../wailsjs/go/main/App';
 import {ClipboardGetText, ClipboardSetText} from '../wailsjs/runtime/runtime';
+import {fillDiagram} from './diagram';
 import {LISTS, MARKUP, continueList, listItem, toggleList, toggleMarkup, toggleTasks} from './markup';
 import {Speller, words} from './spelling';
 import {showMenu, toast} from './ui';
@@ -227,6 +228,70 @@ const tasks = ViewPlugin.define(view => ({
     },
 });
 
+// D2 diagrams (SPEC N1c): below each closed ```d2 block its drawing,
+// redrawn shortly after typing in it stops; the text stays as it is.
+class D2Diagram extends WidgetType {
+    constructor(source) {
+        super();
+        this.source = source;
+    }
+
+    eq(o) {
+        return o.source === this.source;
+    }
+
+    toDOM(view) {
+        const box = document.createElement('div');
+        box.className = 'cm-d2';
+        this.draw(box, view);
+        return box;
+    }
+
+    // updateDOM keeps the old picture until the new text is drawn.
+    updateDOM(box, view) {
+        this.draw(box, view);
+        return true;
+    }
+
+    draw(box, view) {
+        clearTimeout(box.d2Timer);
+        const first = !box.firstChild;
+        box.d2Timer = setTimeout(() => fillDiagram(box, this.source, () => view.requestMeasure()), first ? 0 : 600);
+    }
+
+    get estimatedHeight() {
+        return 120;
+    }
+
+    ignoreEvent() {
+        return true;
+    }
+}
+
+function d2Blocks(state) {
+    const b = new RangeSetBuilder();
+    syntaxTree(state).iterate({enter: n => {
+        if (n.name !== 'FencedCode') return;
+        const info = n.node.getChild('CodeInfo');
+        if (!info || state.sliceDoc(info.from, info.to).trim().toLowerCase() !== 'd2') return false;
+        const marks = n.node.getChildren('CodeMark');
+        if (marks.length < 2) return false; // not closed yet
+        const code = n.node.getChild('CodeText');
+        const source = code ? state.sliceDoc(code.from, code.to) : '';
+        if (source.trim()) b.add(n.to, n.to, Decoration.widget({widget: new D2Diagram(source), block: true, side: 1}));
+        return false;
+    }});
+    return b.finish();
+}
+
+const diagrams = StateField.define({
+    create: d2Blocks,
+    update(deco, tr) {
+        return tr.docChanged || syntaxTree(tr.startState) !== syntaxTree(tr.state) ? d2Blocks(tr.state) : deco;
+    },
+    provide: f => EditorView.decorations.from(f),
+});
+
 const theme = EditorView.theme({
     '&': {height: '100%', backgroundColor: 'var(--bg)', color: 'var(--text-strong)'},
     '&.cm-focused': {outline: 'none'},
@@ -246,6 +311,9 @@ const theme = EditorView.theme({
     '.cm-md-underline': {textDecoration: 'underline'},
     '.cm-misspelled': {textDecoration: 'underline wavy #d00000', textDecorationSkipInk: 'none', textUnderlineOffset: '3px'},
     // Check boxes drawn black (the native ones are grey).
+    '.cm-d2': {padding: '6px 0'},
+    '.cm-d2 .d2-picture': {display: 'block', maxWidth: '100%', border: '1px solid var(--border)'},
+    '.cm-d2 .d2-status, .cm-d2 .d2-error': {fontStyle: 'italic', color: 'var(--text-strong)', whiteSpace: 'pre-wrap'},
     '.cm-task-box': {appearance: 'none', width: '0.95em', height: '0.95em', margin: '0 0.2em', verticalAlign: '-0.12em',
         border: '1.5px solid var(--text-strong)', borderRadius: '2px', cursor: 'pointer', position: 'relative'},
     '.cm-task-box:checked::after': {content: '"✓"', position: 'absolute', left: '0', right: '0', top: '-0.25em',
@@ -388,6 +456,7 @@ export class Editor {
                 underline,
                 spelling,
                 tasks,
+                diagrams,
                 theme,
                 placeholder(this.placeholderText),
                 keymap.of([

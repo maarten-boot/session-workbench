@@ -29,6 +29,16 @@ test('an svg block that is not one svg element stays code', () => {
     assert.ok(!isSVG(svg + '<p>after</p>'));
 });
 
+test('a closed d2 block is a diagram', () => {
+    assert.deepEqual(parseAnswer('Flow:\n```d2\na -> b\n```'), [
+        {type: 'text', text: 'Flow:'},
+        {type: 'd2', text: 'a -> b', raw: '```d2\na -> b\n```'},
+    ]);
+    // Open (still streaming) or empty: code.
+    assert.deepEqual(parseAnswer('```d2\na -> b'), [{type: 'code', lang: 'd2', text: 'a -> b', raw: '```d2\na -> b'}]);
+    assert.deepEqual(parseAnswer('```D2\n\n```'), [{type: 'code', lang: 'd2', text: '', raw: '```D2\n\n```'}]);
+});
+
 test('longer and tilde fences, Windows line ends', () => {
     // raw keeps the fences as written (for copies), the language as typed.
     assert.deepEqual(parseAnswer('````Md\n```\ninner\n```\n````\r\n~~~\nt\n~~~'), [

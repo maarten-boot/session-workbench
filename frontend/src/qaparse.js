@@ -1,10 +1,12 @@
-// Answers in the Q&A tab: text, fenced code blocks and SVG pictures.
+// Answers in the Q&A tab: text, fenced code blocks, SVG pictures and D2
+// diagrams.
 
 // parseAnswer splits an answer into parts: {type: 'text', text},
-// {type: 'code', lang, text, raw} and {type: 'svg', text, raw} (raw: the
-// block with its fences, as written). Only a closed
-// ```svg block is a picture; while an answer streams in, an open fence is
-// code until it closes.
+// {type: 'code', lang, text, raw}, {type: 'svg', text, raw} and
+// {type: 'd2', text, raw} (raw: the block with its fences, as written).
+// Only a closed ```svg block is a picture, and only a closed ```d2 block a
+// diagram; while an answer streams in, an open fence is code until it
+// closes.
 export function parseAnswer(answer) {
     const parts = [];
     const lines = answer.replaceAll('\r\n', '\n').split('\n');
@@ -28,9 +30,9 @@ export function parseAnswer(answer) {
         if (close.test(line)) {
             const body = fence.lines.join('\n');
             const raw = [fence.open, ...fence.lines, line].join('\n');
-            parts.push(fence.lang === 'svg' && isSVG(body)
-                ? {type: 'svg', text: body, raw}
-                : {type: 'code', lang: fence.lang, text: body, raw});
+            parts.push(fence.lang === 'svg' && isSVG(body) ? {type: 'svg', text: body, raw}
+                : fence.lang === 'd2' && body.trim() ? {type: 'd2', text: body, raw}
+                    : {type: 'code', lang: fence.lang, text: body, raw});
             fence = null;
         } else fence.lines.push(line);
     }

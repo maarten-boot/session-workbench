@@ -223,6 +223,9 @@ open page); a right-click on empty space in the tree makes a *New page…*;
   shows `<u>`). The **B I U S** buttons above the page, or Ctrl+B, Ctrl+I, Ctrl+U and
   Ctrl+Shift+X (⌘ on macOS), add or remove those markers around the selection (each line
   of a longer selection separately).
+  **Diagrams**: a ```` ```d2 ```` block is drawn below its text with [D2](https://d2lang.com)
+  (built into the app, no `d2` program needed), drawn again shortly after you stop typing in it;
+  a mistake shows D2's message with the line. Also in Q&A answers.
   **Lists and check lists**: the **•** and **☐** buttons, or Ctrl+Shift+8 and Ctrl+Shift+9
   (⌘⇧8 and ⌘⇧9 on macOS),
   make the selected lines (or the cursor's line) `- item` or `- [ ] item`, and plain lines again
@@ -291,7 +294,8 @@ open page); a right-click on empty space in the tree makes a *New page…*;
   ~~struck~~, `code`, lists and check lists, quotes, tables and links (they open in your
   browser) — code blocks (⧉ copies one) and pictures: an answer that draws in an
   ```` ```svg ```` block shows the drawing (as an image: an SVG cannot run scripts or load
-  anything there; *SVG source* shows the text). Claude sees only your questions and the
+  anything there; *SVG source* shows the text), and a ```` ```d2 ```` block shows its diagram
+  (*D2 source* shows the text). Claude sees only your questions and the
   conversation so far — nothing from the session. Follow-up questions are cheaper: the
   conversation is cached. Under each answer: the time, who answered, the model and the tokens
   used (through the API each question costs money on your API account; Claude Code counts
@@ -1123,6 +1127,7 @@ notify.go              desktop notifications when claude waits
 menu.go, proc_*.go     macOS menu bar; hiding console windows on Windows
 internal/terminal      pty processes + batched output events
 internal/pathmap       host path -> agent-host path
+internal/diagram       D2 diagrams as SVG (D2's Go library, MPL-2.0)
 internal/remote        ssh/tmux command lines (quoting, forced options)
 internal/config        TOML config load / atomic save, data directory
 internal/session       hosts + sessions: validation, mapping, ordering
@@ -1167,3 +1172,8 @@ scripts/gui-smoke*.sh  headless GUI tests; scripts/smoke-lib.sh holds their shar
                        scripts/fake-notifyd.py stands in for the desktop's notification service
 .github/workflows      CI: test + build on Linux/Windows/macOS, release on v* tags
 ```
+
+## Third-party code
+
+The app is MIT-licensed (LICENSE). It includes, among others,
+[D2](https://github.com/terrastruct/d2) (Mozilla Public License 2.0, unchanged) to draw diagrams.

@@ -176,6 +176,13 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- v1.1.22 (2026-11-17): D2 diagrams in Notes and Q&A (SPEC N1c). The user: "could we embed
+  D2 graphs in the Notes tab ?"; offered D2's Go library in the app (A) or a `d2` program
+  (B), and Mermaid (drawn by GitHub); "A with D2, also in Q&A". D2 v0.8+ (`github.com/d2lang/d2`)
+  needs Go 1.27, so `oss.terrastruct.com/d2` v0.7.2 (Go 1.26). The app grows 27.8 → 51.8 MB
+  (ELK 3.7 MB of it). Embedded fonts draw no text in an SVG image: replaced by system fonts;
+  text black (white when dark); imports read no files; D2's logger silenced. Tests:
+  internal/diagram, qaparse.test.mjs, gui-smoke-d2.
 - v1.1.22 (2026-11-17): copying in a terminal where claude uses the mouse (SPEC T2a). The
   user: "why does copy no longer work in the Remote window, no matter what i try i cannot get
   the data in the clipboard", then "when i do shift + drag and release either shift or mouse
@@ -478,6 +485,8 @@ implementation differs from the original plan.
   Settings name a Claude Code model.
 
 ## Next (ideas, not started)
+- **D2 to `github.com/d2lang/d2`.** D2 v0.8+ moved there and needs Go 1.27: move the build
+  (go.mod, CI `GO_VERSION`) to Go 1.27, then the import paths in `internal/diagram`.
 - **Output folding in the Remote tab.** Collapse long output blocks (large code blocks) and jump
   between interactive prompts.
   - Frontend: hook into `frontend/src/terminal.js`. Explore xterm.js markers

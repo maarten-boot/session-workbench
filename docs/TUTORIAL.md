@@ -462,6 +462,16 @@ Your notes about the project, as pages in a tree:
   plans, decisions, things to check.
 They are Markdown, shown with their formatting,
   with check lists, spelling, and **B I U S** buttons.
+A diagram is text too:
+  write it in a ```` ```d2 ```` block, and the drawing appears below it.
+
+```d2
+web -> api: REST
+api -> db
+```
+
+The app draws it itself with [D2](https://d2lang.com);
+  a mistake shows D2's message with the line number instead.
 Notes are stored with the app's config, not in the project:
   they stay out of git and off the agent host.
 
@@ -498,6 +508,7 @@ It sees only your questions, nothing from the session.
 It answers through the Claude API (with an API key),
   through Claude Code on your computer (your subscription, no tools),
   or your own command.
+Ask for a diagram and the answer's ```` ```d2 ```` block is drawn the same way.
 Each session keeps its conversation, and every question and answer is logged.
 
 ## 11. Commands and prompts for every session

@@ -1,5 +1,6 @@
 import {QAAsk, QAChoose, QAClear, QALoad, QAModels, QAOpenLog, QAStop} from '../wailsjs/go/main/App';
 import {BrowserOpenURL, ClipboardGetText, ClipboardSetText, EventsOff, EventsOn} from '../wailsjs/runtime/runtime';
+import {fillDiagram} from './diagram';
 import {el, showMenu, textMenu, toast} from './ui';
 import {engineName, parseAnswer, parseMarkdown, svgURL, toMarkdown, tokens} from './qaparse';
 
@@ -270,6 +271,12 @@ export class QAView {
             const img = el('img', {className: 'qa-svg', src: svgURL(p.text), alt: 'Picture from the answer'});
             const src = el('details', {}, el('summary', {textContent: 'SVG source'}), el('pre', {textContent: p.text}));
             return md(el('div', {className: 'qa-picture'}, img, src), {md: p.raw, whole: ''});
+        }
+        if (p.type === 'd2') {
+            const box = el('div', {className: 'qa-d2'});
+            fillDiagram(box, p.text);
+            const src = el('details', {}, el('summary', {textContent: 'D2 source'}), el('pre', {textContent: p.text}));
+            return md(el('div', {className: 'qa-picture'}, box, src), {md: p.raw, whole: ''});
         }
         if (p.type === 'code') {
             const copy = el('button', {className: 'icon', textContent: '⧉', title: 'Copy'});

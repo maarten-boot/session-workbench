@@ -2544,6 +2544,18 @@ dialog .command-row select.cmd-where {
     margin: 8px 0;
 }
 
+.qa-d2 .d2-picture {
+    display: block;
+    max-width: 100%;
+    border: 1px solid var(--border);
+}
+
+.qa-d2 .d2-status, .qa-d2 .d2-error {
+    font-style: italic;
+    color: var(--text-strong);
+    white-space: pre-wrap;
+}
+
 .qa-svg {
     display: block;
     max-width: 100%;

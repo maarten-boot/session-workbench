@@ -1,6 +1,6 @@
 # Session Workbench — Specification
 
-Status: v1.30 (2026-11-16, app v1.1.22) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
+Status: v1.31 (2026-11-17, app v1.1.22) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
 narrow and resizable sidebar (F6), Claude backups (F7), one instance per config (F8), working
 copies and backups without rsync (F9), desktop notifications (F4), git status and the
 repository check in the Files tab (B5, B6), Notes and Web tabs (N1, W1), notes for all sessions
@@ -796,6 +796,18 @@ host's `local_prefix`), e.g. `~/share-local/workspace`.
   unknown encoding) turns checking off with a message, once per language. A language name is letters, digits and
   `_ @ . -`, not starting with `.` or `-`; an invalid one in the file becomes `en_US`. A few
   tool names (`TOOL_WORDS` in frontend/src/spelling.js: claude, tmux, ssh, git…) are always known.
+- N1c. D2 diagrams: a closed ```` ```d2 ```` block (Notes, Q&A answers) is drawn by the app with
+  D2's Go library (`internal/diagram`, `oss.terrastruct.com/d2` v0.7.2, MPL-2.0; no `d2` program
+  needed): layout dagre, or elk when the diagram's `vars.d2-config.layout-engine` says so (TALA
+  refused); D2's default theme, Dark Mauve in the dark theme, text black (white when dark);
+  the system's fonts (the web view draws no text with fonts embedded in an SVG image), bold and
+  italic kept; natural size, shrunk to the page's width. Shown as an `<img>` from a `data:` URL
+  (no scripts, no loads). Imports read no files (an empty file system), at most 64 KB of text,
+  15 s per drawing, one at a time; an error shows "⚠ D2: " and D2's message (line:column).
+  Notes: the drawing below the block, the text stays editable; redrawn 0.6 s after typing in it
+  stops, the old drawing shown meanwhile; an unclosed block is not drawn. Q&A: the drawing with
+  *D2 source* folded below; copying gives the block. Drawings are cached by text and theme
+  (last 64).
 - N1c. TODO marks: a line of a page with the word `TODO` (capitals, not part of a longer word:
   not `TODOs`, `MYTODO`, `TODO_LIST`; `notes.CountTodos`) is a TODO. A session with any gets a
   red ▲ in the sidebar (F1), on its Notes tab and on each such page in the tree (a folded page
@@ -862,8 +874,9 @@ host's `local_prefix`), e.g. `~/share-local/workspace`.
   numbered lists, nested by indentation, task items, `>` quotes, `|` tables with alignment,
   rules; inline `**`/`__` bold, `*`/`_` italic, `~~` struck, code spans, backslash escapes,
   `[text](url)`, `<url>` and bare http(s) links — only http, https and mailto, opened in the
-  browser; drawn with `textContent`, no HTML from the answer), fenced code blocks (copyable) and closed ```` ```svg ```` blocks holding one `<svg>`
-  element as images (`data:` URL in an `<img>`: no scripts, no loads); PNG output is not
+  browser; drawn with `textContent`, no HTML from the answer), fenced code blocks (copyable), closed ```` ```svg ```` blocks holding one `<svg>`
+  element as images (`data:` URL in an `<img>`: no scripts, no loads) and closed ```` ```d2 ````
+  blocks drawn (N1c); PNG output is not
   possible through the Messages API alone. Enter asks, Shift+Enter a new line, *Stop* cancels
   the request (or ends the program); one question per session at a time. Right-click menus: on
   the turns *Copy* (the selection), *Copy to the question*, *Paste into the question*, *Select
@@ -1152,7 +1165,8 @@ repository config and warns again whenever they change.
   it can only answer. Own commands run without a shell, as configured; a `{question}`
   argument is visible to other local users in the process list (standard input is not). Conversations and the log are
   owner-only files. Answers are rendered with `textContent`; an SVG is shown only as an
-  `<img>` from a `data:` URL, where it cannot run scripts or load anything.
+  `<img>` from a `data:` URL, where it cannot run scripts or load anything. A D2 block
+  (N1c) is drawn in the app with no file access (imports find nothing), within 64 KB and 15 s.
 - Spelling dictionaries: the language name is checked (letters, digits, `_ @ . -`; no
   separators or leading dot), so only `<name>.aff` / `<name>.dic` in the listed folders are
   read; their text goes to the checker only, never into the page.
