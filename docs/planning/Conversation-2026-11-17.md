@@ -31,3 +31,19 @@
 - Tests: npm test 85 pass (osc52.test.mjs);
   gui-smoke-copy pass (Shift+drag in a mode-1003 program, OSC 52, a read request),
   and it fails on a build without the fix.
+
+## CI
+- 7b3b5c2 (with 5e84339 and 252bc54; run 44068743484): linux-amd64, windows-amd64, macos-universal pass (the first build with D2); release skipped (no tag).
+- Dependabot's dependency graph update for the new go.mod (run 44068751596): success.
+- v1.1.22 tag (7b3b5c2, run 44070481738): all three builds pass; release with 5 assets (.rpm, .deb, linux tar.gz, macOS zip, Windows zip).
+
+## Cross-check after v1.1.22 (7b3b5c2)
+- SPEC N1c, T2a and F18 match the code:
+  0.6 s redraw, the last 64 drawings cached, 64 KB and 15 s limits, unclosed blocks not drawn, TALA refused;
+  OSC 52 write only, 1 MB, the "Copied to the clipboard" notice;
+  the Cost sort remembered.
+- The dark D2 theme follows the app's theme, which is only light or dark (config.ValidateUI): no system setting to follow.
+- Fixed:
+  the SPEC status summary now names the Cost sort (F18), T2a and N1c;
+  the README status names D2 diagrams and tags (tags were missing since v1.1.20);
+  the README layout lists internal/examples (missing since v1.1.19).

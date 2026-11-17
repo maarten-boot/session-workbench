@@ -13,7 +13,7 @@ New here? **[docs/TUTORIAL.md](docs/TUTORIAL.md)** takes you from the download t
 claude session, with screenshots (`make tutorial-pdf` makes a PDF of it).
 
 Status: v1.1.22: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
-Notes (page trees with formatting, lists and check lists, spelling), Web and Q&A tabs, Remote tab recordings, session folders,
+Notes (page trees with formatting, lists and check lists, spelling, D2 diagrams), Web and Q&A tabs, Remote tab recordings, session folders and tags,
 themes and color modes, quick switcher, a command menu and a prompts menu in the Local and Remote tabs, editable
 start commands, private shell history per session, activity badges, desktop notifications,
 auto-reconnect, containers on this computer as agent hosts (Podman or Docker, a Dockerfile per session, services such as PostgreSQL next to it with Compose), live share and working copies for hosts without a shared file system (Get
@@ -1128,6 +1128,7 @@ menu.go, proc_*.go     macOS menu bar; hiding console windows on Windows
 internal/terminal      pty processes + batched output events
 internal/pathmap       host path -> agent-host path
 internal/diagram       D2 diagrams as SVG (D2's Go library, MPL-2.0)
+internal/examples      the example commands and prompts a first start gets
 internal/remote        ssh/tmux command lines (quoting, forced options)
 internal/config        TOML config load / atomic save, data directory
 internal/session       hosts + sessions: validation, mapping, ordering

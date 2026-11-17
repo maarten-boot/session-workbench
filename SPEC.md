@@ -20,8 +20,9 @@ Hosts heading above the folders (F5), one project on several agent hosts (F16), 
 claude (F17; also in containers and by hand), what claude cost at API prices with the
 subscription usage, warnings and a Cost page in Settings (F18), and the sidebar headings
 Groups, Active and Inactive (F5), a tutorial (docs/TUTORIAL.md, also as PDF), example
-commands and prompts (T7), and tags (also automatic ones for host, folder and state) with a
-filter for Active and Inactive (F5a).
+commands and prompts (T7), tags (also automatic ones for host, folder and state) with a
+filter for Active and Inactive (F5a), a sortable Cost table (F18), copying where claude uses
+the mouse and OSC 52 (T2a), and D2 diagrams in Notes and Q&A (N1c).
 Sections describe the implemented behaviour.
 
 ## 1. Problem
