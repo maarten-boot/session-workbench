@@ -402,7 +402,9 @@ as usual, Ctrl+V pastes (*Ctrl+C copies selected text…* in Settings → Termin
 off if you need Ctrl+V in vim — Ctrl+Q works there too); Ctrl+Shift+C / V always work, Cmd+C / V
 on macOS. Right-click a terminal for Copy, Paste, Select all, Find… and Clear scrollback. With
 *Copy terminal selection to the clipboard automatically* (Settings → Terminals, `copy_on_select`) a selection
-goes to the clipboard at once.
+goes to the clipboard at once. claude (and tmux with `mouse on`) uses the mouse itself: hold
+**Shift** while dragging to select (**Option** on macOS). claude's own copy also reaches your
+clipboard (OSC 52; a program can write the clipboard, never read it).
 
 **Command menu.** Commands you type often (`git fetch --all`, `make test`) are one click away
 in the Local and Remote tabs: at the bottom of the right-click menu, and under **Commands ▾**

@@ -176,6 +176,13 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- v1.1.22 (2026-11-17): copying in a terminal where claude uses the mouse (SPEC T2a). The
+  user: "why does copy no longer work in the Remote window, no matter what i try i cannot get
+  the data in the clipboard", then "when i do shift + drag and release either shift or mouse
+  the selection disapears". Cause: claude asks for every mouse move (mode 1003); xterm.js sends
+  a report for each and clears the selection on every report. Fixed: moves without a button
+  stay in the app while there is a selection; OSC 52 writes reach the clipboard (reads never);
+  Option+drag selects on macOS. Tests: osc52.test.mjs, gui-smoke-copy (fails without the fix).
 - v1.1.22 (2026-11-16): the Cost table in Settings sorts by a column (SPEC F18). The user:
   "can we add sorting up/down to the cost fields: Session Host Today Total in Settings ?".
   The headings are buttons: a click sorts by that column (names A to Z, amounts largest first),

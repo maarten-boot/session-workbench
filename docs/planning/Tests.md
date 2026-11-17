@@ -61,6 +61,7 @@ README.md "Development" lists the make targets.
 | lists.test.mjs       | N1a (lists, check lists)           |
 | markup.test.mjs      | N1a                                |
 | spelling.test.mjs    | N1b                                |
+| osc52.test.mjs       | T2a (OSC 52 text: targets, UTF-8; a read request, broken base64, not UTF-8, too large ignored) |
 | tags.test.mjs        | F5a (dialog text to tags; host, folder and state tags, an own tag listed once; counts with the app's state; all or any of the selected tags; the stored selection) |
 
 ## Headless GUI tests (`scripts/gui-smoke-*.sh`)
@@ -114,6 +115,7 @@ README.md "Development" lists the make targets.
 | gui-smoke-commands.sh     | T5, T6     | command menu (groups), start commands, prompts menu; a `where = "local"` command chosen on the Remote tab runs in the Local shell (started again after `exit`) and the Remote tab keeps the keys; a `where = "remote"` one chosen on the Local tab runs in the Remote shell and the Local tab keeps the keys; Settings → Commands (with Where); Local: Back to the session directory after `cd /` |
 | gui-smoke-tags.sh         | F5a        | Edit… saves a session's tags tidied ("go, Go , urgent" → go, urgent); Filter by tag: urgent then client-x narrow Active to alpha; any of them widens it (gamma third); after a restart the filter and mode are kept (beta second); urgent off leaves gamma out; none brings it back; the state tag active with go leaves beta first (rows Your tags, Host and folder, State). The window title names the session a row opens |
 | gui-smoke-examples.sh     | T7         | a first start (no config file) writes the example Prompts page and saves the example commands; an existing config (one own git-push) and Prompts page (own crosscheck) are untouched at start; Add example commands… lists the 10 missing ones (git-push left out) and Save keeps them with the own git-push; Add example prompts… adds the 6 missing ones, crosscheck not twice (names ignore case), the own text kept |
+| gui-smoke-copy.sh         | T2a        | a program following every mouse move (mode 1003, as claude): a Shift+drag selection stays after the mouse moves on, Ctrl+Shift+C copies it; OSC 52 from printf puts text on the clipboard; an OSC 52 read changes nothing (each checked by pasting with Ctrl+Shift+V into cat). Fails without the fix |
 | tutorial-shots.sh         | T3, docs   | the screenshots of docs/TUTORIAL.md (made-up host and sessions on localhost, profile "tutorial", nothing left behind); the empty window's *Add host…* button is blue (white text on light grey before v1.1.19) |
 
 When a feature is added, add or extend a test here and name the SPEC item it covers.

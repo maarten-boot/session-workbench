@@ -8,8 +8,9 @@ import {Unicode11Addon} from '@xterm/addon-unicode11';
 
 import {TermKill, TermResize, TermWrite} from '../wailsjs/go/main/App';
 import {SgrFilter, termOptions} from './appearance';
-import {showMenu} from './ui';
+import {showMenu, toast} from './ui';
 import {BrowserOpenURL, ClipboardGetText, ClipboardSetText, EventsOff, EventsOn} from '../wailsjs/runtime/runtime';
+import {osc52Text} from './osc52';
 
 export const isMac = navigator.platform.toUpperCase().includes('MAC');
 
@@ -46,7 +47,10 @@ export class TermView {
         this.quietUntil = 0;
         this.id = null;
         // allowProposedApi: the unicode version switch is a proposed API.
-        this.term = new Terminal({cursorBlink: true, allowProposedApi: true, ...termOptions(ui, colorMode)});
+        // macOptionClickForcesSelection: on a Mac, Option+drag selects also
+        // when the program uses the mouse (Shift+drag elsewhere).
+        this.term = new Terminal({cursorBlink: true, allowProposedApi: true, macOptionClickForcesSelection: true,
+            ...termOptions(ui, colorMode)});
         this.setColorFilter(colorMode);
         this.copyOnSelect = !!ui.copy_on_select;
         this.ctrlCopyPaste = ui.ctrl_copy_paste !== false;
@@ -62,6 +66,19 @@ export class TermView {
         this.term.open(container);
         this.term.onSelectionChange(() => {
             if (this.copyOnSelect && this.term.hasSelection()) ClipboardSetText(this.term.getSelection());
+        });
+        // A program that follows every mouse move (claude) gets a report
+        // for each move, and xterm.js clears the selection on every report:
+        // a Shift+drag selection was gone the moment the mouse moved on.
+        // While there is a selection, moves without a button stay here.
+        container.addEventListener('mousemove', e => {
+            if (!e.buttons && this.term.hasSelection()) e.stopPropagation();
+        }, true);
+        // OSC 52: claude's or tmux's copy reaches the clipboard (write only).
+        this.term.parser.registerOscHandler(52, data => {
+            const text = osc52Text(data);
+            if (text !== null) ClipboardSetText(text).then(() => toast('Copied to the clipboard'));
+            return true;
         });
         this.term.attachCustomKeyEventHandler(e => this.handleKey(e));
         container.addEventListener('contextmenu', e => {

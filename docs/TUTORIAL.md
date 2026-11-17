@@ -448,6 +448,12 @@ It survives closing the app and lost connections;
   the app reconnects by itself.
 When claude exits, you get a shell there.
 
+claude uses the mouse itself, so a plain drag does not select text there.
+Hold **Shift** while you drag (**Option** on a Mac),
+  then copy with Ctrl+Shift+C or the right-click menu.
+claude's own copy works too:
+  the terminal accepts it (OSC 52) and puts the text on your clipboard.
+
 ### Notes
 
 ![The Notes tab with a TODO](tutorial/14-notes.png)

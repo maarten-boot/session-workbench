@@ -881,6 +881,13 @@ host's `local_prefix`), e.g. `~/share-local/workspace`.
   and on Linux/Windows plain Ctrl+C (copies only when text is selected, else the program gets its
   interrupt) and Ctrl+V (`ctrl_copy_paste`, default on); a right-click menu (Copy, Paste, Select
   all, Find…, Clear scrollback); clickable URLs (opened in the default browser).
+- T2a. Programs that use the mouse (claude, tmux with `mouse on`): Shift+drag selects anyway
+  (Option+drag on macOS, `macOptionClickForcesSelection`); while there is a selection, mouse
+  moves without a button are not reported to the program (each report made xterm.js clear the
+  selection, so a Shift+drag selection was gone at the next move). OSC 52 (`ESC ] 52 ; c ;
+  <base64> BEL`, from claude's copy or tmux `set-clipboard`) puts the text on the clipboard,
+  with a "Copied to the clipboard" notice; only writing: a read request (`?`), text that is not
+  base64 or UTF-8, or more than 1 MB of base64 is ignored.
 - T3. Font family/size, theme (light/dark), configurable globally. The font size scales the whole
   app (sidebar, tab bar, dialogs, menus); a set font family is used everywhere too. The light
   theme is black text on a white background (the primary user's preference); all ordinary app text
