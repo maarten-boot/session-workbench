@@ -172,3 +172,18 @@
 - The user asked whether a cross-check should always come before a release.
 - The user: "yes commit and save the rule". From now on: version commit, CI, cross-check (fixes stay in the
   untagged version), CI, then the tag. Saved in memory (crosscheck-before-release).
+
+## CI of 2d5e982 (cross-check v1.1.26)
+
+- Build run 44403006628 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+
+## Logo
+
+- The user: "i added a logo file to tmp/ we can use that in the readme als later possibly in the settings"
+  (read as "and later").
+- tmp/image_9a8d16db.jpg (1408x768 JPEG, git-ignored folder): trimmed to the icon and name,
+  24 px border in its background colour, 128 colours: docs/logo.png (629x475, 59 KB).
+- README: the logo centred above the title, 320 px wide, with alt text; README layout names it.
+- PLAN Next: the logo in Settings → About, possibly as the app icon.
+  Its green name is below 4.5:1 on the light background; a logo is exempt, but in the app the name stays black text.
+- Session start check (global rule): 3 releases (v1.1.24–v1.1.26), no artifacts older than 14 days: no cleanup needed.

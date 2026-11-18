@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/logo.png" alt="Session Workbench logo: a terminal window with a $ prompt and a gauge, in blue and green" width="320"></p>
+
 # Session Workbench
 
 Desktop app for running many Claude Code sessions side by side. Each session
@@ -1180,7 +1182,8 @@ frontend/src           vanilla JS UI: main.js (app), terminal.js, files.js, note
 build/                 app icon, Windows/macOS resources for Wails
 packaging/             .desktop file, icons, man page, copyright, nfpm config for .deb/.rpm,
                        gen-docs.sh (changelog and man page per version)
-docs/                  CONNECTIVITY.md: agent host setup, file access modes, security
+docs/                  CONNECTIVITY.md: agent host setup, file access modes, security;
+                       logo.png (the README's logo)
 scripts/deps.sh        make check / make deps
 scripts/gui-smoke*.sh  headless GUI tests; scripts/smoke-lib.sh holds their shared checks,
                        scripts/fake-notifyd.py stands in for the desktop's notification service

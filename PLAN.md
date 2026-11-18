@@ -517,6 +517,9 @@ implementation differs from the original plan.
   Settings name a Claude Code model.
 
 ## Next (ideas, not started)
+- **The logo in the app** (noted 2026-11-18): docs/logo.png (the README's, from the user) in
+  Settings → About, possibly as the app icon (build/appicon.png) too. Its green "WORKBENCH" on
+  the light background is below 4.5:1, so in the app the name stays black text beside it.
 - **D2 to `github.com/d2lang/d2`.** D2 v0.8+ moved there and needs Go 1.27: move the build
   (go.mod, CI `GO_VERSION`) to Go 1.27, then the import paths in `internal/diagram`.
 - **Output folding in the Remote tab.** Collapse long output blocks (large code blocks) and jump
