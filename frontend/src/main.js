@@ -2159,7 +2159,7 @@ async function hostDialog(h = null, presetName = null) {
         ...(f.elements.files.value === 'shared'
             ? {local_prefix: f.elements.local_prefix.value, remote_prefix: f.elements.remote_prefix.value, remote_workdir: ''}
             : {local_prefix: '', remote_prefix: '', remote_workdir: f.elements.remote_workdir.value}),
-    }));
+    }), null, () => moveWindow(dlg).pin());
     if (ok) await app.reload();
     return ok;
 }
@@ -2167,7 +2167,7 @@ async function hostDialog(h = null, presetName = null) {
 // vmShareDialog shows the libvirt XML and the mount commands that share
 // the local prefix into a KVM VM mounting it at the remote prefix, over the
 // host dialog (it stays open below).
-function vmShareDialog(local, remote) {
+async function vmShareDialog(local, remote) {
     const dlg = $('#dlg-vmshare');
     const f = dlg.querySelector('form');
     const box = dlg.querySelector('.vmshare-sections');
@@ -2186,8 +2186,19 @@ function vmShareDialog(local, remote) {
     f.elements.driver.value = 'virtiofs';
     f.elements.driver.onchange = draw;
     dlg.querySelector('.error').textContent = '';
-    draw().catch(err => dlg.querySelector('.error').textContent = err?.message ?? String(err));
+    // Drawn before it opens: pinned at its full height, not grown off the screen.
+    await draw().catch(err => dlg.querySelector('.error').textContent = err?.message ?? String(err));
     dlg.showModal();
+    moveWindow(dlg).pin();
+}
+
+// moveWindow makes a dialog movable by its heading (ui.js movable) once;
+// with its CSS resize corner, the size and place it was given stay for
+// the next time in this run of the app (Settings, host dialog, VM share).
+const movableDialogs = new WeakMap();
+function moveWindow(dlg) {
+    if (!movableDialogs.has(dlg)) movableDialogs.set(dlg, movable(dlg));
+    return movableDialogs.get(dlg);
 }
 
 // setSessionColors stores a per-session override; choosing the global
@@ -2422,7 +2433,8 @@ async function settingsDialog(page) {
         start_commands: starts.value,
         tab_order: order,
         hidden_tabs: order.filter(k => hidden.has(k)),
-    }), pages.find(p => !p.hidden)?.querySelector('input, select')); // the open page's first field
+    }), pages.find(p => !p.hidden)?.querySelector('input, select'), // the open page's first field
+    () => moveWindow(dlg).pin());
     if (ok) await app.reload();
 }
 

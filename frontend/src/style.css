@@ -1188,6 +1188,16 @@ dialog .grid {
     max-height: 90vh;
 }
 
+/* Settings, the host dialog and VM share setup… move by their heading and
+   resize at the corner (main.js moveWindow); what does not fit scrolls. */
+#dlg-settings, #dlg-host, #dlg-vmshare {
+    resize: both;
+    overflow: auto;
+    min-width: 360px;
+    min-height: 240px;
+    max-width: calc(100vw - 8px);
+}
+
 /* Settings pages behind a tab bar. */
 .settings-tabs {
     display: flex;

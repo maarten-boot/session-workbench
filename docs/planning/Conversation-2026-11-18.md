@@ -126,3 +126,24 @@
 - PLAN, Tests.md (Go, node and GUI rows), README, TUTORIAL and CONNECTIVITY name the feature.
 - Out of date: the tutorial screenshot docs/tutorial/02-add-host.png lacked the two new buttons;
   taken again with `scripts/tutorial-shots.sh … first` (only 01 and 02; 01 came out the same).
+
+## CI of af0ac4e (cross-check v1.1.25)
+
+- Build run 44374793041 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+
+## Settings and host dialogs: move and resize (v1.1.26)
+
+- The user: "what happened with the settings popup resize and move ?"
+- Found: it was never asked for. The only request (2026-11-02) was for the Dockerfile window,
+  done in v1.1.2 with ui.js movable() and a CSS resize corner; the Services window got the same later.
+  Settings, the host dialog and VM share setup… opened at a fixed size and place.
+- The user: "yes add it to settings, host and vm share dialogs".
+- main.js moveWindow() makes each movable once and pins it when it opens;
+  style.css gives the three a resize corner and overflow scrolling.
+- Found in testing:
+  - VM share setup… was pinned before its contents were drawn, so it opened small, centred, and grew off the screen;
+    it is now drawn first.
+  - A max-height for the host dialog moved it by 3 px against the GUI tests; left out.
+- Version 1.1.26 (v1.1.25 was tagged); SPEC v1.36 (§4.7).
+- Tests: new scripts/gui-smoke-dialogs.sh (in make smoke-ui), passed twice;
+  the GUI tests that click in these dialogs were run again.

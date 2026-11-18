@@ -1,6 +1,6 @@
 # Session Workbench — Specification
 
-Status: v1.35 (2026-11-18, app v1.1.25) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
+Status: v1.36 (2026-11-18, app v1.1.26) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
 narrow and resizable sidebar (F6), Claude backups (F7), one instance per config (F8), working
 copies and backups without rsync (F9), desktop notifications (F4), git status and the
 repository check in the Files tab (B5, B6), Notes and Web tabs (N1, W1), notes for all sessions
@@ -23,8 +23,8 @@ Groups, Active and Inactive (F5), a tutorial (docs/TUTORIAL.md, also as PDF), ex
 commands and prompts (T7), tags (also automatic ones for host, folder and state) with a
 filter for Active and Inactive (F5a), a sortable Cost table (F18), copying where claude uses
 the mouse and OSC 52 (T2a), D2 diagrams in Notes and Q&A (N1d), what changed per release
-in Settings and the release notes (§4.6 About), and Check share and VM share setup… in the
-host dialog (F2c).
+in Settings and the release notes (§4.6 About), Check share and VM share setup… in the
+host dialog (F2c), and Settings and the host dialogs moved and resized (§4.7).
 Sections describe the implemented behaviour.
 
 ## 1. Problem
@@ -1038,6 +1038,10 @@ never do. The GitHub release notes list the commits since the previous tag
 - Contains: hosts, workspace roots, folders (`groups`), sessions (incl. links and the reviewed
   repository fingerprint), UI prefs (also editable in a Settings dialog), keybindings, local shell,
   API prices (`[prices]`, F18).
+- The Settings dialog, Add/Edit host and VM share setup… (F2c) move by their heading and resize
+  by their corner, like the Dockerfile and Services windows (C6, C7). Each is fixed where it
+  opens (a page or field that changes its height grows it downwards) and keeps its place and
+  size while the app runs, not across restarts; at least 80 px of it stays in the window.
 - Written atomically (write temp + rename) on every change. Hand-editable while the app is not
   running (comments are not preserved); unknown keys are rejected. If the file cannot be read the
   app starts empty, shows the error and never overwrites it. Invalid setting values get their

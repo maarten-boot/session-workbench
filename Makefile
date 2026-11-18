@@ -101,7 +101,8 @@ clean-smoke:
 #   what claude cost (made-up transcripts), the sidebar's Hosts/Groups/Active/Inactive headings,
 #   the example commands and prompts (first start, Add example …), tags and Filter by tag,
 #   copying in a terminal where claude uses the mouse, D2 diagrams, Settings → About,
-#   Check share and VM share setup… in the host dialog.
+#   Check share and VM share setup… in the host dialog, moving and resizing Settings and the
+#   host dialogs.
 # GUI test output (screenshots, logs) goes into one folder for this project;
 # make clean-smoke removes it.
 SMOKE_DIR ?= /tmp/multi-session-ssh-dev
@@ -164,6 +165,7 @@ smoke-ui: build
 	$(XVFB) scripts/gui-smoke-d2.sh build/bin/session-workbench $(SMOKE_OUT)-d2
 	$(XVFB) scripts/gui-smoke-about.sh build/bin/session-workbench $(SMOKE_OUT)-about
 	$(XVFB) scripts/gui-smoke-sharecheck.sh build/bin/session-workbench $(SMOKE_OUT)-sharecheck
+	$(XVFB) scripts/gui-smoke-dialogs.sh build/bin/session-workbench $(SMOKE_OUT)-dialogs
 
 # smoke-container: a container host with a real engine (Podman, else Docker; skipped
 #   without either): build, connect, Dockerfile window, rebuild, stop, delete. The first
