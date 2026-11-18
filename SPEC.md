@@ -1,6 +1,6 @@
 # Session Workbench — Specification
 
-Status: v1.34 (2026-11-17, app v1.1.24) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
+Status: v1.35 (2026-11-18, app v1.1.25) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
 narrow and resizable sidebar (F6), Claude backups (F7), one instance per config (F8), working
 copies and backups without rsync (F9), desktop notifications (F4), git status and the
 repository check in the Files tab (B5, B6), Notes and Web tabs (N1, W1), notes for all sessions
@@ -22,8 +22,9 @@ subscription usage, warnings and a Cost page in Settings (F18), and the sidebar 
 Groups, Active and Inactive (F5), a tutorial (docs/TUTORIAL.md, also as PDF), example
 commands and prompts (T7), tags (also automatic ones for host, folder and state) with a
 filter for Active and Inactive (F5a), a sortable Cost table (F18), copying where claude uses
-the mouse and OSC 52 (T2a), D2 diagrams in Notes and Q&A (N1d), and what changed per release
-in Settings and the release notes (§4.6 About).
+the mouse and OSC 52 (T2a), D2 diagrams in Notes and Q&A (N1d), what changed per release
+in Settings and the release notes (§4.6 About), and Check share and VM share setup… in the
+host dialog (F2c).
 Sections describe the implemented behaviour.
 
 ## 1. Problem
@@ -169,6 +170,25 @@ host's `local_prefix`), e.g. `~/share-local/workspace`.
   and message as with tmux): it ends with the connection; Reconnect starts a new one; End
   remote session… is not offered, deleting the session does not offer ending tmux, and a new
   start mode needs no restart offer. Edit… shows it (Tmux: no; the id names no tmux session). Any session can use it.
+- F2c. Checking a shared file system (Add/Edit host, *File access: shared file system*, below
+  *Remote prefix*; disabled with *are plain ssh logins*). Both use the values as typed, saved
+  or not. *Check share* runs a /bin/sh script on the SSH target (internal/sharecheck, 60 s)
+  and lists its findings, each with a mark and a word (✓ OK, ! Warning, ✗ Problem; the text
+  black): the remote prefix exists (a folder that cannot be opened: Problem); which mount
+  holds it (`findmnt`'s last line for the folder, after listing it so an automount happens;
+  `df -P` without findmnt): NFS, SMB, virtiofs, 9p, sshfs and other shares are OK, the agent
+  host's own disk (ext4, xfs, btrfs, tmpfs, …) or its root file system is a Warning ("is the
+  share mounted?"); it is writable for the login (else Problem: user ids); and its entries
+  match the local prefix's (up to 5000 each side; else Problem, naming up to 5 entries only
+  here and only there; both empty: Warning). Without a remote prefix or SSH target it asks
+  for one. *VM share setup…* opens a dialog over the host dialog for an agent host that is a
+  KVM/libvirt VM on this computer: driver virtiofs (default) or virtio-9p; the virt-manager
+  steps, the VM's XML (`<memoryBacking>` with memfd and shared access for virtiofs; a
+  `<filesystem>` with the local prefix, `~` expanded, as source and a target name made from
+  its folder name: lower case, `[a-z0-9_-]`, at most 36), the commands inside the VM
+  (`mkdir`, `mount -t virtiofs|9p`, `id -u` with this computer's user id) and the
+  `/etc/fstab` line (only for an absolute remote prefix; spaces as `\040`), each with Copy.
+  A local prefix that is not an absolute Linux path, or no remote prefix, is said first.
 - F3. Sessions persist in config; on app start all sessions are restored (terminals re-attach lazily
   on first view, or eagerly — configurable; never for an inactive session, F15).
 - F4. Activity indicator: a session gets a badge when a non-visible terminal (or any terminal
@@ -1103,6 +1123,7 @@ internal/terminal          PTY processes, batched output events
 internal/remote            ssh/tmux command lines
 internal/container         container hosts: build/run with Podman or Docker, keys, ssh options (§4.2a)
 internal/pathmap           local -> remote path mapping
+internal/sharecheck        host dialog: Check share, VM share setup… (F2c)
 internal/config            TOML config
 internal/session           hosts/sessions logic on top of the config
 internal/fsbrowse          Files tab listing

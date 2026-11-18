@@ -3,6 +3,7 @@
 import {autosave} from '../models';
 import {backup} from '../models';
 import {main} from '../models';
+import {sharecheck} from '../models';
 import {cost} from '../models';
 import {notes} from '../models';
 import {session} from '../models';
@@ -27,6 +28,8 @@ export function BackupStatus():Promise<Record<string, backup.Status>>;
 export function BrowseDirectory(arg1:string):Promise<string>;
 
 export function CheckRequirements(arg1:string,arg2:string,arg3:string):Promise<main.RequirementsCheck>;
+
+export function CheckShare(arg1:string,arg2:string,arg3:string):Promise<sharecheck.Result>;
 
 export function ClearNotification(arg1:string):Promise<void>;
 
@@ -221,6 +224,8 @@ export function TermWrite(arg1:string,arg2:string):Promise<void>;
 export function TrustRepo(arg1:string,arg2:string):Promise<void>;
 
 export function UpdateSession(arg1:string,arg2:session.Edit):Promise<void>;
+
+export function VMShareGuide(arg1:string,arg2:string,arg3:string):Promise<sharecheck.Guide>;
 
 export function Version():Promise<string>;
 

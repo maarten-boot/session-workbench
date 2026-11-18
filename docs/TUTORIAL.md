@@ -201,6 +201,10 @@ virtio-9p works too (`<driver type='path'/>` and `mount -t 9p -o trans=virtio`),
   but virtiofs is faster.
 As with NFS, use the same user id inside the VM as on your computer.
 
+The host dialog writes all of this for your own paths:
+  *VM share setup…* below *Remote prefix* (section 7).
+Afterwards *Check share* tells you whether the VM really sees the shared folder.
+
 ### SMB/CIFS
 
 A share from Windows or a Samba server, mounted on the agent host:
@@ -308,6 +312,14 @@ All of it is stored in `config.toml` (section 17), which you can also edit by ha
 - **Local prefix / remote prefix**: for a shared file system,
   where the same directory is on each side.
   Leave both empty if the paths are identical.
+- **Check share**: logs in to the SSH target and checks the remote prefix:
+  that it exists, that it is a mounted share (NFS, SMB, virtiofs, 9p …) and not the host's own disk,
+  that you can write there, and that it holds the same files as the local prefix.
+  Each finding starts with ✓ OK, ! Warning or ✗ Problem.
+  It uses what you typed, so you can check before you save.
+- **VM share setup…**: for a VM on this computer,
+  the steps, the libvirt XML and the mount commands for your two prefixes,
+  each with a Copy button (section 4, "KVM: a virtiofs share").
 
 Right-click a host in the list (or its ⋯) for its menu:
 

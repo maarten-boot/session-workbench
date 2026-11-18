@@ -12,7 +12,7 @@ read its security section if the agent host can write to your repositories.
 New here? **[docs/TUTORIAL.md](docs/TUTORIAL.md)** takes you from the download to your first
 claude session, with screenshots (`make tutorial-pdf` makes a PDF of it).
 
-Status: v1.1.24: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
+Status: v1.1.25: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
 Notes (page trees with formatting, lists and check lists, spelling, D2 diagrams), Web and Q&A tabs, what changed per release (What's new), Remote tab recordings, session folders and tags,
 themes and color modes, quick switcher, a command menu and a prompts menu in the Local and Remote tabs, editable
 start commands, private shell history per session, activity badges, desktop notifications,
@@ -125,7 +125,9 @@ Start `session-workbench`. The first time it shows **Add host…** to set up an 
 - **SSH target** — anything `ssh` accepts (`user@host`, a `~/.ssh/config` alias).
 - **Local / remote prefix** — where the agent host sees your directories, e.g.
   `~/share-local` ↔ `/net/192.168.122.1/home/mboot/share-local`. Leave both empty
-  if the paths are identical on both machines.
+  if the paths are identical on both machines. **Check share** checks on the agent host
+  that the remote prefix is a mounted share with the same files; **VM share setup…**
+  gives the libvirt XML and mount commands for a KVM VM on this computer (virtiofs or 9p).
 - **File access** — shared file system (default), live share over ssh, or working copy;
   see [Without a shared file system](#without-a-shared-file-system).
 
@@ -1132,6 +1134,7 @@ notify.go              desktop notifications when claude waits
 menu.go, proc_*.go     macOS menu bar; hiding console windows on Windows
 internal/terminal      pty processes + batched output events
 internal/pathmap       host path -> agent-host path
+internal/sharecheck    host dialog: Check share (is the remote prefix a mounted share?), VM share setup… (libvirt)
 internal/diagram       D2 diagrams as SVG (D2's Go library, MPL-2.0)
 internal/examples      the example commands and prompts a first start gets
 internal/remote        ssh/tmux command lines (quoting, forced options)
@@ -1171,7 +1174,8 @@ frontend/src           vanilla JS UI: main.js (app), terminal.js, files.js, note
                        lists), qa.js and qaparse.js (Q&A tab), diagram.js (D2 drawings,
                        Copy image), cost.js, tags.js, idle.js (stopping an idle claude),
                        dockerfile.js and services.js (container setup), osc52.js (clipboard
-                       writes from the terminal), changes.js (What's new), style.css;
+                       writes from the terminal), changes.js (What's new), vmshare.js (Check share,
+                       VM share setup…), style.css;
                        *.test.mjs are the node --test unit tests
 build/                 app icon, Windows/macOS resources for Wails
 packaging/             .desktop file, icons, man page, copyright, nfpm config for .deb/.rpm,

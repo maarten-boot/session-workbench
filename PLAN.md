@@ -176,6 +176,17 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- v1.1.25 (2026-11-18): checking a shared file system from the host dialog (SPEC F2c). The
+  user: "do we already support sharing data to local kvm hosts via virtio ?"; only as a shared
+  file system set up by hand (docs/TUTORIAL.md), then "add the mount check for remote_prefix
+  and the settings helper". Add/Edit host gets *Check share* (internal/sharecheck: a /bin/sh
+  script over ssh says whether the remote prefix exists, which mount holds it, whether it is
+  writable, and compares its entries with the local prefix) and *VM share setup…* (the
+  virt-manager steps, libvirt XML, mount commands and fstab line for virtiofs or virtio-9p,
+  each with Copy). Hosts are set up in the host dialog, not in Settings, so the helper is
+  there. Found on this machine's own autofs NFS mount: findmnt lists the autofs trigger
+  first, so the script takes its last line. Tests: sharecheck (Go), vmshare.test.mjs,
+  gui-smoke-sharecheck.
 - v1.1.24 (2026-11-17): what changed per release (SPEC §4.6 About). The user: "dow we show a
   changes since last release in the settings or somewhere ?"; there was nothing in the app and
   the GitHub release notes held only the Full Changelog link; "do both". scripts/changes.sh

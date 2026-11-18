@@ -79,3 +79,29 @@
 - README Download and PLAN M6 now say the build artifacts are kept 14 days.
 - No links to the deleted releases anywhere (README, docs, code); SPEC does not describe artifact retention.
 - Version 1.1.24 in wails.json matches the latest tag; nothing to bump.
+
+## CI of 96633dd (cross-check after the cleanup)
+
+- Build run 44350156660 passed: linux-amd64, windows-amd64 and macos-universal; release skipped.
+
+## VM shares: Check share and VM share setup… (v1.1.25)
+
+- The user: "do we already support sharing data to local kvm hosts via virtio ?"
+- Answer: yes, as a shared file system (mode A) set up by hand, with the steps in docs/TUTORIAL.md;
+  the app neither creates nor checks the mount.
+  Offered: a check that the remote prefix is mounted, and a helper that writes the libvirt XML and mount commands.
+- The user: "add the mount check for remote_prefix and the settings helper".
+  Hosts are set up in Add/Edit host, not in Settings, so both went into the host dialog, below *Remote prefix*.
+- SPEC v1.35, new item F2c; app v1.1.25 (v1.1.24 was tagged).
+- internal/sharecheck:
+  - Check share runs a /bin/sh script over ssh:
+    exists, writable, which mount holds the folder (findmnt, else df -P), its entries;
+    Evaluate compares them with the local prefix and words each finding (OK, Warning, Problem).
+  - VM share setup… (MakeGuide): virt-manager steps, libvirt XML, mount commands, fstab line;
+    virtiofs or virtio-9p.
+- Found while trying it on this machine's autofs NFS mount:
+  findmnt lists the autofs trigger before the NFS mount on the same folder, so the script takes the last line.
+- Tests: Go sharecheck (4 tests), vmshare.test.mjs, scripts/gui-smoke-sharecheck.sh (in make smoke-ui);
+  gui-smoke-hosts run again, as the host dialog grew.
+- Docs: SPEC F2c and package layout, PLAN v1.1.25, Tests.md, README (Usage, status, layout), TUTORIAL sections 4 and 7,
+  CONNECTIVITY.

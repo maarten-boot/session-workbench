@@ -113,7 +113,12 @@ The Remote tab then starts in the mapped directory. Options:
   agent host only. Keep `root_squash`. User ids must match on both sides (or use idmapping).
 - **SMB/CIFS**: works too, also from Windows hosts; watch file permissions and symlinks.
 - **Hypervisor share** (agent host is a local VM): libvirt/QEMU *virtiofs* (preferred) or
-  *virtio-9p*. Configured in the VM definition, not in this app. No network setup needed.
+  *virtio-9p*. Configured in the VM definition, not by this app; the host dialog's
+  *VM share setup…* writes the XML and mount commands for your prefixes. No network setup needed.
+
+The host dialog's *Check share* checks any of these on the agent host: the remote prefix
+exists, is on a share (not the agent host's own disk), is writable, and holds the same
+entries as the local prefix.
 
 ### B. Live share over ssh (implemented)
 

@@ -2825,3 +2825,37 @@ dialog h2.drag-handle {
     cursor: default;
     font-style: italic;
 }
+
+/* The host dialog's Check share and VM share setup… (SPEC F2c): findings
+   use the requirements list (mark + word, black text); the guide's blocks
+   are copyable preformatted text. */
+.share-tools {
+    gap: 8px;
+    margin: 4px 0;
+}
+
+.share-result p {
+    margin: 4px 0;
+}
+
+.vmshare-sections h3 {
+    font-size: 0.923rem;
+    margin: 12px 0 4px;
+}
+
+.vmshare-sections pre {
+    margin: 0;
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg);
+    color: var(--text);
+    font: 0.923rem var(--mono-family, "DejaVu Sans Mono", "Cascadia Mono", Menlo, monospace);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    user-select: text;
+}
+
+.vmshare-sections .copy {
+    margin-top: 4px;
+}

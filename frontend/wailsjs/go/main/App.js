@@ -26,6 +26,10 @@ export function CheckRequirements(arg1, arg2, arg3) {
   return window['go']['main']['App']['CheckRequirements'](arg1, arg2, arg3);
 }
 
+export function CheckShare(arg1, arg2, arg3) {
+  return window['go']['main']['App']['CheckShare'](arg1, arg2, arg3);
+}
+
 export function ClearNotification(arg1) {
   return window['go']['main']['App']['ClearNotification'](arg1);
 }
@@ -412,6 +416,10 @@ export function TrustRepo(arg1, arg2) {
 
 export function UpdateSession(arg1, arg2) {
   return window['go']['main']['App']['UpdateSession'](arg1, arg2);
+}
+
+export function VMShareGuide(arg1, arg2, arg3) {
+  return window['go']['main']['App']['VMShareGuide'](arg1, arg2, arg3);
 }
 
 export function Version() {

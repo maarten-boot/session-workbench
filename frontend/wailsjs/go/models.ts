@@ -1620,6 +1620,91 @@ export namespace share {
 
 }
 
+export namespace sharecheck {
+	
+	export class Guide {
+	    driver: string;
+	    tag: string;
+	    steps: string[];
+	    xml: string;
+	    commands: string;
+	    fstab: string;
+	    problems: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new Guide(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.driver = source["driver"];
+	        this.tag = source["tag"];
+	        this.steps = source["steps"];
+	        this.xml = source["xml"];
+	        this.commands = source["commands"];
+	        this.fstab = source["fstab"];
+	        this.problems = source["problems"];
+	    }
+	}
+	export class Line {
+	    level: string;
+	    text: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Line(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.level = source["level"];
+	        this.text = source["text"];
+	    }
+	}
+	export class Result {
+	    exists: boolean;
+	    writable: boolean;
+	    fstype: string;
+	    source: string;
+	    mount_point: string;
+	    lines: Line[];
+	    ok: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new Result(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.exists = source["exists"];
+	        this.writable = source["writable"];
+	        this.fstype = source["fstype"];
+	        this.source = source["source"];
+	        this.mount_point = source["mount_point"];
+	        this.lines = this.convertValues(source["lines"], Line);
+	        this.ok = source["ok"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+
+}
+
 export namespace spell {
 	
 	export class Dictionary {

@@ -15,7 +15,8 @@ import {CommandList} from './commands';
 import {commandItems, commandLabel, homeItem, missingCommands} from './cmdmenu';
 import {$, balloon, el, hideBalloon, hideMenu, movable, showMenu, store, textMenu, toast, toastButton} from './ui';
 import {loadChanges, newVersion} from './changes';
-import {EventsOff, EventsOn, WindowSetTitle} from '../wailsjs/runtime/runtime';
+import {guideSections, shareLines} from './vmshare';
+import {ClipboardSetText, EventsOff, EventsOn, WindowSetTitle} from '../wailsjs/runtime/runtime';
 import {TOOLCHAINS, addToolchain} from './dockerfile';
 import {SERVICES, addService, hasService} from './services';
 import {fmtSize} from './format';
@@ -33,7 +34,7 @@ import {
     ContainerDockerfile, SaveContainerDockerfile, ContainerRebuild, ContainerStopBuild, ContainerStop, ContainerRemove,
     ContainerCompose, SaveContainerCompose, ContainerComposeApply, SetSessionActive,
     SwitchTargets, SwitchHost, Requirements, SaveRequirements, CheckRequirements, IdleStopped, SessionShown, StopClaude, ResumeClaude, CostSummary, ResetCost, ExampleCommands,
-    ContainerEngineInfo, ExportParts, ExportSession, ImportOpen, ImportSession, Profile,
+    ContainerEngineInfo, ExportParts, ExportSession, ImportOpen, ImportSession, Profile, CheckShare, VMShareGuide,
 } from '../wailsjs/go/main/App';
 
 // ---------------------------------------------------------------- keyboard
@@ -2116,7 +2117,7 @@ async function hostDialog(h = null, presetName = null) {
         // used (a session can still choose a directory, then they apply).
         const logins = f.elements.local_dir.value === 'no';
         if (!backupSet) f.elements.backup.value = logins ? 'no' : 'yes';
-        for (const k of ['files', 'local_prefix', 'remote_prefix', 'browse', 'remote_workdir']) f.elements[k].disabled = logins;
+        for (const k of ['files', 'local_prefix', 'remote_prefix', 'browse', 'remote_workdir', 'check_share', 'vm_share']) f.elements[k].disabled = logins;
     };
     f.elements.files.onchange = showMode;
     f.elements.kind.onchange = showMode;
@@ -2127,6 +2128,26 @@ async function hostDialog(h = null, presetName = null) {
         const dir = await BrowseDirectory(f.elements.local_prefix.value || '~');
         if (dir) f.elements.local_prefix.value = dir;
     };
+    // Check share (SPEC F2c): the values as typed, saved or not.
+    const result = dlg.querySelector('.share-result');
+    result.replaceChildren();
+    f.elements.check_share.onclick = async () => {
+        const target = f.elements.ssh_target.value.trim();
+        const btn = f.elements.check_share;
+        btn.disabled = true;
+        result.replaceChildren(el('p', {textContent: `Checking on ${target || 'the agent host'}…`}));
+        try {
+            const r = shareLines(await CheckShare(target, f.elements.local_prefix.value, f.elements.remote_prefix.value), target);
+            result.replaceChildren(el('p', {textContent: r.head}), el('ul', {className: 'req-list'},
+                ...r.lines.map(l => el('li', {className: l.level === 'ok' ? 'req-ok' : 'req-bad'},
+                    el('span', {className: 'req-mark', textContent: l.mark + ' '}), l.text))));
+        } catch (err) {
+            result.replaceChildren(el('p', {className: 'error-text', textContent: `Problem: ${err?.message ?? err}`}));
+        } finally {
+            btn.disabled = false;
+        }
+    };
+    f.elements.vm_share.onclick = () => vmShareDialog(f.elements.local_prefix.value, f.elements.remote_prefix.value);
     const ok = await runDialog(dlg, () => SaveHost(h?.name ?? '', f.elements.kind.value === 'container' ? {
         name: f.elements.name.value, kind: 'container', ssh_target: '', files: '', local_prefix: '', remote_prefix: '', remote_workdir: '',
     } : {
@@ -2141,6 +2162,32 @@ async function hostDialog(h = null, presetName = null) {
     }));
     if (ok) await app.reload();
     return ok;
+}
+
+// vmShareDialog shows the libvirt XML and the mount commands that share
+// the local prefix into a KVM VM mounting it at the remote prefix, over the
+// host dialog (it stays open below).
+function vmShareDialog(local, remote) {
+    const dlg = $('#dlg-vmshare');
+    const f = dlg.querySelector('form');
+    const box = dlg.querySelector('.vmshare-sections');
+    const draw = async () => {
+        const g = await VMShareGuide(local, remote, f.elements.driver.value);
+        box.replaceChildren(...guideSections(g).flatMap(sec => {
+            const pre = el('pre', {textContent: sec.text});
+            const parts = [el('h3', {textContent: sec.title}), pre];
+            if (sec.copy) {
+                parts.push(el('button', {type: 'button', className: 'copy', textContent: 'Copy',
+                    onclick: () => ClipboardSetText(sec.text).then(() => toast('Copied'))}));
+            }
+            return parts;
+        }));
+    };
+    f.elements.driver.value = 'virtiofs';
+    f.elements.driver.onchange = draw;
+    dlg.querySelector('.error').textContent = '';
+    draw().catch(err => dlg.querySelector('.error').textContent = err?.message ?? String(err));
+    dlg.showModal();
 }
 
 // setSessionColors stores a per-session override; choosing the global

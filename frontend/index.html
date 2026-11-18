@@ -210,6 +210,11 @@
         <label>Remote prefix
             <input name="remote_prefix" autocomplete="off" spellcheck="false" placeholder="/net/host/home/me/share">
         </label>
+        <div class="row share-tools">
+            <button type="button" name="check_share">Check share</button>
+            <button type="button" name="vm_share">VM share setup…</button>
+        </div>
+        <div class="share-result" aria-live="polite"></div>
         </div>
         <div class="files-workdir">
         <label>Working folder on the agent host
@@ -223,6 +228,26 @@
         <div class="buttons">
             <button value="ok" class="primary">Save</button>
             <button value="cancel" formnovalidate>Cancel</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog id="dlg-vmshare" class="wide">
+    <form method="dialog">
+        <h2>Share the folder into a KVM/libvirt VM</h2>
+        <p class="hint">For an agent host that is a VM on this computer: libvirt shares the local prefix
+            straight into it, which the VM mounts at the remote prefix. No network file system needed
+            (docs/TUTORIAL.md, “KVM: a virtiofs share”).</p>
+        <label>Driver
+            <select name="driver">
+                <option value="virtiofs">virtiofs (faster; needs shared memory)</option>
+                <option value="9p">virtio-9p (older guests)</option>
+            </select>
+        </label>
+        <div class="vmshare-sections"></div>
+        <div class="error"></div>
+        <div class="buttons">
+            <button value="cancel" formnovalidate>Close</button>
         </div>
     </form>
 </dialog>
