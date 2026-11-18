@@ -48,3 +48,21 @@
   macOS runner contention, as on 2026-11-17, not the code (only README and the log changed).
 - The user re-ran the failed job in the browser (gh here has a read-only token);
   attempt 2 passed: macos-universal got a runner after 10 minutes in the queue; release skipped.
+
+## CI of 070bcad (14-day artifacts)
+
+- Build run 44324924383 passed: linux-amd64, windows-amd64 and macos-universal; release skipped.
+- Its three artifacts expire on 2026-12-02, 14 days after the build, as set.
+
+## Cleanup of releases and artifacts (done by the user)
+
+- The user ran the delete commands with a gh login that has write access.
+- Result, checked with read-only calls:
+  - releases: 1 left (v1.1.24, 5 assets);
+  - tags: all 81 kept;
+  - caches: 12 (6.4 GB), kept as chosen;
+  - artifacts: 8 left, the 6 of the kept runs 44287562684 (v1.1.24) and 44324924383 (070bcad),
+    plus 2 that were missed.
+- The 2 missed artifacts are 12903435405 (run 40886619237, 49b5415) and 12115035588 (run 39069963308, a139a49).
+  - Likely cause: the list was paged while deleting, so items moved to pages already read.
+  - They expire on 2027-01-27 and 2027-01-15 (90-day retention from before the 14-day setting).
