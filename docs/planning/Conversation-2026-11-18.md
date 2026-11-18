@@ -105,3 +105,24 @@
   gui-smoke-hosts run again, as the host dialog grew.
 - Docs: SPEC F2c and package layout, PLAN v1.1.25, Tests.md, README (Usage, status, layout), TUTORIAL sections 4 and 7,
   CONNECTIVITY.
+
+## CI of 3f1ae73 (v1.1.25, Check share and VM share setup…)
+
+- Build run 44355005784 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+- The Go tests ran on Windows too (TestScript skipped there, as planned).
+- Artifacts expire on 2026-12-02.
+
+## CI of tag v1.1.25
+
+- The tag (annotated, 7db169d) points to 3f1ae73.
+- Build run 44365677210 passed: linux-amd64, windows-amd64, macos-universal and release.
+- The release has the 5 files: .deb, .rpm, the Linux tar.gz, the macOS zip and the Windows zip.
+- Its notes list the 5 commits since v1.1.24 (scripts/changes.sh), then GitHub's Full Changelog link.
+
+## Cross-check v1.1.25
+
+- SPEC F2c against the code: the 60 s limit, 5000 entries a side, 5 names, the 36-character target name,
+  the marks and words, disabled for plain logins, the values as typed: all as written.
+- PLAN, Tests.md (Go, node and GUI rows), README, TUTORIAL and CONNECTIVITY name the feature.
+- Out of date: the tutorial screenshot docs/tutorial/02-add-host.png lacked the two new buttons;
+  taken again with `scripts/tutorial-shots.sh … first` (only 01 and 02; 01 came out the same).
