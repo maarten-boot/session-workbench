@@ -1041,7 +1041,8 @@ never do. The GitHub release notes list the commits since the previous tag
 - The Settings dialog, Add/Edit host and VM share setup… (F2c) move by their heading and resize
   by their corner, like the Dockerfile and Services windows (C6, C7). Each is fixed where it
   opens (a page or field that changes its height grows it downwards) and keeps its place and
-  size while the app runs, not across restarts; at least 80 px of it stays in the window.
+  size while the app runs, not across restarts; its top stays in the window, with at least 80 px
+  of its width and 40 px of its height showing (the heading stays reachable).
 - Written atomically (write temp + rename) on every change. Hand-editable while the app is not
   running (comments are not preserved); unknown keys are rejected. If the file cannot be read the
   app starts empty, shows the error and never overwrites it. Invalid setting values get their

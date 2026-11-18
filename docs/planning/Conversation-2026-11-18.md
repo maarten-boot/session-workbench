@@ -147,3 +147,28 @@
 - Version 1.1.26 (v1.1.25 was tagged); SPEC v1.36 (§4.7).
 - Tests: new scripts/gui-smoke-dialogs.sh (in make smoke-ui), passed twice;
   the GUI tests that click in these dialogs were run again.
+
+## CI of 64d520b (v1.1.26, movable and resizable dialogs)
+
+- Build run 44395217563 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+
+## CI of tag v1.1.26
+
+- The tag (annotated, eb728a8) points to 64d520b.
+- Build run 44397939398 passed: linux-amd64, windows-amd64, macos-universal and release.
+- The release has the 5 files; its notes list the 2 commits since v1.1.25, then GitHub's Full Changelog link.
+
+## Cross-check v1.1.26
+
+- SPEC §4.7 said "at least 80 px of it stays in the window"; ui.js place() keeps the top in the window
+  and 80 px of the width and 40 px of the height showing. SPEC now says that.
+- The tutorial screenshot docs/tutorial/30-settings.png was from v1.1.20: no What's new link (v1.1.24),
+  no resize corner (v1.1.26). Taken again with `scripts/tutorial-shots.sh … main`; only that picture kept
+  (the others of that step changed only in made-up data and were restored).
+- ~/.claude.json changed during the screenshot run (checksum before and after).
+  The script never touches it, the demo sessions start a shell (no claude), and it has no entries for the demo folders;
+  the change is this Claude Code session's own bookkeeping.
+- PLAN, Tests.md, README, TUTORIAL and the code otherwise agree.
+- The user asked whether a cross-check should always come before a release.
+- The user: "yes commit and save the rule". From now on: version commit, CI, cross-check (fixes stay in the
+  untagged version), CI, then the tag. Saved in memory (crosscheck-before-release).
