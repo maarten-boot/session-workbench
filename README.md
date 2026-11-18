@@ -25,7 +25,7 @@ and macOS.
 ## Download
 
 Every push to `main` is built by GitHub Actions (see the *build* workflow's
-artifacts); tagged versions (`v*`) are published under **Releases**:
+artifacts, kept 14 days); tagged versions (`v*`) are published under **Releases**:
 
 | File | Runs on | Notes |
 |---|---|---|

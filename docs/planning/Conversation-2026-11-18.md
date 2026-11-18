@@ -66,3 +66,16 @@
 - The 2 missed artifacts are 12903435405 (run 40886619237, 49b5415) and 12115035588 (run 39069963308, a139a49).
   - Likely cause: the list was paged while deleting, so items moved to pages already read.
   - They expire on 2027-01-27 and 2027-01-15 (90-day retention from before the 14-day setting).
+
+## CI of 12eb23d (log of the cleanup)
+
+- Build run 44347501193 passed: linux-amd64, windows-amd64 and macos-universal; release skipped.
+- Its three artifacts expire on 2026-12-02; the repository now holds 9 artifacts
+  (v1.1.24, 070bcad, 12eb23d, and the 2 old ones missed by the cleanup).
+
+## Cross-check after the cleanup
+
+- Since the last cross-check (d500de7) only build.yml (`retention-days: 14`) and the log changed.
+- README Download and PLAN M6 now say the build artifacts are kept 14 days.
+- No links to the deleted releases anywhere (README, docs, code); SPEC does not describe artifact retention.
+- Version 1.1.24 in wails.json matches the latest tag; nothing to bump.

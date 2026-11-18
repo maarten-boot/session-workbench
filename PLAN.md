@@ -41,7 +41,7 @@ implementation differs from the original plan.
 
 ## M6 — Cross-platform (1–2 days) ✅
 - Windows: ConPTY, pwsh default, path mapping, `start`. macOS: Cmd bindings, `open`.
-- CI build matrix (GitHub Actions) producing Linux/Windows/macOS artifacts.
+- CI build matrix (GitHub Actions) producing Linux/Windows/macOS artifacts (kept 14 days since v1.1.24).
 - *Also: release on `v*` tags, version stamping, macOS app/Edit menu. Windows and macOS are
   tested and built in CI; the apps have not yet been tried interactively on those systems.*
 
