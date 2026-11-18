@@ -13,7 +13,7 @@ New here? **[docs/TUTORIAL.md](docs/TUTORIAL.md)** takes you from the download t
 claude session, with screenshots (`make tutorial-pdf` makes a PDF of it).
 
 Status: v1.1.24: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
-Notes (page trees with formatting, lists and check lists, spelling, D2 diagrams), Web and Q&A tabs, Remote tab recordings, session folders and tags,
+Notes (page trees with formatting, lists and check lists, spelling, D2 diagrams), Web and Q&A tabs, what changed per release (What's new), Remote tab recordings, session folders and tags,
 themes and color modes, quick switcher, a command menu and a prompts menu in the Local and Remote tabs, editable
 start commands, private shell history per session, activity badges, desktop notifications,
 auto-reconnect, containers on this computer as agent hosts (Podman or Docker, a Dockerfile per session, services such as PostgreSQL next to it with Compose), live share and working copies for hosts without a shared file system (Get
@@ -1168,7 +1168,11 @@ frontend/src           vanilla JS UI: main.js (app), terminal.js, files.js, note
                        appearance.js (themes, mono filter), keys.js, fuzzy.js,
                        format.js (Files tab size/date columns and sort order), cmdmenu.js (command menu
                        entries), commands.js (editors for the command and start-command
-                       lists), style.css; *.test.mjs are the node --test unit tests
+                       lists), qa.js and qaparse.js (Q&A tab), diagram.js (D2 drawings,
+                       Copy image), cost.js, tags.js, idle.js (stopping an idle claude),
+                       dockerfile.js and services.js (container setup), osc52.js (clipboard
+                       writes from the terminal), changes.js (What's new), style.css;
+                       *.test.mjs are the node --test unit tests
 build/                 app icon, Windows/macOS resources for Wails
 packaging/             .desktop file, icons, man page, copyright, nfpm config for .deb/.rpm,
                        gen-docs.sh (changelog and man page per version)
