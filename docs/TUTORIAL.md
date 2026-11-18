@@ -79,6 +79,8 @@ On your computer the app uses `ssh`, and optionally:
 - `gh`, the GitHub CLI, for the build runs in the Web tab.
 
 `session-workbench -version` prints the version; Settings shows it too.
+*What's new* next to it lists what changed in each release;
+  after an update the app offers it once.
 
 ## 3. Prepare the agent host
 
@@ -286,6 +288,8 @@ Have a look before your first session; everything has a sensible default.
 | Keys | keyboard shortcuts |
 
 All of it is stored in `config.toml` (section 17), which you can also edit by hand.
+**What's new** at the bottom left, before the version,
+  lists what changed in this and the previous releases.
 
 ## 7. Hosts
 

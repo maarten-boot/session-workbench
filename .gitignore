@@ -48,3 +48,6 @@ build/pkgdocs
 
 # The tutorial as a PDF (make tutorial-pdf)
 build/*.pdf
+
+# What changed per release, written at build time (scripts/changes.sh)
+frontend/public/changes.txt

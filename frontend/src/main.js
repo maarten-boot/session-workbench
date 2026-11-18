@@ -13,7 +13,8 @@ import {WebView} from './web';
 import {QAView} from './qa';
 import {CommandList} from './commands';
 import {commandItems, commandLabel, homeItem, missingCommands} from './cmdmenu';
-import {$, balloon, el, hideBalloon, hideMenu, movable, showMenu, store, textMenu, toast} from './ui';
+import {$, balloon, el, hideBalloon, hideMenu, movable, showMenu, store, textMenu, toast, toastButton} from './ui';
+import {loadChanges, newVersion} from './changes';
 import {EventsOff, EventsOn, WindowSetTitle} from '../wailsjs/runtime/runtime';
 import {TOOLCHAINS, addToolchain} from './dockerfile';
 import {SERVICES, addService, hasService} from './services';
@@ -653,6 +654,7 @@ const app = {
         };
         $('#btn-add-host').onclick = () => hostDialog();
         $('#btn-settings').onclick = () => settingsDialog();
+        whatsNew();
         $('#btn-narrow').onclick = () => this.setNarrow(!this.narrow);
         this.setNarrow(store.get('narrow', false));
         this.initSidebarResize();
@@ -2177,6 +2179,36 @@ const ACTION_LABELS = {
     toggle_sidebar: 'Narrow / wide sidebar', app_notes: 'Notes for all sessions',
 };
 
+// aboutPage fills Settings → About (the footer's What's new button): the
+// version and what changed per release (SPEC §4.6), drawn with textContent.
+function aboutPage(dlg) {
+    const page = dlg.querySelector('.settings-page[data-page="about"]');
+    Version().then(v => page.querySelector('.about-version').textContent = `${app.appName ?? 'Session Workbench'} ${v}`);
+    loadChanges().then(sections => {
+        const box = page.querySelector('.changes');
+        if (!sections) {
+            box.replaceChildren(el('p', {textContent: 'This build has no list of changes (built without the git history).'}));
+            return;
+        }
+        box.replaceChildren(...sections.flatMap(s => [
+            el('h3', {textContent: s.title}),
+            s.items.length ? el('ul', {}, ...s.items.map(t => el('li', {textContent: t})))
+                : el('p', {textContent: 'No changes listed.'}),
+        ]));
+    });
+}
+
+// whatsNew: the first start of a release other than the one seen last
+// points at Settings → About once (SPEC §4.6). Builds between releases
+// and development builds never do.
+async function whatsNew() {
+    const v = await Version();
+    const seen = store.get('seenVersion');
+    if (!newVersion(v, seen)) return;
+    store.set('seenVersion', v);
+    if (await loadChanges()) toastButton(`Session Workbench ${v}`, "What's new", () => settingsDialog('about'));
+}
+
 async function settingsDialog(page) {
     const dlg = $('#dlg-settings');
     if (dlg.open) return;
@@ -2192,12 +2224,14 @@ async function settingsDialog(page) {
             t.classList.toggle('active', t.dataset.page === name);
             t.ariaSelected = String(t.dataset.page === name);
         });
-        store.set('settingsPage', name);
+        if (name !== 'about') store.set('settingsPage', name); // About opens from its button only
     };
     tabs.forEach(t => t.onclick = () => showPage(t.dataset.page));
+    dlg.querySelector('.whats-new').onclick = () => showPage('about');
     showPage(page ?? store.get('settingsPage', 'appearance'));
     costPage(dlg, f, ui);
     qaSettings(dlg, f, ui);
+    aboutPage(dlg);
     f.container_engine.value = ui.container_engine ?? '';
     const found = dlg.querySelector('.container-found');
     const lookEngine = () => ContainerEngineInfo(f.container_engine.value)
@@ -2294,7 +2328,7 @@ async function settingsDialog(page) {
     rows.push(el('tr', {}, el('td', {textContent: 'Session 1…9'}), el('td', {}, el('kbd', {textContent: keyHint('session_1').replace(/1$/, '1…9')})),
         el('td', {className: 'action', textContent: 'session_1 … session_9'})));
     dlg.querySelector('.shortcuts table').replaceChildren(...rows);
-    Version().then(v => dlg.querySelector('.about').textContent = `${app.appName ?? 'Session Workbench'} ${v}`);
+    Version().then(v => dlg.querySelector('.about-text').textContent = `${app.appName ?? 'Session Workbench'} ${v}`);
     dlg.querySelector('.shortcuts .hint').textContent =
         `Change shortcuts in the [keys] section of ${app.state.config_path}, e.g. next_session = "Ctrl+Tab"; "none" disables one. Restart the app after editing.`;
     const ok = await runDialog(dlg, () => SaveUI({

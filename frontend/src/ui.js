@@ -36,6 +36,19 @@ export function toast(text, bad = false) {
     setTimeout(() => t.remove(), bad ? 8000 : 4000);
 }
 
+// toastButton shows a message with a button for 15 seconds; the button
+// runs action and closes it.
+export function toastButton(text, label, action) {
+    const b = el('button', {type: 'button', textContent: label});
+    const t = el('div', {className: 'toast with-button'}, el('span', {textContent: text}), b);
+    b.onclick = () => {
+        t.remove();
+        action();
+    };
+    document.body.append(t);
+    setTimeout(() => t.remove(), 15000);
+}
+
 // balloon shows a balloon next to target once the mouse has rested on it
 // for delay() milliseconds: fill() returns its contents. It goes when the
 // mouse leaves, a button is pressed, the list scrolls or a menu opens.

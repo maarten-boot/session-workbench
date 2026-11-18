@@ -1,6 +1,6 @@
 # Session Workbench — Specification
 
-Status: v1.33 (2026-11-17, app v1.1.23) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
+Status: v1.34 (2026-11-17, app v1.1.24) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
 narrow and resizable sidebar (F6), Claude backups (F7), one instance per config (F8), working
 copies and backups without rsync (F9), desktop notifications (F4), git status and the
 repository check in the Files tab (B5, B6), Notes and Web tabs (N1, W1), notes for all sessions
@@ -22,7 +22,8 @@ subscription usage, warnings and a Cost page in Settings (F18), and the sidebar 
 Groups, Active and Inactive (F5), a tutorial (docs/TUTORIAL.md, also as PDF), example
 commands and prompts (T7), tags (also automatic ones for host, folder and state) with a
 filter for Active and Inactive (F5a), a sortable Cost table (F18), copying where claude uses
-the mouse and OSC 52 (T2a), and D2 diagrams in Notes and Q&A (N1d).
+the mouse and OSC 52 (T2a), D2 diagrams in Notes and Q&A (N1d), and what changed per release
+in Settings and the release notes (§4.6 About).
 Sections describe the implemented behaviour.
 
 ## 1. Problem
@@ -997,6 +998,18 @@ Claude API, Claude Code or an own command; Claude API model `qa_model` with the 
 suggestions; Claude Code model `qa_claude_model`; Claude Code program `qa_claude`, with where it is
 found), Containers (`container_engine`, with the one found), Cost (F18), Keys. The tabs fit on
 one line, the open one in bold.
+
+About: the dialog's footer shows a *What's new* button (underlined) and the version; the button opens the About
+page (no tab; not the page that opens next time): the version, then what changed per release,
+the subject line of each commit (merges left out), newest first: the commits since the last tag
+("Since vX (not released)", when there are any), then the last 5 releases with their dates, at
+most 60 commits each, drawn with `textContent`. `scripts/changes.sh` writes them at build time
+(`make build`, `make dev`, CI) to `frontend/public/changes.txt` (not in git), which the build
+carries as `/changes.txt`; a build without it says it has no list. A release build (version
+`vX.Y.Z`) shows "Session Workbench vX.Y.Z" with a *What's new* button once, at its first start
+(15 s; the version seen is kept per profile); builds between releases and development builds
+never do. The GitHub release notes list the commits since the previous tag
+(`scripts/changes.sh --release <tag>`), followed by GitHub's Full Changelog link.
 
 ### 4.7 Configuration
 - Single TOML file: `$XDG_CONFIG_HOME` (default `~/.config`)`/session-workbench/config.toml` (Linux),

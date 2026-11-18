@@ -1643,6 +1643,40 @@ dialog pre.changes {
     border-left-color: var(--danger);
 }
 
+.toast.with-button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Settings → About (What's new in the footer): the version and what changed
+   per release. The button is underlined, not only coloured. */
+dialog .buttons .whats-new {
+    margin-right: 8px;
+    text-decoration: underline;
+    font-size: inherit;
+}
+
+.about-page .changes {
+    max-height: 26rem;
+    overflow-y: auto;
+    color: var(--text-strong);
+}
+
+.about-page .changes h3 {
+    font-size: 1rem;
+    margin: 12px 0 4px;
+}
+
+.about-page .changes ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.about-page .changes li {
+    margin: 2px 0;
+}
+
 .share-state {
     font-size: 0.923rem;
     color: var(--muted);

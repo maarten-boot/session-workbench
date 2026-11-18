@@ -96,6 +96,8 @@ jobs:
         working-directory: frontend
         run: |
           npm ci
+          mkdir -p public               # what changed per release, for Settings → About
+          ../scripts/changes.sh >public/changes.txt
           npm run build                 # frontend/dist must exist before Go compiles (embed)
           npm test
 
@@ -157,6 +159,9 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0                # the previous tag, for the release notes
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           path: dist
@@ -168,5 +173,10 @@ jobs:
           # Only regular files are release assets.
           mapfile -t assets < <(find dist -maxdepth 1 -type f | sort)
           printf 'asset: %s\n' "${assets[@]}"
+          # The commit messages since the previous tag; GitHub appends its own
+          # generated notes (the Full Changelog link).
+          scripts/changes.sh --release "$GITHUB_REF_NAME" >"$RUNNER_TEMP/notes.md"
+          cat "$RUNNER_TEMP/notes.md"
           gh release create "$GITHUB_REF_NAME" "${assets[@]}" \
-            --repo "$GITHUB_REPOSITORY" --title "$GITHUB_REF_NAME" --generate-notes
+            --repo "$GITHUB_REPOSITORY" --title "$GITHUB_REF_NAME" \
+            --notes-file "$RUNNER_TEMP/notes.md" --generate-notes

@@ -511,11 +511,17 @@
             <table></table>
             <p class="hint"></p>
         </section>
+        <section class="settings-page about-page" data-page="about">
+            <p class="caption about-version"></p>
+            <p class="hint">What changed per release (the commit messages):</p>
+            <div class="changes"></div>
+        </section>
         <div class="error"></div>
         <div class="buttons">
             <button value="ok" class="primary">Save</button>
             <button value="cancel" formnovalidate>Cancel</button>
-            <span class="about"></span>
+            <span class="about"><button type="button" class="link whats-new">What's new</button>
+                <span class="about-text"></span></span>
         </div>
     </form>
 </dialog>

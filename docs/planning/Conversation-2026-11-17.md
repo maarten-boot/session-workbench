@@ -91,3 +91,31 @@
 - README layout lists scripts/clipimage/.
 - SPEC v1.33.
   Otherwise SPEC N1d, README, TUTORIAL, Tests.md and PLAN match the code of v1.1.23.
+- Committed as 9fb5353.
+
+## What changed per release (v1.1.24)
+
+- The user: "dow we show a changes since last release in  the settings or somewhere ?"
+  (read as: do we show the changes since the last release).
+- Found: only the version in the Settings footer;
+  the .deb/.rpm changelogs list the commits, the GitHub release notes only a compare link.
+- Offered: the list in the app (Settings → About, once after an update) and in the release notes.
+  The user: "yes commit first, then do both".
+- scripts/changes.sh: commit subjects (no merges) per v* tag, newest first,
+  the commits since the last tag first; at most 5 releases and 60 commits each;
+  `--release <tag>` for the release notes.
+  Plain bash 3.2 (macOS), no `| head` (SIGPIPE under pipefail).
+- The build carries frontend/public/changes.txt (make build/dev, CI's Frontend step);
+  Settings shows it on the About page, opened by *What's new* at the left of the footer
+  (before the version, so it stays in place however long the version is).
+  A tenth tab wrapped the tab bar and moved every page down (gui-smoke-cost failed),
+  so About has no tab.
+- A release build (vX.Y.Z) shows "Session Workbench vX.Y.Z  What's new" once at its first start.
+- CI: the release job checks out the repository (full history) and passes
+  `--notes-file` with `--generate-notes` (GitHub appends its Full Changelog link).
+- .gitattributes: *.sh stay LF, since the Windows runner now runs changes.sh.
+- While testing, a command of mine ran `git stash` by mistake;
+  `git stash pop` restored everything at once (the stash list is empty).
+- Tests: TestChangesScript (a new repository, 70 commits), changes.test.mjs (npm test 89 pass),
+  gui-smoke-about (as a release build and as a build between releases);
+  gui-smoke-settings, cost, colors, qa, notes, spell, record, history and d2 pass.

@@ -12,7 +12,7 @@ read its security section if the agent host can write to your repositories.
 New here? **[docs/TUTORIAL.md](docs/TUTORIAL.md)** takes you from the download to your first
 claude session, with screenshots (`make tutorial-pdf` makes a PDF of it).
 
-Status: v1.1.23: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
+Status: v1.1.24: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
 Notes (page trees with formatting, lists and check lists, spelling, D2 diagrams), Web and Q&A tabs, Remote tab recordings, session folders and tags,
 themes and color modes, quick switcher, a command menu and a prompts menu in the Local and Remote tabs, editable
 start commands, private shell history per session, activity badges, desktop notifications,
@@ -46,7 +46,8 @@ to check them: [docs/CONNECTIVITY.md](docs/CONNECTIVITY.md#requirements-on-the-a
 To release: tag and push (`git tag -s vX.Y.Z -m vX.Y.Z && git push origin vX.Y.Z`, a numeric
 version: it also becomes the Windows file version); CI builds all three
 platforms, sets the version from the tag (also in `wails.json`'s `productVersion`, which local
-builds take as is) and publishes a GitHub release.
+builds take as is) and publishes a GitHub release whose notes list the commit messages since the
+previous tag (`scripts/changes.sh --release vX.Y.Z`).
 
 ## Build
 
@@ -480,6 +481,9 @@ Off: Settings → Terminals (`private_history = false`), or per session in *Edit
 the delay before a session's description shows, tab order), Terminals, Commands, Backups and recordings, Notes (spelling), Q&A (who answers by default, the Claude API and
 Claude Code models, the Claude Code program with where it is found), Containers (Podman or Docker for
 container hosts, with the one found), Cost (see *What claude cost*) and Keys (the current shortcuts).
+*What's new*, at the bottom left before the version, lists what changed per release (the commit
+messages since the last tag, then the last 5 releases); a release build offers it once after an
+update. `scripts/changes.sh` writes the list at build time (`make build`, CI).
 
 | Keys (Linux/Windows) | macOS | Action | `[keys]` name |
 |---|---|---|---|
@@ -1173,6 +1177,7 @@ scripts/deps.sh        make check / make deps
 scripts/gui-smoke*.sh  headless GUI tests; scripts/smoke-lib.sh holds their shared checks,
                        scripts/fake-notifyd.py stands in for the desktop's notification service
 scripts/clipimage/     reads the clipboard (an image or text) to a file for gui-smoke-d2
+scripts/changes.sh     what changed per release: Settings → About, the release notes
 .github/workflows      CI: test + build on Linux/Windows/macOS, release on v* tags
 ```
 

@@ -176,6 +176,15 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- v1.1.24 (2026-11-17): what changed per release (SPEC §4.6 About). The user: "dow we show a
+  changes since last release in the settings or somewhere ?"; there was nothing in the app and
+  the GitHub release notes held only the Full Changelog link; "do both". scripts/changes.sh
+  lists the commit subjects per tag; the build carries them (frontend/public/changes.txt) for
+  Settings → About, opened from *What's new* in the footer (a tenth tab would wrap the tab bar
+  and move every page); a release build offers it once after an update. CI's release notes
+  list the commits since the previous tag before GitHub's link. .gitattributes keeps *.sh LF
+  (the Windows runner runs the script). Tests: TestChangesScript, changes.test.mjs,
+  gui-smoke-about.
 - v1.1.23 (2026-11-17): Copy image on a D2 drawing or SVG picture (SPEC N1d). The user: "could
   we add a copy image to clipboard of the D2 rendered image ?". Wails copies text only, so
   `golang.design/x/clipboard` v0.11.0 (no cgo; X11/Wayland, Windows, macOS) writes the PNG the

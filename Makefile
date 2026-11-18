@@ -13,7 +13,7 @@ endif
 VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 LDFLAGS = -X main.version=$(VERSION)
 
-.PHONY: check deps dev build build-windows packages run test test-ssh vet clean clean-smoke smoke smoke-sessions smoke-files smoke-ui smoke-container smoke-all tutorial-shots tutorial-pdf
+.PHONY: check deps changes dev build build-windows packages run test test-ssh vet clean clean-smoke smoke smoke-sessions smoke-files smoke-ui smoke-container smoke-all tutorial-shots tutorial-pdf
 
 check:
 	@scripts/deps.sh check
@@ -21,14 +21,19 @@ check:
 deps:
 	@scripts/deps.sh install
 
-dev: check
+# What changed per release, for Settings → About (left out outside git).
+changes:
+	@mkdir -p frontend/public
+	@scripts/changes.sh >frontend/public/changes.txt 2>/dev/null || rm -f frontend/public/changes.txt
+
+dev: check changes
 	$(WAILS) dev -tags "$(TAGS)"
 
-build: check
+build: check changes
 	$(BUILD_ENV) $(WAILS) build -tags "$(TAGS)" -ldflags "$(LDFLAGS) $(HARDEN_LDFLAGS)"
 
 # Cross-build the Windows exe from Linux (no cgo needed); macOS builds need a Mac.
-build-windows: check
+build-windows: check changes
 	$(WAILS) build -platform windows/amd64 -ldflags "$(LDFLAGS)" -o session-workbench.exe
 
 # Linux .deb and .rpm from build/bin/session-workbench, versioned like CI:
@@ -94,7 +99,8 @@ clean-smoke:
 #   commands, private shell history, lists and spelling in the notes,
 #   activity badges (~2 minutes), stopping an idle claude (a fake claude, ~2 minutes),
 #   what claude cost (made-up transcripts), the sidebar's Hosts/Groups/Active/Inactive headings,
-#   the example commands and prompts (first start, Add example …), tags and Filter by tag.
+#   the example commands and prompts (first start, Add example …), tags and Filter by tag,
+#   copying in a terminal where claude uses the mouse, D2 diagrams, Settings → About.
 # GUI test output (screenshots, logs) goes into one folder for this project;
 # make clean-smoke removes it.
 SMOKE_DIR ?= /tmp/multi-session-ssh-dev
@@ -155,6 +161,7 @@ smoke-ui: build
 	$(XVFB) scripts/gui-smoke-tags.sh build/bin/session-workbench $(SMOKE_OUT)-tags
 	$(XVFB) scripts/gui-smoke-copy.sh build/bin/session-workbench $(SMOKE_OUT)-copy
 	$(XVFB) scripts/gui-smoke-d2.sh build/bin/session-workbench $(SMOKE_OUT)-d2
+	$(XVFB) scripts/gui-smoke-about.sh build/bin/session-workbench $(SMOKE_OUT)-about
 
 # smoke-container: a container host with a real engine (Podman, else Docker; skipped
 #   without either): build, connect, Dockerfile window, rebuild, stop, delete. The first
