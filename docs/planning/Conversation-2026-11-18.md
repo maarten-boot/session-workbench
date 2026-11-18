@@ -25,3 +25,26 @@
   dockerfile.js, services.js, osc52.js, changes.js).
 - Left as is: the tutorial screenshot of Settings (30-settings.png) predates the What's new link;
   make tutorial-shots would renew it.
+
+## Cleaning up old releases and artifacts
+
+- The user: "can we cleanup all releases and artifacts except for the last version ?"
+- On GitHub: 20 releases (1.1 GB), 653 workflow artifacts (8.7 GB, none expired),
+  12 Actions caches (6.4 GB), 81 tags, 245 runs.
+- The user chose: delete the 19 releases before v1.1.24 and the artifacts of all runs
+  except the v1.1.24 tag build and the latest main build; keep all tags
+  (scripts/changes.sh and the package changelogs read them); keep the caches and the run history;
+  artifacts kept 14 days from now on.
+- Deleting failed: gh's token here is read-only
+  ("HTTP 403: Resource not accessible by personal access token"); nothing was deleted.
+  The token needs Contents and Actions with write access for this repository.
+- build.yml: upload-artifact gets `retention-days: 14`.
+
+## CI of d500de7 (cross-check v1.1.24)
+
+- Build run 44308744528 failed: linux-amd64 and windows-amd64 passed;
+  macos-universal was cancelled after 15 minutes in the queue, never started
+  ("The job was not acquired by Runner of type hosted even after multiple attempts"):
+  macOS runner contention, as on 2026-11-17, not the code (only README and the log changed).
+- The user re-ran the failed job in the browser (gh here has a read-only token);
+  attempt 2 passed: macos-universal got a runner after 10 minutes in the queue; release skipped.

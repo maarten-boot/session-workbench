@@ -151,6 +151,7 @@ jobs:
           name: session-workbench-${{ matrix.name }}
           path: dist/*
           if-no-files-found: error
+          retention-days: 14          # releases keep the files of tagged versions
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')
