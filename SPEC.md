@@ -1,6 +1,6 @@
 # Session Workbench — Specification
 
-Status: v1.40 (2026-11-19, app v1.1.30) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
+Status: v1.41 (2026-11-19, app v1.1.31) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
 narrow and resizable sidebar (F6), Claude backups (F7), one instance per config (F8), working
 copies and backups without rsync (F9), desktop notifications (F4), git status and the
 repository check in the Files tab (B5, B6), Notes and Web tabs (N1, W1), notes for all sessions
@@ -26,7 +26,7 @@ the mouse and OSC 52 (T2a), D2 diagrams in Notes and Q&A (N1d), what changed per
 in Settings and the release notes (§4.6 About), Check share and VM share setup… in the
 host dialog (F2c), Settings and the host dialogs moved and resized (§4.7), the logo on
 the About page and as the app icon (§4.6 About), the day each session's cost started in
-the Cost table (F18), and a limit on active sessions that warns (F19).
+the Cost table (F18), a limit on active sessions that warns (F19), and Settings with its tabs on the left (§4.6).
 Sections describe the implemented behaviour.
 
 ## 1. Problem
@@ -1030,14 +1030,17 @@ action becomes unbound), otherwise the first in this order keeps it (the other i
 next/prev session, the tabs by name, new session, quick switcher, settings, find, narrow sidebar, notes for all sessions, session 1–9, tab 1–9 (`ACTIONS` in frontend/src/keys.js). Binding the terminal's
 copy/paste/interrupt keys (Ctrl+C/V, Ctrl+Shift+C/V) is allowed with a warning. Read at start (restart after editing); Settings → Keys lists the current bindings.
 
-Settings is one dialog with pages behind a tab bar (the last one used opens again):
+Settings is one dialog with pages behind tabs in a column on its left, like a notebook (the
+last one used opens again):
 Appearance (theme, colors, fonts, description delay, tab order), Terminals (scrollback, connecting, the limit on active sessions (F19), stopping an idle claude
 (F17), reconnecting, badges, copy/paste, notifications, private shell history), Commands (command menu, start commands), Backups and
 recordings, Notes (spelling on/off, language, own words), Q&A (default engine `qa_engine`: automatic,
 Claude API, Claude Code or an own command; Claude API model `qa_model` with the API's models as
 suggestions; Claude Code model `qa_claude_model`; Claude Code program `qa_claude`, with where it is
-found), Containers (`container_engine`, with the one found), Cost (F18), Keys. The tabs fit on
-one line, the open one in bold.
+found), Containers (`container_engine`, with the one found), Cost (F18), Keys. The open tab is
+bold and joined to its page (its own border, no line between them); the column keeps the width
+of the longest name in bold, so the pages do not move when another opens, and more pages fit
+below. The dialog is 840 px wide, the pages beside the column.
 
 About: the dialog's footer shows a *What's new* button (underlined) and the version; the button
 opens the About page (no tab; not the page that opens next time): the logo

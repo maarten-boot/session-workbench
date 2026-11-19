@@ -28,7 +28,7 @@ shot 1-first
 P1=$OUT/first/notes/_app/Prompts.md
 check "first start: the Prompts page is written" grep -q '^## CrossCheck' $P1
 k ctrl+shift+comma; sleep 1
-click 935 489                                   # Save writes the config
+click 1030 446                                  # Save writes the config
 check "first start: the example commands are saved" grep -q 'claude-compact' $OUT/first/config.toml
 stop
 
@@ -46,13 +46,13 @@ start $OUT/own/config.toml
 check "existing config: no commands added at start" test "$(ncmds $OUT/own/config.toml)" = 1
 check "existing Prompts page untouched at start" test "$(grep -c '^## ' $OUT/own/notes/_app/Prompts.md)" = 1
 k ctrl+shift+comma; sleep 1
-click 519 109                                         # Settings → Commands
+click 270 179                                         # Settings → Commands (tabs on the left)
 shot 2-commands
-click 473 269                                 # Add example commands…
+click 568 236                                 # Add example commands…
 shot 3-confirm
 k Return; sleep 1
 shot 4-added
-click 461 237; k Return; sleep 1.5                    # Enter in a field saves
+click 557 203; k Return; sleep 1.5                    # Enter in a field (git-push's name) saves
 check "the examples are added" grep -q 'claude-compact' $OUT/own/config.toml
 check "the own git-push is kept" grep -q 'git push --force-with-lease' $OUT/own/config.toml
 expect "git-push once" 1 "$(grep -c 'name = "git-push"' $OUT/own/config.toml)"

@@ -1207,7 +1207,7 @@ dialog .grid {
     column-gap: 16px;
 }
 
-/* Settings pages behind a tab bar. The dialog keeps its top edge where it
+/* Settings pages behind tabs on the left. The dialog keeps its top edge where it
    is when a page of another height is shown (dialogs are centred). */
 #dlg-settings {
     margin-top: 5vh;
@@ -1224,23 +1224,39 @@ dialog .grid {
     max-width: calc(100vw - 8px);
 }
 
-/* Settings pages behind a tab bar. */
+/* Settings pages behind tabs on the left, like a notebook: a column of
+   page names, the open one joined to its page (bold, its own border, no
+   line between them); the pages to the right. More pages fit below. */
+#dlg-settings {
+    width: 840px;
+}
+
+.settings-body {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    align-items: start;
+}
+
 .settings-tabs {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 2px;
-    margin: 0 0 12px;
-    border-bottom: 1px solid var(--border-strong);
+    align-self: stretch;
+    margin-right: 16px;
+    padding-top: 2px;
+    border-right: 1px solid var(--border-strong);
 }
 
 .settings-tabs button {
-    padding: 6px 3px; /* nine pages fit on one line at the usual font size, the open one in bold */
+    padding: 6px 12px 6px 10px;
     border: 1px solid transparent;
-    border-bottom: none;
-    border-radius: 4px 4px 0 0;
+    border-right: none;
+    border-radius: 4px 0 0 4px;
     background: none;
     color: var(--text-strong);
     font: inherit;
+    text-align: left;
+    white-space: nowrap;
     cursor: pointer;
 }
 
@@ -1248,11 +1264,22 @@ dialog .grid {
     background: var(--panel-2);
 }
 
+/* The bold name's width kept free (an invisible bold copy), so opening a
+   page does not widen the column and move the pages. */
+.settings-tabs button::after {
+    content: attr(data-label);
+    display: block;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    font-weight: 600;
+}
+
 .settings-tabs button.active {
     border-color: var(--border-strong);
     background: var(--bg);
     font-weight: 600;
-    margin-bottom: -1px;
+    margin-right: -1px;
 }
 
 .settings-page {

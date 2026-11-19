@@ -38,24 +38,24 @@ APP=$!
 wait_window
 sleep 3; xdotool windowactivate --sync $W 2>/dev/null
 
-# Settings: heading at y 119, corner at (1035,569) (60,50 window origin).
+# Settings: heading at y 119, corner at (1139,529) (60,50 window origin).
 click 261 833 1 1.5                        # Settings…
 shot s1-open
 drag 500 119 400 99                        # 100 left, 20 up
 shot s2-moved
-crop s1-open 200x40+370+100 s1-head; crop s2-moved 200x40+270+80 s2-head
+crop s1-open 200x40+270+100 s1-head; crop s2-moved 200x40+170+80 s2-head
 check "Settings: the heading moved with the mouse" same s1-head s2-head
-drag 935 549 1035 749                      # the corner: 100 wider, 200 taller
+drag 1035 505 1135 705                     # the corner: 100 wider, 200 taller
 shot s3-resized
 check "Settings: the corner made it larger" differ s2-moved s3-resized
-CORNER=60x60+1000+720                      # around the corner after the drag (1035,749)
+CORNER=60x60+1100+675                      # around the corner after the drag (1135,705)
 crop s3-resized $CORNER s3-corner; crop s2-moved $CORNER s2-corner
 check "Settings: the corner is where it was dragged to" differ s2-corner s3-corner
 k Escape
 click 261 833 1 1.5                        # Settings… again
 shot s4-again
 # The heading and the corner (not the fields: the first one has the focus ring now).
-crop s4-again 200x40+270+80 s4-head; crop s4-again $CORNER s4-corner
+crop s4-again 200x40+170+80 s4-head; crop s4-again $CORNER s4-corner
 check "Settings: opened again where and as large as it was" bash -c "$(declare -f same); OUT=$OUT; same s2-head s4-head && same s3-corner s4-corner"
 k Escape
 

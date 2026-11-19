@@ -25,7 +25,8 @@ V=$($BIN -version | awk '{print $2}')
 isrelease() { echo "$V" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; }
 REL=0; isrelease && REL=1
 echo "version $V (release: $REL)"
-check "the binary carries the list of changes" grep -aq "## $V (\|## Since v.* (not released)" $BIN
+# A build with uncommitted changes on a tag (vX.Y.Z-dirty) lists that tag's section.
+check "the binary carries the list of changes" grep -aq "## ${V%-dirty} (\|## Since v.* (not released)" $BIN
 
 start() {
 	$BIN -config $CFG -profile $PROF >>$OUT/app.log 2>&1 &
@@ -54,20 +55,20 @@ else
 	check "a build between releases shows no notice" same 1-toast 3-toast
 fi
 # Settings → About from the footer's What's new button: from Appearance
-# (footer at y 540), the page changes to the list.
+# (footer at y 496), the page changes to the list.
 k ctrl+shift+comma; sleep 1
-xdotool mousemove 423 159 click 1; sleep 0.5; xdotool mousemove 1250 830; sleep 0.5
+xdotool mousemove 330 161 click 1; sleep 0.5; xdotool mousemove 1250 830; sleep 0.5
 shot 4-appearance
-xdotool mousemove 410 540 click 1; sleep 1; xdotool mousemove 1250 830; sleep 0.5
+xdotool mousemove 310 496 click 1; sleep 1; xdotool mousemove 1250 830; sleep 0.5
 shot 5-about
-crop 4-appearance 640x60+370+230 4-top
-crop 5-about 640x60+370+230 5-top
+crop 4-appearance 640x60+475+250 4-top
+crop 5-about 640x60+475+250 5-top
 check "What's new turns the page to About" differ 4-top 5-top
 # text there: not one plain colour
 written() { [ "$(convert $OUT/$1.png -colorspace gray -format '%[fx:standard_deviation>0.02]' info:)" = 1 ]; }
 check "the About page lists changes" written 5-top
 # The logo at the top left (its blue icon): mostly blue there, not the page's grey.
-blue() { [ "$(convert $OUT/$1.png -crop 40x40+425+205 +repage -format '%[fx:mean.b-mean.r>0.2]' info:)" = 1 ]; }
+blue() { [ "$(convert $OUT/$1.png -crop 40x40+520+165 +repage -format '%[fx:mean.b-mean.r>0.2]' info:)" = 1 ]; }
 check "the About page shows the logo" blue 5-about
 k Escape
 alive

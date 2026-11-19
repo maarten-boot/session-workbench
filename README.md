@@ -14,7 +14,7 @@ read its security section if the agent host can write to your repositories.
 New here? **[docs/TUTORIAL.md](docs/TUTORIAL.md)** takes you from the download to your first
 claude session, with screenshots (`make tutorial-pdf` makes a PDF of it).
 
-Status: v1.1.30: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
+Status: v1.1.31: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
 Notes (page trees with formatting, lists and check lists, spelling, D2 diagrams), Web and Q&A tabs, what changed per release (What's new), Remote tab recordings, session folders and tags,
 themes and color modes, quick switcher, a command menu and a prompts menu in the Local and Remote tabs, editable
 start commands, private shell history per session, activity badges, desktop notifications,
@@ -487,7 +487,7 @@ Off: Settings → Terminals (`private_history = false`), or per session in *Edit
 - History files may hold secrets you typed on a command line; they are as private as your
   shell's usual history.
 
-**Settings** (Ctrl+Shift+, or *Settings…*) has nine pages: Appearance (theme, colors, fonts,
+**Settings** (Ctrl+Shift+, or *Settings…*) has nine pages, listed as tabs on its left: Appearance (theme, colors, fonts,
 the delay before a session's description shows, tab order), Terminals, Commands, Backups and recordings, Notes (spelling), Q&A (who answers by default, the Claude API and
 Claude Code models, the Claude Code program with where it is found), Containers (Podman or Docker for
 container hosts, with the one found), Cost (see *What claude cost*) and Keys (the current shortcuts).

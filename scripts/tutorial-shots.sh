@@ -230,9 +230,9 @@ if [ $STEP = all ] || [ $STEP = main ]; then
 	k Escape
 	k ctrl+shift+comma; sleep 1
 	shot 30-settings
-	click 519 109; sleep 0.7
+	click 270 179; sleep 0.7                        # Commands (tabs on the left)
 	shot 31-settings-commands
-	click 888 109; sleep 0.7
+	click 270 349; sleep 0.7                        # Cost
 	shot 32-settings-cost
 	k Escape
 	stop

@@ -176,6 +176,15 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- v1.1.31 (2026-11-19): Settings with its pages as tabs on the left (SPEC §4.6). The user:
+  "what about having the settings popup use a left sided notebook tab design ?" (confirmed),
+  "yes left tabs in v1.1.31". A column of page names beside the pages, the open one bold and
+  joined to its page; an invisible bold copy of each name keeps the column as wide as the
+  longest bold name, so the pages do not move; the dialog 840 px wide (was 640), so the pages
+  are a little wider than before. Nine GUI tests clicked the old tab row or page positions and
+  were moved (about, commands, examples, cost, dialogs, idle, record, qa, activelimit), two more
+  only took screenshots of the wrong page (settings, spell); the tutorial's three Settings
+  screenshots retaken. gui-smoke-about also accepts a build with changes on a tag (vX-dirty).
 - v1.1.30 (2026-11-19): a limit on active sessions that warns (SPEC F19). The user (noted for
   the future): "add a configurable limit on the amount of active sessions with a warning when
   exceeded, allow the addition but warn", then "use the Active list, warn with a dialog and the

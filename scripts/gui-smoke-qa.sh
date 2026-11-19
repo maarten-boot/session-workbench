@@ -103,9 +103,9 @@ expect "the model chosen in the bar asks" "claude-other-model" \
 expect "the session keeps its model" "api claude-other-model" \
 	"$(python3 -c 'import json,sys; c=json.load(open(sys.argv[1])); print(c["engine"], c["model"])' $CONV)"
 k ctrl+shift+comma; sleep 1                            # Settings → Q&A: Claude Code's model haiku
-xdotool mousemove 834 159 click 1; sleep 0.7                # the Q&A page
+xdotool mousemove 330 331 click 1; sleep 0.7                # the Q&A page (tabs on the left)
 shot 7b-settings-qa                                    # shows where Claude Code was found
-xdotool mousemove 535 306 click 1; sleep 0.7; k Down; k Down; k Down; k Down; k Return
+xdotool mousemove 632 262 click 1; sleep 0.7; k Down; k Down; k Down; k Down; k Return
 k Tab; k Return; sleep 2                               # Return in the program field saves
 check "Settings saved the Claude Code model" grep -q '^ *qa_claude_model = "haiku"' $CFG
 xdotool mousemove 368 106 click 1; sleep 0.7; k Down; k Return   # the engine: Claude Code

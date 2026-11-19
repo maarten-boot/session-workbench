@@ -143,9 +143,9 @@ k ctrl+shift+3; sleep 1
 # Settings → Commands: the lists, and a command added there.
 k ctrl+shift+comma; sleep 1
 shot 4-settings-pages
-click 551 109; sleep 0.5                          # the Commands page
+click 270 179; sleep 0.5                          # the Commands page (tabs on the left)
 shot 5-settings-commands
-click 347 450; sleep 0.5                          # + Add (command menu): the new row's name has focus
+click 443 416; sleep 0.5                          # + Add (command menu): the new row's name has focus
 xdotool type --delay 10 'where'; k Tab; xdotool type --delay 10 'pwd'
 k Return; sleep 1.5                               # Enter in a field saves
 expect "a command added in Settings is saved" 'name = "where"|command = "pwd"' "$(grep -A1 'name = "where"' $CFG | tr -d ' ' | sed 's/=/ = /' | paste -sd'|')"

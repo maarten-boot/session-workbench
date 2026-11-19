@@ -83,53 +83,53 @@ cost_page
 shot 5-cost-page
 # The headings sort: Total first largest first (costs, other), again
 # smallest first (other, costs); a row is cropped and compared.
-row() { convert $OUT/$1.png -crop 414x22+381+$2 +repage $OUT/$1-r$2.png; }
+row() { convert $OUT/$1.png -crop 416x22+475+$2 +repage $OUT/$1-r$2.png; }
 same() { [ "$(compare -metric AE $OUT/$1.png $OUT/$2.png null: 2>&1 | cut -d" " -f1)" = 0 ]; }
 differ() { ! same "$@"; }
-xdotool mousemove 745 412 click 1; sleep 1; xdotool mousemove 700 860; sleep 0.5
-shot 5a-total-down; row 5a-total-down 428; row 5a-total-down 453
-xdotool mousemove 745 412 click 1; sleep 1; xdotool mousemove 700 860; sleep 0.5
-shot 5b-total-up; row 5b-total-up 428; row 5b-total-up 453
-check "Total sorts largest first, then smallest first" same 5a-total-down-r453 5b-total-up-r428
-check "the second click turns the order round" same 5a-total-down-r428 5b-total-up-r453
-check "the rows differ (so the order shows)" differ 5b-total-up-r428 5b-total-up-r453
+xdotool mousemove 866 368 click 1; sleep 1; xdotool mousemove 700 860; sleep 0.5
+shot 5a-total-down; row 5a-total-down 383; row 5a-total-down 408
+xdotool mousemove 866 368 click 1; sleep 1; xdotool mousemove 700 860; sleep 0.5
+shot 5b-total-up; row 5b-total-up 383; row 5b-total-up 408
+check "Total sorts largest first, then smallest first" same 5a-total-down-r408 5b-total-up-r383
+check "the second click turns the order round" same 5a-total-down-r383 5b-total-up-r408
+check "the rows differ (so the order shows)" differ 5b-total-up-r383 5b-total-up-r408
 k Escape; cost_page
-shot 5c-reopened; row 5c-reopened 428
-check "the sort is kept" same 5b-total-up-r428 5c-reopened-r428
+shot 5c-reopened; row 5c-reopened 383
+check "the sort is kept" same 5b-total-up-r383 5c-reopened-r383
 # Started (the first day counted): "costs" has one, "other" none (—), so
 # "costs" comes first oldest first and newest first: no start day stays last.
-xdotool mousemove 580 412 click 1; sleep 1; xdotool mousemove 700 860; sleep 0.5
-shot 5d-started-up; row 5d-started-up 428
-xdotool mousemove 580 412 click 1; sleep 1; xdotool mousemove 700 860; sleep 0.5
-shot 5e-started-down; row 5e-started-down 428
-check "Started: the session without a start day is last both ways" same 5d-started-up-r428 5e-started-down-r428
+xdotool mousemove 690 368 click 1; sleep 1; xdotool mousemove 700 860; sleep 0.5
+shot 5d-started-up; row 5d-started-up 383
+xdotool mousemove 690 368 click 1; sleep 1; xdotool mousemove 700 860; sleep 0.5
+shot 5e-started-down; row 5e-started-down 383
+check "Started: the session without a start day is last both ways" same 5d-started-up-r383 5e-started-down-r383
 # Only the name cell: the columns widen with the ▲/▼ of another heading.
-convert $OUT/5a-total-down-r428.png -crop 80x22+0+0 +repage $OUT/5a-name.png
-convert $OUT/5e-started-down-r428.png -crop 80x22+0+0 +repage $OUT/5e-name.png
+convert $OUT/5a-total-down-r383.png -crop 80x22+0+0 +repage $OUT/5a-name.png
+convert $OUT/5e-started-down-r383.png -crop 80x22+0+0 +repage $OUT/5e-name.png
 check "Started: first is the session with a cost (costs, not other)" same 5a-name 5e-name
-xdotool mousemove 520 276 click 1; xdotool type --delay 20 '10'      # today: warn at $10
-xdotool mousemove 850 276 click 1; xdotool type --delay 20 '20'      # 5-hour: warn at 20%
-xdotool mousemove 990 698 click 1; sleep 2                          # Save
+xdotool mousemove 630 232 click 1; xdotool type --delay 20 '10'      # today: warn at $10
+xdotool mousemove 960 232 click 1; xdotool type --delay 20 '20'      # 5-hour: warn at 20%
+xdotool mousemove 1090 654 click 1; sleep 2                         # Save
 shot 6-warnings
 check "the daily limit is saved" grep -q 'cost_daily_limit = 10' $CFG
 check "the 5-hour limit is saved" grep -q 'usage_5h_limit = 20' $CFG
 # Reset the total from the page: the Top bar row's total goes to $0.00.
 cost_page
-xdotool mousemove 443 646 click 1; sleep 1; k Return; sleep 1.5
+xdotool mousemove 538 602 click 1; sleep 1; k Return; sleep 1.5
 shot 7-reset
 check "the reset is kept" grep -q '"reset_at"' $LEDGER
 k Escape; sleep 0.5
 # Turned off: the figure goes.
 cost_page
-xdotool mousemove 388 196 click 1; sleep 0.3                        # Show what claude cost: off
-xdotool mousemove 990 698 click 1; sleep 2                          # Save
+xdotool mousemove 483 152 click 1; sleep 0.3                        # Show what claude cost: off
+xdotool mousemove 1090 654 click 1; sleep 2                         # Save
 shot 8-hidden
 check "Settings saves it off" grep -q 'show_cost = false' $CFG
 # Hidden, it is still counted: a new reply reaches the ledger and the Cost page.
 reply msg_4 claude-sonnet-5-5 0 100000 >>"$PROJ/conv-a.jsonl"     # $1.50
 sleep 6
 check "counted while the figure is hidden" grep -q '"msg_4"' $LEDGER
-k ctrl+shift+comma; sleep 1; xdotool mousemove 998 159 click 1; sleep 1   # Settings → Cost
+k ctrl+shift+comma; sleep 1; xdotool mousemove 330 399 click 1; sleep 1   # Settings → Cost
 shot 9-hidden-cost-page
 k Escape
 alive

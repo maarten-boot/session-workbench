@@ -191,3 +191,24 @@
   gui-smoke-activelimit.sh: crops at the bar's start, the mark clicked there, and a check in an 860 px window; 12 checks passed.
   SPEC F19, README and TUTORIAL say "starts with".
 - Next, v1.1.31 after the tag: Settings with its pages as tabs on the left (a column) instead of the row on top.
+
+## CI of 0e27405 and v1.1.30
+
+- Build run 44620236332 (main, 0e27405, the v1.1.30 cross-check) passed on the first attempt on all three platforms.
+- The v1.1.30 tag points to 0e27405 (tagged while that run was still going; it passed).
+- Release run 44620442093 passed on the first attempt: linux-amd64, windows-amd64, macos-universal and release.
+  Release v1.1.30 has 5 assets (.deb, .rpm, linux tar.gz, macOS zip, Windows zip); its notes list the 2 commits since v1.1.29.
+- Cleanup check after the release: 7 releases, no CI artifacts older than 14 days, so no warning.
+
+## Settings with tabs on the left (v1.1.31)
+
+- The user: "what about having the settings popup use a lllleft sided notbook tab design ?";
+  read back as "left-sided notebook tab design" (the pages as a column on the left) and confirmed: "yes left tabs in v1.1.31".
+- .settings-body: a grid of the tab column and the pages; the open tab bold, with its own border, joined to its page;
+  each button carries data-label, and an invisible bold copy (::after) keeps the column as wide as the longest bold name.
+  The dialog 840 px wide (was 640); the pages about 660 px wide (were 600).
+- 9 GUI tests failed on the old positions and were moved: about, commands, examples, cost (the row crops now inside the table lines), dialogs, idle, record, qa, activelimit;
+  settings and spell passed but took screenshots of the wrong page: their clicks moved too. All 11 pass now.
+- gui-smoke-about also failed "the binary carries the list of changes": a build with changes exactly on a tag is vX.Y.Z-dirty,
+  while the list's section is vX.Y.Z; the check now drops "-dirty".
+- The tutorial's 30, 31 and 32 Settings screenshots retaken (the others of that step restored).
