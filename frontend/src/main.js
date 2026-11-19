@@ -2308,6 +2308,17 @@ async function settingsDialog(page) {
         if (name !== 'about') store.set('settingsPage', name); // About opens from its button only
     };
     tabs.forEach(t => t.onclick = () => showPage(t.dataset.page));
+    // The tabs are a vertical tab list: Up/Down (Home/End) open the
+    // previous/next (first/last) page and keep the focus on its tab.
+    dlg.querySelector('.settings-tabs').onkeydown = e => {
+        const i = tabs.indexOf(document.activeElement);
+        const to = {ArrowUp: i - 1, ArrowDown: i + 1, Home: 0, End: tabs.length - 1}[e.key];
+        if (i < 0 || to === undefined) return;
+        e.preventDefault();
+        const t = tabs[(to + tabs.length) % tabs.length];
+        showPage(t.dataset.page);
+        t.focus();
+    };
     dlg.querySelector('.whats-new').onclick = () => showPage('about');
     showPage(page ?? store.get('settingsPage', 'appearance'));
     costPage(dlg, f, ui);

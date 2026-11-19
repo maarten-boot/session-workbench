@@ -44,6 +44,27 @@ shot 4-settings
 k d; k Tab; k m; k Tab; k Tab; k Tab           # theme=dark, colors=mono, -> font family
 k Return; sleep 4
 shot 5-dark-mono-live                          # no false activity badge from the repaint
+# The page tabs on the left are a vertical tab list: Down twice from
+# Appearance shows what a click on Commands shows, End what Keys shows
+# (the pages compared, not the tab column with its focus ring).
+PAGE=660x330+470+140
+pagecrop() { convert $OUT/$1.png -crop $PAGE +repage $OUT/$1-page.png; }
+k ctrl+shift+comma; sleep 0.8
+xdotool mousemove 330 161 click 1; sleep 0.5       # Appearance
+k Down; k Down; xdotool mousemove 1330 840; sleep 0.5
+shot 5c-keys-commands; pagecrop 5c-keys-commands
+xdotool mousemove 330 229 click 1; sleep 0.5; xdotool mousemove 1330 840; sleep 0.5   # Commands
+shot 5d-click-commands; pagecrop 5d-click-commands
+k End; xdotool mousemove 1330 840; sleep 0.5
+shot 5e-keys-end; pagecrop 5e-keys-end
+xdotool mousemove 330 433 click 1; sleep 0.5; xdotool mousemove 1330 840; sleep 0.5   # Keys
+shot 5f-click-keys; pagecrop 5f-click-keys
+xdotool mousemove 330 161 click 1; sleep 0.5       # back to Appearance (opens there next time)
+k Escape; sleep 0.5
+same() { [ "$(compare -metric AE $OUT/$1.png $OUT/$2.png null: 2>&1 | cut -d" " -f1)" = 0 ]; }
+check "Down Down from Appearance opens Commands" same 5c-keys-commands-page 5d-click-commands-page
+check "End opens Keys" same 5e-keys-end-page 5f-click-keys-page
+check "the pages differ (so the check means something)" bash -c "$(declare -f same); OUT=$OUT; ! same 5d-click-commands-page 5f-click-keys-page"
 # A bad value on a page that is not shown: Save says why (the form does not
 # try to focus the hidden field and silently do nothing).
 k ctrl+shift+comma; sleep 0.8

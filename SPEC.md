@@ -1040,7 +1040,9 @@ suggestions; Claude Code model `qa_claude_model`; Claude Code program `qa_claude
 found), Containers (`container_engine`, with the one found), Cost (F18), Keys. The open tab is
 bold and joined to its page (its own border, no line between them); the column keeps the width
 of the longest name in bold, so the pages do not move when another opens, and more pages fit
-below. The dialog is 840 px wide, the pages beside the column.
+below. The dialog is 840 px wide, the pages beside the column. The column is a vertical tab
+list (role tab and tabpanel, aria-selected): on a focused tab Up/Down open the previous/next
+page (round), Home/End the first/last, and the focus stays on its tab.
 
 About: the dialog's footer shows a *What's new* button (underlined) and the version; the button
 opens the About page (no tab; not the page that opens next time): the logo

@@ -341,17 +341,17 @@
         <h2>Settings</h2>
         <div class="settings-body">
         <div class="settings-tabs" role="tablist" aria-orientation="vertical">
-            <button type="button" data-page="appearance" data-label="Appearance">Appearance</button>
-            <button type="button" data-page="terminals" data-label="Terminals">Terminals</button>
-            <button type="button" data-page="commands" data-label="Commands">Commands</button>
-            <button type="button" data-page="backups" data-label="Backups and recordings">Backups and recordings</button>
-            <button type="button" data-page="notes" data-label="Notes">Notes</button>
-            <button type="button" data-page="qa" data-label="Q&amp;A">Q&amp;A</button>
-            <button type="button" data-page="containers" data-label="Containers">Containers</button>
-            <button type="button" data-page="cost" data-label="Cost">Cost</button>
-            <button type="button" data-page="keys" data-label="Keys">Keys</button>
+            <button type="button" role="tab" data-page="appearance" data-label="Appearance">Appearance</button>
+            <button type="button" role="tab" data-page="terminals" data-label="Terminals">Terminals</button>
+            <button type="button" role="tab" data-page="commands" data-label="Commands">Commands</button>
+            <button type="button" role="tab" data-page="backups" data-label="Backups and recordings">Backups and recordings</button>
+            <button type="button" role="tab" data-page="notes" data-label="Notes">Notes</button>
+            <button type="button" role="tab" data-page="qa" data-label="Q&amp;A">Q&amp;A</button>
+            <button type="button" role="tab" data-page="containers" data-label="Containers">Containers</button>
+            <button type="button" role="tab" data-page="cost" data-label="Cost">Cost</button>
+            <button type="button" role="tab" data-page="keys" data-label="Keys">Keys</button>
         </div>
-        <section class="settings-page" data-page="appearance">
+        <section class="settings-page" role="tabpanel" data-page="appearance">
             <div class="grid">
                 <label>Theme
                     <select name="theme">
@@ -383,7 +383,7 @@
                 <div class="tab-list"></div>
             </div>
         </section>
-        <section class="settings-page" data-page="terminals">
+        <section class="settings-page" role="tabpanel" data-page="terminals">
             <div class="grid">
                 <label>Scrollback (lines)
                     <input name="scrollback" type="number" min="1" max="1000000" step="1">
@@ -411,7 +411,7 @@
                 </div>
             </div>
         </section>
-        <section class="settings-page" data-page="commands">
+        <section class="settings-page" role="tabpanel" data-page="commands">
             <div class="caption">Command menu (Local and Remote tabs: right-click, or Commands ▾ in the bar)</div>
             <p class="hint">For every session, after its own (Edit… → Commands). With “run” ticked the command is typed and Enter pressed; without, it is only typed. “Local” or “Remote” always types it into that tab, also when chosen in the other one, which stays on screen (e.g. git push from this computer while you watch the Remote tab).</p>
             <div class="command-list" data-list="commands"></div>
@@ -419,7 +419,7 @@
             <p class="hint">Each session picks one in Edit… (Start in new remote session). The command runs in the agent host's interactive login shell; an empty command is just that shell. When it ends, a shell takes over.</p>
             <div class="command-list" data-list="start_commands"></div>
         </section>
-        <section class="settings-page" data-page="backups">
+        <section class="settings-page" role="tabpanel" data-page="backups">
             <div class="grid">
                 <label class="check"><input type="checkbox" name="claude_backup"> Back up the Claude data (~/.claude) of agent hosts</label>
                 <label>Back up every
@@ -466,7 +466,7 @@
                 <p class="hint record-default"></p>
             </div>
         </section>
-        <section class="settings-page" data-page="notes">
+        <section class="settings-page" role="tabpanel" data-page="notes">
             <div class="grid">
                 <label class="check"><input type="checkbox" name="spell_check"> Check spelling in the notes (misspelled words underlined; right-click one for corrections)</label>
                 <label>Spelling language
@@ -478,7 +478,7 @@
                 <p class="hint spell-hint"></p>
             </div>
         </section>
-        <section class="settings-page" data-page="qa">
+        <section class="settings-page" role="tabpanel" data-page="qa">
             <div class="grid">
                 <label>Who answers in a session's Q&amp;A tab (until it picks another)
                     <select name="qa_engine"></select><!-- filled by main.js: automatic, the API, Claude Code, own commands -->
@@ -497,7 +497,7 @@
                 <p class="hint qa-hint"></p>
             </div>
         </section>
-        <section class="settings-page" data-page="containers">
+        <section class="settings-page" role="tabpanel" data-page="containers">
             <div class="grid">
                 <label>Engine for container hosts' sessions
                     <select name="container_engine">
@@ -512,7 +512,7 @@
                     path, you are the same user inside, and ssh is reachable only from this computer.</p>
             </div>
         </section>
-        <section class="settings-page" data-page="cost">
+        <section class="settings-page" role="tabpanel" data-page="cost">
             <div class="checks">
                 <label class="check"><input type="checkbox" name="show_cost"> Show what claude cost (today and total, at API prices) and the subscription usage in the top bar</label>
                 <label class="check"><input type="checkbox" name="cost_per_session"> Each session's cost in its balloon in the list</label>
@@ -537,11 +537,11 @@
             <p class="hint">Started is the first day with a reply of claude counted in the session's transcripts, where its cost begins (— when there is none yet). The cost is counted also when the top bar does not show it: this page, the balloons and the warnings stay up to date. A warning marks the figure in the top bar with ⚠ and shows one desktop notification (once a day, once per usage window). Two sessions in the same folder share its transcripts, so the sum can be more than the top bar's total; the reset only changes the top bar's total.</p>
             <button type="button" name="reset_cost">Reset the total…</button>
         </section>
-        <section class="settings-page shortcuts" data-page="keys">
+        <section class="settings-page shortcuts" role="tabpanel" data-page="keys">
             <table></table>
             <p class="hint"></p>
         </section>
-        <section class="settings-page about-page" data-page="about">
+        <section class="settings-page about-page" role="tabpanel" data-page="about">
             <div class="about-head">
                 <img class="about-logo" alt="Session Workbench logo" width="132" height="100">
                 <p class="caption about-version"></p>

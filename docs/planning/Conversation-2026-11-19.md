@@ -212,3 +212,13 @@
 - gui-smoke-about also failed "the binary carries the list of changes": a build with changes exactly on a tag is vX.Y.Z-dirty,
   while the list's section is vX.Y.Z; the check now drops "-dirty".
 - The tutorial's 30, 31 and 32 Settings screenshots retaken (the others of that step restored).
+
+## CI of 5878aac and cross-check v1.1.31
+
+- Build run 44627521660 (5878aac) passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+- Cross-check: no other test opens Settings in another way than those fixed (the active sessions mark is in gui-smoke-activelimit).
+- Found: the tab column was role="tablist" but its buttons had no role="tab" (so aria-selected meant nothing), and no arrow keys;
+  older than v1.1.31, fixed now that the tabs are a column:
+  role="tab" on the buttons, role="tabpanel" on the pages, Up/Down (round) and Home/End open a page and keep the focus on its tab.
+- gui-smoke-settings.sh: Down Down from Appearance = a click on Commands, End = a click on Keys (page areas compared); passed.
+- SPEC §4.6, TUTORIAL and Tests.md say so.

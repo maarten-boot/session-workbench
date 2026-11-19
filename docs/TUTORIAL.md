@@ -276,7 +276,8 @@ A first start also gives you the example commands and prompts of section 11,
 Open Settings with **Settings…** at the bottom of the session list,
   or Ctrl+Shift+, (comma).
 Have a look before your first session; everything has a sensible default.
-Its pages are listed on the left; click one to open it.
+Its pages are listed on the left; click one to open it
+  (or, on a focused one, Up and Down).
 Drag its title to move it, and its bottom right corner to make it larger;
   the host dialogs work the same way.
 It keeps that place and size until you quit the app.
