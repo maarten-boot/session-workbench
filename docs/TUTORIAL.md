@@ -285,7 +285,7 @@ It keeps that place and size until you quit the app.
 | Page | What you set there |
 |---|---|
 | Appearance | theme, colors and minimum contrast, font and size, which tabs show and in which order |
-| Terminals | copy and paste keys, desktop notifications, reconnecting, stopping an idle claude |
+| Terminals | copy and paste keys, desktop notifications, reconnecting, stopping an idle claude, the limit on active sessions |
 | Commands | the command menu (section 11) and the start commands of new sessions |
 | Backups and recordings | Claude backups of each agent host, Remote tab recordings, saved working copies |
 | Notes | spelling: on or off, the language, your own words |
@@ -686,7 +686,7 @@ Notes, Files, Web and Q&A keep working.
 Settings → Terminals → *Warn above this many active sessions* sets how many may be active.
 Going over it is allowed:
   a new, activated or imported session first asks (*Add anyway*),
-  and the top bar shows **⚠ 3 active (limit 2)** until you deactivate one or raise the limit.
+  and the top bar starts with **⚠ 3 active (limit 2)** until you deactivate one or raise the limit.
 
 ![An inactive session](tutorial/24-inactive.png)
 

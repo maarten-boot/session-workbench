@@ -496,10 +496,10 @@ button.link:hover {
 }
 
 /* More sessions active than the limit (SPEC F19): ⚠ and the numbers in
-   black, the warning colour only on the border. */
+   black, the warning colour only on the border; at the start of the bar, so
+   a narrow window does not push it out of view. */
 #active-limit {
     flex: none;
-    margin-left: auto;
     background: none;
     border: 1px solid var(--danger);
     border-radius: 4px;
@@ -515,10 +515,6 @@ button.link:hover {
     background: var(--panel-2);
 }
 
-#cost:not([hidden]) + #active-limit,
-#session-path:not([hidden]) ~ #active-limit {
-    margin-left: 6px;
-}
 
 #session-path.error {
     color: var(--danger);

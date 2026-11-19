@@ -170,3 +170,24 @@
 - The new field moved the idle time select to the right column: gui-smoke-idle.sh clicked the old place and failed; fixed (863,289), passed;
   gui-smoke-settings passed.
 - Go tests, npm test (96 pass) passed.
+
+## Cross-check v1.1.30
+
+- Every way a session becomes active goes through the check: New session (keys, +, the empty window, a folder's and a host's menu),
+  Activate session (session menu and the inactive notice's button), Import session….
+- SPEC's list of the Settings pages: Terminals now names the limit (F19) and stopping an idle claude (F17, missing since then).
+- TUTORIAL's table of the Settings pages: Terminals names the limit.
+- Found: in a narrow window (860 px) the top bar runs out of room;
+  the cost figure (already before) and now also the active sessions mark are cut off at the right edge.
+  Tried: letting the tabs scroll sideways keeps both in view, but hides 5 of the 6 tabs behind a tiny scrollbar: undone.
+  Asked the user how to handle it.
+
+## CI of 62b3b9c (v1.1.30)
+
+- Build run 44617146623 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+- The user: "yes left tabs in v1.1.31; option 1 for the top bar".
+- Option 1 (in v1.1.30, a cross-check fix): the mark is now the first item of the top bar, before the session name;
+  in an 860 px window it stays in view (only the end of the bar, the cost figure, is cut off, as before).
+  gui-smoke-activelimit.sh: crops at the bar's start, the mark clicked there, and a check in an 860 px window; 12 checks passed.
+  SPEC F19, README and TUTORIAL say "starts with".
+- Next, v1.1.31 after the tag: Settings with its pages as tabs on the left (a column) instead of the row on top.

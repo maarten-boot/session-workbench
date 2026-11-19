@@ -640,7 +640,7 @@ connects it again. In `config.toml` it is `inactive = true` on the session.
 **A limit on active sessions.** Settings → Terminals → *Warn above this many active sessions*
 (`max_active_sessions`; empty: no limit) counts the sessions in the Active list. Going over it is
 allowed: New session, Activate session and Import session… first say how many are active and
-ask (*Add anyway* goes ahead), and while there are more than the limit the top bar shows
+ask (*Add anyway* goes ahead), and while there are more than the limit the top bar starts with
 **⚠ 3 active (limit 2)**; click it to change the limit.
 
 **Folders.** Group sessions into folders such as *Work* and *Private*: "+" →

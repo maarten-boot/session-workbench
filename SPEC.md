@@ -589,9 +589,10 @@ host's `local_prefix`), e.g. `~/share-local/workspace`.
     are active, the limit and how many it makes, how to get back under it (Deactivate session…)
     and where the limit is set; *Add anyway* / *Activate anyway* / *Import anyway* goes ahead,
     Cancel stops before the New session or import dialog opens (activating: nothing changes).
-  - While more sessions are active than the limit, the top bar shows "⚠ 3 active (limit 2)"
-    (black text, the warning colour only on its border; the tooltip says how to get under it);
-    a click opens Settings → Terminals.
+  - While more sessions are active than the limit, the top bar starts with "⚠ 3 active (limit
+    2)" (black text, the warning colour only on its border; the tooltip says how to get under
+    it); at the start, so a narrow window does not push it out of view (the end of the bar,
+    the cost figure, can be cut off there). A click opens Settings → Terminals.
 
 ### 4.2 Remote tab
 - R1. Implemented by spawning the system `ssh` client inside a local PTY (simplified; quoting
@@ -1030,8 +1031,8 @@ next/prev session, the tabs by name, new session, quick switcher, settings, find
 copy/paste/interrupt keys (Ctrl+C/V, Ctrl+Shift+C/V) is allowed with a warning. Read at start (restart after editing); Settings → Keys lists the current bindings.
 
 Settings is one dialog with pages behind a tab bar (the last one used opens again):
-Appearance (theme, colors, fonts, description delay, tab order), Terminals (scrollback, connecting, reconnecting,
-badges, copy/paste, notifications, private shell history), Commands (command menu, start commands), Backups and
+Appearance (theme, colors, fonts, description delay, tab order), Terminals (scrollback, connecting, the limit on active sessions (F19), stopping an idle claude
+(F17), reconnecting, badges, copy/paste, notifications, private shell history), Commands (command menu, start commands), Backups and
 recordings, Notes (spelling on/off, language, own words), Q&A (default engine `qa_engine`: automatic,
 Claude API, Claude Code or an own command; Claude API model `qa_model` with the API's models as
 suggestions; Claude Code model `qa_claude_model`; Claude Code program `qa_claude`, with where it is

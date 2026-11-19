@@ -2,7 +2,8 @@
 # Headless GUI test of the limit on active sessions (SPEC F19): with
 # max_active_sessions = 2 and 2 of 3 sessions active there is no mark;
 # activating the third asks first (Cancel leaves it inactive, Activate anyway
-# activates it), then the top bar shows ⚠ 3 active (limit 2); New session
+# activates it), then the top bar starts with ⚠ 3 active (limit 2), also in a
+# narrow window; New session
 # asks too (Cancel: no New session dialog); the mark opens Settings →
 # Terminals, and a limit of 5 saved there removes it.
 # usage: xvfb-run -a -s "-screen 0 1400x900x24" scripts/gui-smoke-activelimit.sh <binary> <outdir>
@@ -54,7 +55,7 @@ differ() { ! same "$@"; }
 # (The app writes the file again indented.)
 inactive() { awk -v id="$C" '/^ *\[\[/{s=0} $0 ~ "^ *id = \""id"\""{s=1} s && /^ *inactive = true/{f=1} END{exit !f}' $CFG; }
 active() { ! inactive; }
-TOPBAR=330x30+1010+52                       # the right end of the top bar
+TOPBAR=400x30+302+52                        # the start of the top bar
 
 $BIN -config $CFG -profile $PROF >>$OUT/app.log 2>&1 &
 APP=$!
@@ -77,6 +78,12 @@ shot 4-activated
 check "Activate anyway: gamma is active" active
 crop 4-activated $TOPBAR 4-top
 check "the top bar shows the mark (3 active, limit 2)" differ 3-top 4-top
+# A narrow window: the mark stays in view (at the start of the bar).
+xdotool windowsize $W 860 600; sleep 1.5
+MARK=180x30+302+52                          # the mark itself (the tabs beside it squeeze)
+shot 4b-narrow; crop 4b-narrow $MARK 4b-mark; crop 4-activated $MARK 4-mark
+check "in a narrow window the mark is still there" same 4-mark 4b-mark
+xdotool windowsize $W 1280 800; sleep 1.5
 # New session asks too; Cancel shows no New session dialog.
 k ctrl+shift+n; sleep 1
 shot 5-new-asks
@@ -87,7 +94,7 @@ crop 4-activated $MID 4-mid; crop 5-new-asks $MID 5-mid; crop 6-new-cancelled $M
 check "New session asks first" differ 4-mid 5-mid
 check "Cancel: no New session dialog" same 4-mid 6-mid
 # The mark opens Settings → Terminals; a limit of 5 removes it.
-click 1265 66 1 1.5
+click 390 66 1 1.5
 shot 7-settings
 check "the mark opens Settings" differ 6-new-cancelled 7-settings
 click 535 289 1 0.3; k ctrl+a; xdotool type --delay 20 '5'      # Warn above this many active sessions
