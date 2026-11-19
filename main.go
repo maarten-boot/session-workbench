@@ -23,7 +23,10 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
-//go:embed build/appicon.png
+// The window icon on Linux: 256 px, as GTK leaves out an icon too large for one
+// X request (the 1024 px build/appicon.png never showed).
+//
+//go:embed packaging/icons/256.png
 var icon []byte
 
 // version is set with -ldflags "-X main.version=..." by the Makefile and CI.

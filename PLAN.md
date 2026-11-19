@@ -176,6 +176,17 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- v1.1.28 (2026-11-19): the logo as the app icon (SPEC §4.6 App icon). The user: "add the logo
+  as the app icon". The rounded square was cut from the logo's original (tmp/image_9a8d16db.jpg,
+  355 px), made transparent outside its rounded corners, scaled to 960 px on a 1024 px canvas
+  and reduced to 128 colours (alpha kept: 321 KB instead of 825 KB, it is embedded in the
+  binary). `make icons` makes the Windows .ico and the Linux packages' icons from it. Tests:
+  TestAppIcon (sizes, transparent corners, the logo's blue in each; fails on the old icons).
+  Found on the way: the Linux window never had an icon. The binary embedded the 1024 px PNG,
+  which GTK leaves out (too large for one X request); it now embeds packaging/icons/256.png.
+  gui-smoke-icon.sh checks _NET_WM_ICON under xfwm4 (GDK sets it only when a window manager
+  supports it): it fails on the earlier binary and passes now.
+  A sharper icon would need a larger or vector original.
 - v1.1.27 (2026-11-19): the logo on Settings → About (SPEC §4.6 About). The user: "add the
   logo to settings about". The frontend build cannot load docs/logo.png (outside its folder), so
   frontend/src/assets/logo.png is a copy; TestLogoCopy keeps them the same. The name and
@@ -522,9 +533,6 @@ implementation differs from the original plan.
   Settings name a Claude Code model.
 
 ## Next (ideas, not started)
-- **The logo as the app icon** (noted 2026-11-18): docs/logo.png (from the user) could also
-  become build/appicon.png (window, menus, packages); it would need a square version without
-  the name.
 - **D2 to `github.com/d2lang/d2`.** D2 v0.8+ moved there and needs Go 1.27: move the build
   (go.mod, CI `GO_VERSION`) to Go 1.27, then the import paths in `internal/diagram`.
 - **Output folding in the Remote tab.** Collapse long output blocks (large code blocks) and jump

@@ -1,6 +1,6 @@
 # Session Workbench — Specification
 
-Status: v1.37 (2026-11-19, app v1.1.27) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
+Status: v1.38 (2026-11-19, app v1.1.28) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
 narrow and resizable sidebar (F6), Claude backups (F7), one instance per config (F8), working
 copies and backups without rsync (F9), desktop notifications (F4), git status and the
 repository check in the Files tab (B5, B6), Notes and Web tabs (N1, W1), notes for all sessions
@@ -24,8 +24,8 @@ commands and prompts (T7), tags (also automatic ones for host, folder and state)
 filter for Active and Inactive (F5a), a sortable Cost table (F18), copying where claude uses
 the mouse and OSC 52 (T2a), D2 diagrams in Notes and Q&A (N1d), what changed per release
 in Settings and the release notes (§4.6 About), Check share and VM share setup… in the
-host dialog (F2c), Settings and the host dialogs moved and resized (§4.7), and the logo on the
-About page (§4.6 About).
+host dialog (F2c), Settings and the host dialogs moved and resized (§4.7), and the logo on
+the About page and as the app icon (§4.6 About).
 Sections describe the implemented behaviour.
 
 ## 1. Problem
@@ -1033,6 +1033,12 @@ vX.Y.Z" with a *What's new* button once, at its first start (15 s; the version s
 profile); builds between releases and development builds never do. The GitHub release notes list
 the commits since the previous tag (`scripts/changes.sh --release <tag>`), followed by GitHub's
 Full Changelog link.
+
+App icon: the logo's rounded square without the name (build/appicon.png, 1024 px, transparent
+outside the square) for the macOS app and the Linux packages; `make icons` makes the Windows icon
+(build/windows/icon.ico, 256 to 16 px) and the Linux packages' 256, 128 and 48 px icons from it.
+The window icon on Linux is the 256 px one, embedded in the binary: GTK leaves out an icon too
+large for one X request, so the 1024 px one never showed.
 
 ### 4.7 Configuration
 - Single TOML file: `$XDG_CONFIG_HOME` (default `~/.config`)`/session-workbench/config.toml` (Linux),

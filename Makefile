@@ -13,7 +13,7 @@ endif
 VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 LDFLAGS = -X main.version=$(VERSION)
 
-.PHONY: check deps changes dev build build-windows packages run test test-ssh vet clean clean-smoke smoke smoke-sessions smoke-files smoke-ui smoke-container smoke-all tutorial-shots tutorial-pdf
+.PHONY: check deps changes dev build build-windows packages run test test-ssh vet clean clean-smoke smoke smoke-sessions smoke-files smoke-ui smoke-container smoke-all tutorial-shots tutorial-pdf icons
 
 check:
 	@scripts/deps.sh check
@@ -47,6 +47,12 @@ packages: build
 		&& export VERSION && packaging/gen-docs.sh "$$VERSION" \
 		&& $(NFPM) package -f packaging/nfpm.yaml -p deb -t dist/ \
 		&& $(NFPM) package -f build/pkgdocs/nfpm-rpm.yaml -p rpm -t dist/
+
+# The smaller icons from build/appicon.png (needs ImageMagick 7); TestAppIcon checks them.
+icons:
+	for s in 256 128 48; do magick build/appicon.png -filter Lanczos -resize $${s}x$${s} \
+		-define png:color-type=6 packaging/icons/$$s.png; done
+	magick build/appicon.png -define icon:auto-resize=256,128,64,48,32,16 build/windows/icon.ico
 
 run: build
 	build/bin/session-workbench
@@ -102,7 +108,7 @@ clean-smoke:
 #   the example commands and prompts (first start, Add example …), tags and Filter by tag,
 #   copying in a terminal where claude uses the mouse, D2 diagrams, Settings → About,
 #   Check share and VM share setup… in the host dialog, moving and resizing Settings and the
-#   host dialogs.
+#   host dialogs, the window icon (needs xfwm4, else skipped).
 # GUI test output (screenshots, logs) goes into one folder for this project;
 # make clean-smoke removes it.
 SMOKE_DIR ?= /tmp/multi-session-ssh-dev
@@ -166,6 +172,7 @@ smoke-ui: build
 	$(XVFB) scripts/gui-smoke-about.sh build/bin/session-workbench $(SMOKE_OUT)-about
 	$(XVFB) scripts/gui-smoke-sharecheck.sh build/bin/session-workbench $(SMOKE_OUT)-sharecheck
 	$(XVFB) scripts/gui-smoke-dialogs.sh build/bin/session-workbench $(SMOKE_OUT)-dialogs
+	$(XVFB) scripts/gui-smoke-icon.sh build/bin/session-workbench $(SMOKE_OUT)-icon
 
 # smoke-container: a container host with a real engine (Podman, else Docker; skipped
 #   without either): build, connect, Dockerfile window, rebuild, stop, delete. The first
