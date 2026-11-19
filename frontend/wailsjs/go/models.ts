@@ -287,18 +287,20 @@ export namespace config {
 
 export namespace cost {
 	
-	export class Amount {
+	export class SessionAmount {
 	    today: number;
 	    total: number;
+	    first: string;
 	
 	    static createFrom(source: any = {}) {
-	        return new Amount(source);
+	        return new SessionAmount(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.today = source["today"];
 	        this.total = source["total"];
+	        this.first = source["first"];
 	    }
 	}
 	export class Window {
@@ -358,7 +360,7 @@ export namespace cost {
 	    unpriced: string[];
 	    today_partial: boolean;
 	    total_partial: boolean;
-	    sessions: Record<string, Amount>;
+	    sessions: Record<string, SessionAmount>;
 	    usage?: Usage;
 	
 	    static createFrom(source: any = {}) {
@@ -373,7 +375,7 @@ export namespace cost {
 	        this.unpriced = source["unpriced"];
 	        this.today_partial = source["today_partial"];
 	        this.total_partial = source["total_partial"];
-	        this.sessions = this.convertValues(source["sessions"], Amount, true);
+	        this.sessions = this.convertValues(source["sessions"], SessionAmount, true);
 	        this.usage = this.convertValues(source["usage"], Usage);
 	    }
 	

@@ -176,6 +176,15 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- v1.1.29 (2026-11-19): the day each session's cost started, in the Cost table (SPEC F18). The
+  user: "can we add the start date of a session to the cost view ?", and of the two meanings
+  (the day added in the workbench, not stored; or its first claude conversation) chose the
+  second: "option 2 as that is the cost base". It comes from the cost ledger (the earliest day
+  with tokens in the session's transcripts, also a shrunk one's kept counts), so sessions from
+  before have it too; nothing new is read on the hosts. Column Started between Host and Today,
+  — without one (last in either sort order); the Sum row shows the earliest, the Top bar row
+  its reset time there. Tests: TestFirstDay, cost.test.mjs, gui-smoke-cost.sh (Started sorted
+  both ways, the session without one last; Save and Reset moved 16 px by the longer hint).
 - v1.1.28 (2026-11-19): the logo as the app icon (SPEC §4.6 App icon). The user: "add the logo
   as the app icon". The rounded square was cut from the logo's original (the user's
   tmp/image_9a8d16db.jpg, 1408x768, not in git; the square is about 355 px), made transparent outside its rounded corners, scaled to 960 px on a 1024 px canvas

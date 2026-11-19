@@ -93,31 +93,39 @@ export function sessionCost(a) {
     return `Cost: today ${dollars(a.today)} · total ${dollars(a.total)}`;
 }
 
-// costRows are the Cost page's rows: each session (in list order) with its
-// today and total, then their sum.
+// costRows are the Cost page's rows: each session (in list order) with the
+// day its cost starts (first, "" when nothing was counted), its today and
+// total, then their sum.
 export function costRows(sessions, s) {
-    const rows = sessions.map(d => ({name: d.name, host: d.host, ...(s?.sessions?.[d.id] ?? {today: 0, total: 0})}));
+    const rows = sessions.map(d => {
+        const a = s?.sessions?.[d.id];
+        return {name: d.name, host: d.host, first: a?.first ?? '', today: a?.today ?? 0, total: a?.total ?? 0};
+    });
     const sum = rows.reduce((a, r) => ({today: a.today + r.today, total: a.total + r.total}), {today: 0, total: 0});
     return {rows, sum};
 }
 
-// COST_COLUMNS are the Cost table's sortable columns; the names go up
-// first (A to Z), the amounts down (largest first).
+// COST_COLUMNS are the Cost table's sortable columns; the names and the
+// start day go up first (A to Z, oldest first), the amounts down (largest
+// first).
 export const COST_COLUMNS = [
     {key: 'name', label: 'Session', desc: false},
     {key: 'host', label: 'Host', desc: false},
+    {key: 'first', label: 'Started', desc: false},
     {key: 'today', label: 'Today', desc: true, num: true},
     {key: 'total', label: 'Total', desc: true, num: true},
 ];
 
 // sortCostRows sorts the rows by sort = {key, desc} (no key: list order);
-// equal ones by name. The rows are not changed.
+// equal ones by name; an empty text (no start day) last either way. The
+// rows are not changed.
 export function sortCostRows(rows, sort) {
     const col = COST_COLUMNS.find(c => c.key === sort?.key);
     if (!col) return rows;
     const text = (a, b) => String(a ?? '').localeCompare(String(b ?? ''), undefined, {sensitivity: 'base', numeric: true});
+    const blank = r => !col.num && !r[col.key];
     const cmp = (a, b) => col.num ? (a[col.key] ?? 0) - (b[col.key] ?? 0) : text(a[col.key], b[col.key]);
-    return [...rows].sort((a, b) => (sort.desc ? -cmp(a, b) : cmp(a, b)) || text(a.name, b.name));
+    return [...rows].sort((a, b) => (blank(a) - blank(b)) || (sort.desc ? -cmp(a, b) : cmp(a, b)) || text(a.name, b.name));
 }
 
 // nextCostSort is the sort after a click on column key: the same column

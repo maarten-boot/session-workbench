@@ -70,9 +70,26 @@ test('sessionCost', () => {
 
 test('costRows', () => {
     const {rows, sum} = costRows([{id: 'a', name: 'A', host: 'h'}, {id: 'b', name: 'B', host: 'h'}],
-        {sessions: {a: {today: 1, total: 5}}});
-    assert.deepEqual(rows, [{name: 'A', host: 'h', today: 1, total: 5}, {name: 'B', host: 'h', today: 0, total: 0}]);
+        {sessions: {a: {today: 1, total: 5, first: '2026-11-03'}}});
+    assert.deepEqual(rows, [{name: 'A', host: 'h', first: '2026-11-03', today: 1, total: 5},
+        {name: 'B', host: 'h', first: '', today: 0, total: 0}]);
     assert.deepEqual(sum, {today: 1, total: 5});
+    // Before the first count (no summary yet): all empty.
+    assert.deepEqual(costRows([{id: 'a', name: 'A', host: 'h'}], null).rows, [{name: 'A', host: 'h', first: '', today: 0, total: 0}]);
+});
+
+test('the Cost table sorts by the start day, sessions without one last', () => {
+    const rows = [
+        {name: 'none', first: '', today: 0, total: 0},
+        {name: 'nov2', first: '2026-11-03', today: 0, total: 3},
+        {name: 'oct', first: '2026-10-28', today: 0, total: 2},
+        {name: 'nov', first: '2026-11-03', today: 0, total: 1},
+    ];
+    const names = sort => sortCostRows(rows, sort).map(r => r.name);
+    assert.deepEqual(names({key: 'first'}), ['oct', 'nov', 'nov2', 'none']); // oldest first, equal days by name
+    assert.deepEqual(names({key: 'first', desc: true}), ['nov', 'nov2', 'oct', 'none']); // newest first, still last
+    assert.deepEqual(names({key: 'name'}), ['none', 'nov', 'nov2', 'oct']); // other columns as before
+    assert.deepEqual(nextCostSort(undefined, 'first'), {key: 'first', desc: false});
 });
 
 test('the Cost table sorts by a column', () => {

@@ -283,3 +283,30 @@ func TestRealTranscripts(t *testing.T) {
 	s := l.Summary(Table(nil), time.Now())
 	t.Logf("%d transcripts in %v: today $%.2f, total $%.2f, unpriced %v", len(res.Chunks), time.Since(start), s.Today, s.Total, s.Unpriced)
 }
+
+// TestFirstDay: a session's First is the earliest day counted in its
+// transcripts, also one kept from a transcript that shrank; a session with
+// nothing counted has none, and another session's days do not count.
+func TestFirstDay(t *testing.T) {
+	tok := map[string]Tokens{"claude-opus-5-5": {Output: 10}}
+	l := newLedger(&Ledger{
+		Files: map[string]*File{
+			"h\t/p/a/conv1.jsonl":          {Days: map[string]map[string]Tokens{"2026-11-12": tok, "2026-11-03": tok}},
+			"h\t/p/a/conv2.jsonl":          {Days: map[string]map[string]Tokens{"2026-11-10": tok}},
+			"h\t/p/a/conv3.jsonl\t~123456": {Days: map[string]map[string]Tokens{"2026-10-28": tok}},
+			"h\t/p/b/conv.jsonl":           {Days: map[string]map[string]Tokens{"2026-09-01": tok}},
+			"h\t/p/c/empty.jsonl":          {Days: map[string]map[string]Tokens{}},
+		},
+		Dirs: map[string][]string{"s-a": {"h\t/p/a"}, "s-c": {"h\t/p/c"}, "s-none": {"h\t/p/none"}},
+	})
+	s := l.Summary(Table(nil), time.Date(2026, 11, 19, 12, 0, 0, 0, time.Local))
+	for id, want := range map[string]string{"s-a": "2026-10-28", "s-c": "", "s-none": ""} {
+		if got := s.Sessions[id].First; got != want {
+			t.Errorf("%s: first %q, want %q", id, got, want)
+		}
+	}
+	b, _ := json.Marshal(s.Sessions["s-a"])
+	if !strings.Contains(string(b), `"first":"2026-10-28"`) || !strings.Contains(string(b), `"total":`) {
+		t.Errorf("JSON %s", b)
+	}
+}

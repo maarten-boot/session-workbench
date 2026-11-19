@@ -481,6 +481,11 @@ button.link:hover {
     outline-offset: -2px;
 }
 
+.cost-table .day {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
 .cost-table tfoot .sum td {
     font-weight: 600;
     border-top: 2px solid var(--border-strong);

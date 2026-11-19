@@ -1,6 +1,6 @@
 # Session Workbench — Specification
 
-Status: v1.38 (2026-11-19, app v1.1.28) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
+Status: v1.39 (2026-11-19, app v1.1.29) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
 narrow and resizable sidebar (F6), Claude backups (F7), one instance per config (F8), working
 copies and backups without rsync (F9), desktop notifications (F4), git status and the
 repository check in the Files tab (B5, B6), Notes and Web tabs (N1, W1), notes for all sessions
@@ -24,8 +24,9 @@ commands and prompts (T7), tags (also automatic ones for host, folder and state)
 filter for Active and Inactive (F5a), a sortable Cost table (F18), copying where claude uses
 the mouse and OSC 52 (T2a), D2 diagrams in Notes and Q&A (N1d), what changed per release
 in Settings and the release notes (§4.6 About), Check share and VM share setup… in the
-host dialog (F2c), Settings and the host dialogs moved and resized (§4.7), and the logo on
-the About page and as the app icon (§4.6 About).
+host dialog (F2c), Settings and the host dialogs moved and resized (§4.7), the logo on
+the About page and as the app icon (§4.6 About), and the day each session's cost started in
+the Cost table (F18).
 Sections describe the implemented behaviour.
 
 ## 1. Problem
@@ -525,10 +526,14 @@ host's `local_prefix`), e.g. `~/share-local/workspace`.
   warnings (with their notifications) stay current, and claude still gets the usage status line.
   - Settings → Cost: the two settings, the warning limits, the usage in words ("5-hour 23%
     (resets 20:15), 7-day 41% (resets Fri 19:15) — reported 2 min ago on <host>"), a table of
-    every session (name, host, today, total; amounts right-aligned; a click on a heading sorts by
-    that column — names A to Z, amounts largest first — and again turns it round, ▲/▼ in the
-    heading and aria-sort; equal ones by name; remembered in the web view storage; the list
-    order until then) with a Sum row and a Top bar row (the figure's today and total, since the reset), a note that the sum can be more (two
+    every session (name, host, Started, today, total; Started is the first day with a reply
+    counted in the session's transcripts, the start of its cost (— when none was counted yet;
+    from the cost ledger, so also for sessions from before); amounts right-aligned; a click on a
+    heading sorts by that column — names A to Z, Started oldest first, amounts largest first —
+    and again turns it round, ▲/▼ in the heading and aria-sort; equal ones by name; sessions
+    without a start day last either way; remembered in the web view storage; the list order
+    until then) with a Sum row (its Started the earliest) and a Top bar row (the figure's today
+    and total; after a reset "total since" with the time in Started), a note that the sum can be more (two
     sessions in one folder share its transcripts) and *Reset the total…* (asks; the top bar's
     total counts from then on; today and the sessions' own stay).
   - Warnings: `cost_daily_limit` (dollars), `usage_5h_limit` and `usage_7d_limit` (percent);

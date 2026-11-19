@@ -5,7 +5,8 @@
 # (SW_IDLE_TICK): the top bar shows today and the total at API prices, the
 # list balloon the session's own; a new reply adds to it; a model without
 # a price makes the amounts a lower bound (≥); clicking the figure resets
-# the total (today stays); the table sorts by a column heading (kept);
+# the total (today stays); the table sorts by a column heading (kept), by
+# Started with the session without a start day (—) last both ways;
 # Settings hides it, and it is still counted.
 # usage: xvfb-run -a -s "-screen 0 1400x900x24" scripts/gui-smoke-cost.sh <binary> <outdir>
 BIN=$1; OUT=$2; mkdir -p $OUT
@@ -95,22 +96,33 @@ check "the rows differ (so the order shows)" differ 5b-total-up-r428 5b-total-up
 k Escape; cost_page
 shot 5c-reopened; row 5c-reopened 428
 check "the sort is kept" same 5b-total-up-r428 5c-reopened-r428
+# Started (the first day counted): "costs" has one, "other" none (—), so
+# "costs" comes first oldest first and newest first: no start day stays last.
+xdotool mousemove 580 412 click 1; sleep 1; xdotool mousemove 700 860; sleep 0.5
+shot 5d-started-up; row 5d-started-up 428
+xdotool mousemove 580 412 click 1; sleep 1; xdotool mousemove 700 860; sleep 0.5
+shot 5e-started-down; row 5e-started-down 428
+check "Started: the session without a start day is last both ways" same 5d-started-up-r428 5e-started-down-r428
+# Only the name cell: the columns widen with the ▲/▼ of another heading.
+convert $OUT/5a-total-down-r428.png -crop 80x22+0+0 +repage $OUT/5a-name.png
+convert $OUT/5e-started-down-r428.png -crop 80x22+0+0 +repage $OUT/5e-name.png
+check "Started: first is the session with a cost (costs, not other)" same 5a-name 5e-name
 xdotool mousemove 520 276 click 1; xdotool type --delay 20 '10'      # today: warn at $10
 xdotool mousemove 850 276 click 1; xdotool type --delay 20 '20'      # 5-hour: warn at 20%
-xdotool mousemove 990 680 click 1; sleep 2                          # Save
+xdotool mousemove 990 698 click 1; sleep 2                          # Save
 shot 6-warnings
 check "the daily limit is saved" grep -q 'cost_daily_limit = 10' $CFG
 check "the 5-hour limit is saved" grep -q 'usage_5h_limit = 20' $CFG
 # Reset the total from the page: the Top bar row's total goes to $0.00.
 cost_page
-xdotool mousemove 443 630 click 1; sleep 1; k Return; sleep 1.5
+xdotool mousemove 443 646 click 1; sleep 1; k Return; sleep 1.5
 shot 7-reset
 check "the reset is kept" grep -q '"reset_at"' $LEDGER
 k Escape; sleep 0.5
 # Turned off: the figure goes.
 cost_page
 xdotool mousemove 388 196 click 1; sleep 0.3                        # Show what claude cost: off
-xdotool mousemove 990 680 click 1; sleep 2                          # Save
+xdotool mousemove 990 698 click 1; sleep 2                          # Save
 shot 8-hidden
 check "Settings saves it off" grep -q 'show_cost = false' $CFG
 # Hidden, it is still counted: a new reply reaches the ledger and the Cost page.

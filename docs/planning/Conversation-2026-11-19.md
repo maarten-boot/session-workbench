@@ -86,3 +86,39 @@
 - Go tests, npm test (91 pass) passed.
 - The user (for the next version): "can we add the start date of a session to the cost view ?"
 - The user chose option 2: "option 2 as that is the cost base" (the date of the session's first claude conversation, from its transcripts).
+
+## CI of 788605d (cross-check v1.1.28)
+
+- Build run 44549949794 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+- v1.1.28 is ready to tag at 788605d (feature 81e48f7 plus its cross-check).
+
+## CI of v1.1.28
+
+- The tag points to 788605d.
+- Release run 44551861459, attempt 1: linux-amd64 and windows-amd64 passed;
+  macos-universal was cancelled after 15 minutes waiting without a runner (no steps ran), so the release was skipped.
+  The same commit passed on macOS in run 44549949794: runner contention, not the code.
+  Next: `gh run rerun 44551861459 --failed`.
+- Cleanup check: 4 releases, no CI artifacts older than 14 days, so no warning.
+- The rerun (attempt 2) passed: macos-universal (2 minutes once it had a runner), then release.
+  Release v1.1.28 has 5 assets (.deb, .rpm, linux tar.gz, macOS zip, Windows zip);
+  its notes list the 2 commits since v1.1.27.
+- Cleanup check after the release: 5 releases, no CI artifacts older than 14 days, so no warning.
+
+## The day a session's cost started (v1.1.29)
+
+- The user: "for the next version: can we add the start date of a session to the cost view ?"
+  Two readings were offered (the day the session was added, not stored; or its first claude conversation);
+  the user: "option 2 as that is the cost base".
+- The cost ledger already keeps tokens per transcript and day, so a session's first day is the earliest of its files' days
+  (a shrunk transcript's kept counts included); nothing new is read on the hosts, older sessions get it too.
+- Summary.Sessions now holds SessionAmount (today, total, first).
+- Settings → Cost: column Started between Host and Today, — without one (with a tooltip), last in either sort order;
+  the Sum row shows the earliest day, the Top bar row "total since" with the reset time in that column; one hint sentence explains it.
+- Tests: TestFirstDay; cost.test.mjs (rows with first, sorting by Started); gui-smoke-cost.sh sorts by Started both ways.
+  Its first run failed 3 checks: the longer hint moved Save and Reset 16 px down; fixed.
+  Whole rows could not be compared across sorts (the columns widen with ▲/▼), so the name cells are compared.
+- The tutorial's 32-settings-cost.png retaken (the other shots of that step only differed in details and were restored).
+- Go tests, npm test (92 pass), gui-smoke-cost passed.
+- After the last cost run its state folder ~/.local/state/swcost343538 was there again (only claude/statusline),
+  although the script's cleanup removes it; removed by hand. Not seen in the two runs before; to watch.

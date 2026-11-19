@@ -188,6 +188,20 @@ func (l *Ledger) all(files []*File, day string) map[string]Tokens {
 	return sum
 }
 
+// firstDay is the earliest day with tokens in files ("" when none); days
+// are YYYY-MM-DD, so they sort as text.
+func firstDay(files []*File) string {
+	first := ""
+	for _, f := range files {
+		for d := range f.Days {
+			if first == "" || d < first {
+				first = d
+			}
+		}
+	}
+	return first
+}
+
 // ResetTotal starts the total again from now.
 func (l *Ledger) ResetTotal(now time.Time) {
 	l.ResetAt = now
@@ -200,6 +214,14 @@ type Amount struct {
 	Total float64 `json:"total"`
 }
 
+// SessionAmount is a session's today and total, and First: the first day
+// with a reply counted in its transcripts (the start of its cost; "" when
+// none was counted).
+type SessionAmount struct {
+	Amount
+	First string `json:"first"`
+}
+
 // Summary is what the window shows.
 type Summary struct {
 	Amount
@@ -210,7 +232,7 @@ type Summary struct {
 	Unpriced     []string          `json:"unpriced"`
 	TodayPartial bool              `json:"today_partial"`
 	TotalPartial bool              `json:"total_partial"`
-	Sessions     map[string]Amount `json:"sessions"`
+	Sessions     map[string]SessionAmount `json:"sessions"`
 	// Usage is the subscription usage last reported (nil: none yet).
 	Usage *Usage `json:"usage"`
 }
@@ -249,7 +271,7 @@ func (l *Ledger) Summary(table map[string]config.Price, now time.Time) Summary {
 		s.add(t, -1)
 		all[k] = s
 	}
-	s := Summary{Sessions: map[string]Amount{}}
+	s := Summary{Sessions: map[string]SessionAmount{}}
 	s.Total = price(table, all, unpriced)
 	s.TotalPartial = len(unpriced) > 0
 	s.Today = price(table, l.all(files, today), unpriced)
@@ -267,8 +289,11 @@ func (l *Ledger) Summary(table map[string]config.Price, now time.Time) Summary {
 				}
 			}
 		}
-		s.Sessions[id] = Amount{Today: price(table, l.all(mine, today), unpriced),
-			Total: price(table, l.all(mine, ""), unpriced)}
+		s.Sessions[id] = SessionAmount{
+			Amount: Amount{Today: price(table, l.all(mine, today), unpriced),
+				Total: price(table, l.all(mine, ""), unpriced)},
+			First: firstDay(mine),
+		}
 	}
 	s.Unpriced = slices.Sorted(maps.Keys(unpriced))
 	return s

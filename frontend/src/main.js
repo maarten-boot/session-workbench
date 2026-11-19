@@ -3110,11 +3110,16 @@ function costPage(dlg, f, ui) {
             th.setAttribute('aria-sort', on ? (sort.desc ? 'descending' : 'ascending') : 'none');
             return th;
         })));
+        // Started: the first day with a reply counted, the start of the
+        // session's cost (SPEC F18); — when there is none yet.
+        const started = first => first ? td(first, 'day') :
+            el('td', {textContent: '—', className: 'day', title: 'No reply of claude counted for this session yet'});
         page.querySelector('.cost-table tbody').replaceChildren(...sortCostRows(rows, sort).map(r =>
-            row([td(r.name), td(r.host), td(dollars(r.today), 'num'), td(dollars(r.total), 'num')])));
+            row([td(r.name), td(r.host), started(r.first), td(dollars(r.today), 'num'), td(dollars(r.total), 'num')])));
+        const earliest = rows.map(r => r.first).filter(Boolean).sort()[0] ?? '';
         page.querySelector('.cost-table tfoot').replaceChildren(
-            row([td('Sum'), td(''), td(dollars(sum.today), 'num'), td(dollars(sum.total), 'num')], 'sum'),
-            row([td('Top bar'), td(s?.since ? `total since ${s.since}` : ''), td(dollars(s?.today), 'num'), td(dollars(s?.total), 'num')], 'top'));
+            row([td('Sum'), td(''), td(earliest, 'day'), td(dollars(sum.today), 'num'), td(dollars(sum.total), 'num')], 'sum'),
+            row([td('Top bar'), td(s?.since ? 'total since' : ''), td(s?.since ?? '', 'day'), td(dollars(s?.today), 'num'), td(dollars(s?.total), 'num')], 'top'));
     };
     fill();
     page.querySelector('button[name=reset_cost]').onclick = () => confirmDialog({
