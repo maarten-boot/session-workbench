@@ -81,6 +81,7 @@ make test-ssh SSH_TARGET=localhost  # ssh/tmux, working-copy, live-share and Cla
              # transfer (SW_NO_RSYNC=1)
 make vet     # vet for linux and windows (all packages), darwin (internal packages)
 make clean   # remove build output (build/bin, frontend/dist/assets, dist, generated package docs)
+make icons   # the Windows .ico and the Linux package icons from build/appicon.png (ImageMagick)
 make smoke   # headless GUI test of terminal fidelity
 make smoke-sessions  # sessions/dialogs/switching/restart, add host, start-mode restart,
                      # one instance per config, remembered window size and position, Claude backups
@@ -96,7 +97,12 @@ make smoke-ui        # themes/colors, switcher (descriptions, resizing), setting
                      # Remote tab recordings, command menu (with groups), prompts menu and start
                      # commands, private shell history, lists and spelling in the notes,
                      # badges, exporting and importing a session (.zip and .tar.gz),
-                     # a separate setup with -profile, plain ssh logins (~2 min)
+                     # a separate setup with -profile, plain ssh logins (~2 min),
+                     # stopping an idle claude, what claude cost, the sidebar's headings,
+                     # the example commands and prompts, tags, copying where claude uses the mouse,
+                     # D2 diagrams, Settings → About, Check share and VM share setup…,
+                     # moving and resizing Settings and the host dialogs,
+                     # the window icon (needs xfwm4, else skipped)
 make smoke-container # a container host with real Podman (else Docker; SW_ENGINE=docker):
                      # build, connect, Dockerfile window, rebuild, stop, delete (first build: minutes);
                      # also the Dockerfile window itself: move, resize, right-click Copy and Paste
@@ -111,7 +117,7 @@ binary): run `make build` once on a fresh clone.
 
 The GUI tests run the real app under Xvfb and save screenshots next to their results
 (`/tmp/multi-session-ssh-dev/sw-smoke-*`; `make clean-smoke` removes them). They need (Debian/Ubuntu package names) `xvfb xdotool imagemagick tmux
-sshfs git jq dbus python3-dbus python3-gi libglib2.0-bin` (for gdbus), `ssh localhost`
+sshfs git jq dbus python3-dbus python3-gi libglib2.0-bin` (for gdbus), optionally `xfwm4` (the window icon test), `ssh localhost`
 without a password, and bash as your login shell (the history test reads bash's history file). rsync is optional: without it those runs use the built-in transfer, and
 the working-copy and backup tests run once more with `SW_NO_RSYNC=1` anyway. They use
 throwaway configs, never yours. One test on its own:

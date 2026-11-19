@@ -64,3 +64,25 @@
   with its settings in the output folder and a private bus:
   FAIL on the binary built before the fix, PASS after.
 - Go tests, npm test (91 pass) and make build passed.
+
+## CI of 81e48f7 (v1.1.28)
+
+- Build run 44547187133 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+- TestAppIcon passed on Windows too (the .ico read as bitmaps, no path or CRLF issues).
+- Next: the cross-check of v1.1.28 before the tag.
+
+## Cross-check v1.1.28
+
+- The CI build of 81e48f7 carries the new icon:
+  the macOS app's iconfile.icns (1024, 512, 256, 64, 32 px, transparent corner, the logo's blue)
+  and the Windows exe (all 6 sizes; the 256 one with a transparent corner and the blue).
+- README: `make icons` added to the make targets;
+  the smoke-ui line lists what the Makefile's comment lists (idle, cost, headings, examples, tags, copy, D2, About, Check share, dialogs, window icon);
+  xfwm4 named as optional for the GUI tests.
+- Makefile `icons`: `convert` when there is no `magick` (ImageMagick 6 on Ubuntu 24.04 and Debian);
+  `-strip`, so a second run gives the same files (the PNGs held their creation date); same output with magick and convert.
+  The 3 package icons were made again (smaller, no date); rebuilt, gui-smoke-icon passed again.
+- PLAN: the logo's original (tmp/image_9a8d16db.jpg) is the user's and not in git (tmp/ is ignored).
+- Go tests, npm test (91 pass) passed.
+- The user (for the next version): "can we add the start date of a session to the cost view ?"
+- The user chose option 2: "option 2 as that is the cost base" (the date of the session's first claude conversation, from its transcripts).

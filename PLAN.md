@@ -177,8 +177,8 @@ implementation differs from the original plan.
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
 - v1.1.28 (2026-11-19): the logo as the app icon (SPEC §4.6 App icon). The user: "add the logo
-  as the app icon". The rounded square was cut from the logo's original (tmp/image_9a8d16db.jpg,
-  355 px), made transparent outside its rounded corners, scaled to 960 px on a 1024 px canvas
+  as the app icon". The rounded square was cut from the logo's original (the user's
+  tmp/image_9a8d16db.jpg, 1408x768, not in git; the square is about 355 px), made transparent outside its rounded corners, scaled to 960 px on a 1024 px canvas
   and reduced to 128 colours (alpha kept: 321 KB instead of 825 KB, it is embedded in the
   binary). `make icons` makes the Windows .ico and the Linux packages' icons from it. Tests:
   TestAppIcon (sizes, transparent corners, the logo's blue in each; fails on the old icons).

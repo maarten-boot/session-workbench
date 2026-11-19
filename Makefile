@@ -48,11 +48,13 @@ packages: build
 		&& $(NFPM) package -f packaging/nfpm.yaml -p deb -t dist/ \
 		&& $(NFPM) package -f build/pkgdocs/nfpm-rpm.yaml -p rpm -t dist/
 
-# The smaller icons from build/appicon.png (needs ImageMagick 7); TestAppIcon checks them.
+# The smaller icons from build/appicon.png (ImageMagick: magick in 7, convert in 6 as on
+# Ubuntu 24.04 and Debian); TestAppIcon checks them.
+MAGICK ?= $(shell command -v magick || echo convert)
 icons:
-	for s in 256 128 48; do magick build/appicon.png -filter Lanczos -resize $${s}x$${s} \
-		-define png:color-type=6 packaging/icons/$$s.png; done
-	magick build/appicon.png -define icon:auto-resize=256,128,64,48,32,16 build/windows/icon.ico
+	for s in 256 128 48; do $(MAGICK) build/appicon.png -filter Lanczos -resize $${s}x$${s} \
+		-strip -define png:color-type=6 packaging/icons/$$s.png; done
+	$(MAGICK) build/appicon.png -define icon:auto-resize=256,128,64,48,32,16 build/windows/icon.ico
 
 run: build
 	build/bin/session-workbench
