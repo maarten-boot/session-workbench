@@ -542,6 +542,12 @@ implementation differs from the original plan.
   Settings name a Claude Code model.
 
 ## Next (ideas, not started)
+- **A limit on the number of active sessions** (noted 2026-11-19). The user: "add a
+  configurable limit on the amount of active sessions with a warning when exceeded, allow the
+  addition but warn." A setting (Settings and config.toml; empty or 0: no limit); making a
+  session active beyond it (new, or an inactive one started) still happens, with a warning.
+  To settle when built: what counts as active (the sidebar's Active list, F5a), and where the
+  warning shows (a dialog that still lets it go ahead, the top bar, or both).
 - **D2 to `github.com/d2lang/d2`.** D2 v0.8+ moved there and needs Go 1.27: move the build
   (go.mod, CI `GO_VERSION`) to Go 1.27, then the import paths in `internal/diagram`.
 - **Output folding in the Remote tab.** Collapse long output blocks (large code blocks) and jump

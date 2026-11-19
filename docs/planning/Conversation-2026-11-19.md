@@ -122,3 +122,25 @@
 - Go tests, npm test (92 pass), gui-smoke-cost passed.
 - After the last cost run its state folder ~/.local/state/swcost343538 was there again (only claude/statusline),
   although the script's cleanup removes it; removed by hand. Not seen in the two runs before; to watch.
+
+## Note for the future
+
+- The user: "note for future: add a configurable limit on the amount of active sessions with a warning when exceeded, allow the addition but warn."
+  Added to PLAN Next with what is still to settle (what counts as active, where the warning shows).
+
+## CI of e9a6455 (v1.1.29)
+
+- Build run 44597255792 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+- Next: the cross-check of v1.1.29 before the tag.
+
+## Cross-check v1.1.29
+
+- SPEC F18, Tests.md, README, TUTORIAL (and its retaken Cost screenshot), the hint on the page and the code agree:
+  Started between Host and Today, — last either way, the Sum row's earliest day, "total since" with the reset time.
+- The leftover ~/.local/state/swcost343538 explained: the app runs the cost script over ssh on the agent host (localhost here),
+  and that script installs the status line helper in the profile's state folder;
+  an ssh still running when the test stopped the app wrote it again after the cleanup removed it.
+- Fixed in the test: scripts/smoke-lib.sh `stop_app` stops the app and waits (up to 10 s) for the processes it started;
+  gui-smoke-cost.sh uses it and checks after its cleanup that the state folder stays removed. Two runs passed, nothing left over.
+- 48 other GUI tests still stop the app with kill/wait; only the cost test (cost script every 3 s) showed the leftover.
+  Switching them to stop_app is offered to the user, not done.

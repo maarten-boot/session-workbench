@@ -49,6 +49,21 @@ alive() {
 	if kill -0 $APP 2>/dev/null; then ok "app still running"; else fail "app exited early, see $OUT/app.log"; fi
 }
 
+# stop_app: stop the app and wait (up to 10 s) for the processes it started:
+# an ssh to the agent host still running after the app (the cost script
+# installing the status line helper) could otherwise write into a folder
+# the test's cleanup has just removed.
+stop_app() {
+	local kids=$(pgrep -P $APP)
+	kill $APP; wait $APP 2>/dev/null
+	for i in $(seq 40); do
+		local left=
+		for p in $kids; do kill -0 $p 2>/dev/null && left=1; done
+		[ -z "$left" ] && return
+		sleep 0.25
+	done
+}
+
 # pane <session id>: the text of the session's tmux session (its Remote tab).
 pane() { ssh -o BatchMode=yes localhost "tmux capture-pane -p -J -S -1000 -t '=cw-$1:'" 2>/dev/null; }
 

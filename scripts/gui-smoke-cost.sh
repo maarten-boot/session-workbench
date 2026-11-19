@@ -133,5 +133,8 @@ k ctrl+shift+comma; sleep 1; xdotool mousemove 998 159 click 1; sleep 1   # Sett
 shot 9-hidden-cost-page
 k Escape
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
+# Nothing comes back after the cleanup (an ssh of the app's still running).
+cleanup; sleep 2
+check "the test's state folder stays removed" test ! -e "$HOME/.local/state/$PROF"
 finish
