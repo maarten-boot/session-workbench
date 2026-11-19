@@ -22,6 +22,7 @@ import {TOOLCHAINS, addToolchain} from './dockerfile';
 import {SERVICES, addService, hasService} from './services';
 import {fmtSize} from './format';
 import {idleLabel, idleOptions} from './idle';
+import {addWarning, limitMark} from './activelimit';
 import {COST_COLUMNS, costParts, costRows, dollars, nextCostSort, sessionCost, sortCostRows, usageText, warnings} from './cost';
 import {STATES, keepKnown, matches, parseTags, tagCounts, toggleTag} from './tags';
 import {
@@ -607,6 +608,7 @@ const app = {
             this.renderCost();
         });
         $('#cost').addEventListener('click', () => settingsDialog('cost'));
+        $('#active-limit').addEventListener('click', () => settingsDialog('terminals'));
         await this.reload();
         const last = this.sessions.get(store.get('active', ''));
         if (this.state.ui.connect_on_start === 'eager') this.order.forEach(s => s.connectRemote());
@@ -871,6 +873,7 @@ const app = {
 
     render() {
         this.renderCost();
+        this.renderActiveLimit();
         const err = $('#config-error');
         const problems = [];
         if (this.state.config_error) problems.push(`Config not loaded — changes will not be saved:\n${this.state.config_error}`);
@@ -1091,6 +1094,16 @@ const app = {
         if (!s.notifiedAt) return;
         s.notifiedAt = 0;
         ClearNotification(s.id).catch(() => {});
+    },
+
+    // renderActiveLimit marks the top bar while more sessions are active
+    // than the limit (SPEC F19): ⚠ and the numbers, not only a colour.
+    renderActiveLimit() {
+        const b = $('#active-limit');
+        const m = limitMark(this.state.sessions, this.state.ui);
+        b.hidden = !m;
+        b.textContent = m?.text ?? '';
+        b.title = m?.title ?? '';
     },
 
     // renderCost shows today's and the total cost in the top bar (SPEC F18).
@@ -1889,10 +1902,18 @@ async function confirmDialog({title, text, ok = 'OK', cancel = 'Cancel', check, 
     return runDialog(dlg, async () => action && action(ticked()));
 }
 
+// overLimitOk asks before one more session becomes active beyond the limit
+// (SPEC F19): true to go ahead (also when within it or there is none).
+async function overLimitOk(how, name) {
+    const w = addWarning(app.state.sessions, app.state.ui, how, name);
+    return !w || confirmDialog({title: w.title, text: w.text, ok: w.ok, safe: true});
+}
+
 async function sessionDialog(s = null, presetHost = null, presetGroup = null) {
     if (!s && app.state.hosts.length === 0) {
         if (!await hostDialog()) return;
     }
+    if (!s && !await overLimitOk('create')) return;
     const dlg = $('#dlg-session');
     const f = dlg.querySelector('form');
     const editing = !!s;
@@ -2310,6 +2331,7 @@ async function settingsDialog(page) {
     const starts = new CommandList(dlg.querySelector('[data-list=start_commands]'), ui.start_commands ?? [],
         {emptyCommand: true, placeholder: {name: 'Name (start mode)'}});
     for (const k of ['theme', 'color_mode', 'min_contrast', 'scrollback', 'font_family', 'font_size', 'connect_on_start', 'description_delay']) f[k].value = ui[k] ?? '';
+    f.max_active_sessions.value = ui.max_active_sessions || ''; // empty: no limit
     f.auto_reconnect.checked = !!ui.auto_reconnect;
     f.activity_badges.checked = !!ui.activity_badges;
     f.copy_on_select.checked = !!ui.copy_on_select;
@@ -2401,6 +2423,7 @@ async function settingsDialog(page) {
         font_size: Number(f.font_size.value),
         description_delay: f.description_delay.value === '' ? 1 : Number(f.description_delay.value), // empty: the default
         connect_on_start: f.connect_on_start.value,
+        max_active_sessions: f.max_active_sessions.value === '' ? 0 : Number(f.max_active_sessions.value),
         idle_stop: f.idle_stop.value,
         show_cost: f.show_cost.checked,
         cost_per_session: f.cost_per_session.checked,
@@ -3159,8 +3182,10 @@ function fillIdleChoices(sel, value, first) {
     sel.value = value;
 }
 
-// setSessionActive activates or deactivates a session (no questions).
+// setSessionActive activates or deactivates a session; activating asks
+// first when that goes over the limit on active sessions (SPEC F19).
 async function setSessionActive(s, active) {
+    if (active && !await overLimitOk('activate', s.data.name)) return;
     try {
         await SetSessionActive(s.id, active);
     } catch (err) {
@@ -3522,6 +3547,7 @@ async function exportDialog(s) {
 async function importDialog() {
     const dlg = $('#dlg-import');
     if (dlg.open) return;
+    if (!await overLimitOk('import')) return;
     let info;
     try {
         info = await ImportOpen();

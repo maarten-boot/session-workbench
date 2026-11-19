@@ -14,7 +14,7 @@ read its security section if the agent host can write to your repositories.
 New here? **[docs/TUTORIAL.md](docs/TUTORIAL.md)** takes you from the download to your first
 claude session, with screenshots (`make tutorial-pdf` makes a PDF of it).
 
-Status: v1.1.29: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
+Status: v1.1.30: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
 Notes (page trees with formatting, lists and check lists, spelling, D2 diagrams), Web and Q&A tabs, what changed per release (What's new), Remote tab recordings, session folders and tags,
 themes and color modes, quick switcher, a command menu and a prompts menu in the Local and Remote tabs, editable
 start commands, private shell history per session, activity badges, desktop notifications,
@@ -102,7 +102,7 @@ make smoke-ui        # themes/colors, switcher (descriptions, resizing), setting
                      # the example commands and prompts, tags, copying where claude uses the mouse,
                      # D2 diagrams, Settings → About, Check share and VM share setup…,
                      # moving and resizing Settings and the host dialogs,
-                     # the window icon (needs xfwm4, else skipped)
+                     # the window icon (needs xfwm4, else skipped), the limit on active sessions
 make smoke-container # a container host with real Podman (else Docker; SW_ENGINE=docker):
                      # build, connect, Dockerfile window, rebuild, stop, delete (first build: minutes);
                      # also the Dockerfile window itself: move, resize, right-click Copy and Paste
@@ -637,6 +637,12 @@ the agent host (which stops claude there) or, for a container session, stop its 
 services; that box is ticked, untick it to keep them running. Session menu → **Activate session** (or the button)
 connects it again. In `config.toml` it is `inactive = true` on the session.
 
+**A limit on active sessions.** Settings → Terminals → *Warn above this many active sessions*
+(`max_active_sessions`; empty: no limit) counts the sessions in the Active list. Going over it is
+allowed: New session, Activate session and Import session… first say how many are active and
+ask (*Add anyway* goes ahead), and while there are more than the limit the top bar shows
+**⚠ 3 active (limit 2)**; click it to change the limit.
+
 **Folders.** Group sessions into folders such as *Work* and *Private*: "+" →
 *New folder…*, then put sessions in it from the session dialog, with *Move to
 folder…*, or by dragging a session onto the folder header; *Move to folder…* →
@@ -986,6 +992,7 @@ ctrl_copy_paste = true                    # Ctrl+C copies a selection, Ctrl+V pa
 notifications = true                      # desktop notification when claude waits (bell)
 private_history = true                    # each session's shells keep their own history
 # idle_stop = "5m"                        # stop a claude that waited this long for input (1m … 24h); resumed when opened
+# max_active_sessions = 8                 # warn when more sessions are active (0: no limit; going over is allowed)
 # show_cost = true                        # today's and the total cost of claude at API prices in the top bar (counted also when false)
 # cost_per_session = false                # also each session's in its balloon in the list
 # cost_daily_limit = 20                   # warn when today's cost reaches $20 (0: never)

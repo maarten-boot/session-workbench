@@ -455,3 +455,34 @@ output = 1
 		t.Errorf("invalid limits kept: %+v", c2.UI)
 	}
 }
+
+// TestActiveLimit: the limit on active sessions (SPEC F19) is 0 (none) to
+// 1000; a hand-edited one out of range is dropped, a good one read and kept.
+func TestActiveLimit(t *testing.T) {
+	for _, n := range []int{-1, 1001} {
+		if ActiveLimit(UI{MaxActiveSessions: n}) == nil {
+			t.Errorf("accepted %d", n)
+		}
+	}
+	for _, n := range []int{0, 1, 1000} {
+		if err := ActiveLimit(UI{MaxActiveSessions: n}); err != nil {
+			t.Errorf("%d: %v", n, err)
+		}
+	}
+	c := &Config{UI: UI{MaxActiveSessions: -3}}
+	c.applyDefaults()
+	if c.UI.MaxActiveSessions != 0 {
+		t.Errorf("invalid limit kept: %d", c.UI.MaxActiveSessions)
+	}
+	file := filepath.Join(t.TempDir(), "config.toml")
+	if err := os.WriteFile(file, []byte("[ui]\nmax_active_sessions = 6\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	got, err := Load(file)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.UI.MaxActiveSessions != 6 {
+		t.Errorf("read %d, want 6", got.UI.MaxActiveSessions)
+	}
+}

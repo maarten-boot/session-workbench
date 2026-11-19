@@ -683,6 +683,11 @@ Right-click a session (or its ⋯) for its menu:
 Notes, Files, Web and Q&A keep working.
 **Activate session** brings it back.
 
+Settings → Terminals → *Warn above this many active sessions* sets how many may be active.
+Going over it is allowed:
+  a new, activated or imported session first asks (*Add anyway*),
+  and the top bar shows **⚠ 3 active (limit 2)** until you deactivate one or raise the limit.
+
 ![An inactive session](tutorial/24-inactive.png)
 
 ## 15. Cost and subscription usage

@@ -110,7 +110,7 @@ clean-smoke:
 #   the example commands and prompts (first start, Add example …), tags and Filter by tag,
 #   copying in a terminal where claude uses the mouse, D2 diagrams, Settings → About,
 #   Check share and VM share setup… in the host dialog, moving and resizing Settings and the
-#   host dialogs, the window icon (needs xfwm4, else skipped).
+#   host dialogs, the window icon (needs xfwm4, else skipped), the limit on active sessions.
 # GUI test output (screenshots, logs) goes into one folder for this project;
 # make clean-smoke removes it.
 SMOKE_DIR ?= /tmp/multi-session-ssh-dev
@@ -175,6 +175,7 @@ smoke-ui: build
 	$(XVFB) scripts/gui-smoke-sharecheck.sh build/bin/session-workbench $(SMOKE_OUT)-sharecheck
 	$(XVFB) scripts/gui-smoke-dialogs.sh build/bin/session-workbench $(SMOKE_OUT)-dialogs
 	$(XVFB) scripts/gui-smoke-icon.sh build/bin/session-workbench $(SMOKE_OUT)-icon
+	$(XVFB) scripts/gui-smoke-activelimit.sh build/bin/session-workbench $(SMOKE_OUT)-activelimit
 
 # smoke-container: a container host with a real engine (Podman, else Docker; skipped
 #   without either): build, connect, Dockerfile window, rebuild, stop, delete. The first

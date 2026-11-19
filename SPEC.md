@@ -1,6 +1,6 @@
 # Session Workbench — Specification
 
-Status: v1.39 (2026-11-19, app v1.1.29) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
+Status: v1.40 (2026-11-19, app v1.1.30) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
 narrow and resizable sidebar (F6), Claude backups (F7), one instance per config (F8), working
 copies and backups without rsync (F9), desktop notifications (F4), git status and the
 repository check in the Files tab (B5, B6), Notes and Web tabs (N1, W1), notes for all sessions
@@ -25,8 +25,8 @@ filter for Active and Inactive (F5a), a sortable Cost table (F18), copying where
 the mouse and OSC 52 (T2a), D2 diagrams in Notes and Q&A (N1d), what changed per release
 in Settings and the release notes (§4.6 About), Check share and VM share setup… in the
 host dialog (F2c), Settings and the host dialogs moved and resized (§4.7), the logo on
-the About page and as the app icon (§4.6 About), and the day each session's cost started in
-the Cost table (F18).
+the About page and as the app icon (§4.6 About), the day each session's cost started in
+the Cost table (F18), and a limit on active sessions that warns (F19).
 Sections describe the implemented behaviour.
 
 ## 1. Problem
@@ -579,6 +579,19 @@ host's `local_prefix`), e.g. `~/share-local/workspace`.
     writes 1.25× / 2× input, web search $10 per 1000, fast 2×). A model is priced by the
     longest key it starts with. An invalid price is dropped when the config loads. A model
     without a price is left out and the amount it is in shows "≥"; the tooltip names it.
+- F19. A limit on active sessions (frontend/src/activelimit.js). `[ui] max_active_sessions`
+  (Settings → Terminals, *Warn above this many active sessions*; empty or 0: no limit, at most
+  1000; a hand-edited value out of range is dropped when the config loads) is how many sessions
+  may be active: those in the sidebar's Active list, every session not marked inactive. Going
+  over it is allowed, with a warning:
+  - Before one more session becomes active beyond the limit — New session, Activate session
+    (session menu or the inactive notice's button), Import session… — a dialog says how many
+    are active, the limit and how many it makes, how to get back under it (Deactivate session…)
+    and where the limit is set; *Add anyway* / *Activate anyway* / *Import anyway* goes ahead,
+    Cancel stops before the New session or import dialog opens (activating: nothing changes).
+  - While more sessions are active than the limit, the top bar shows "⚠ 3 active (limit 2)"
+    (black text, the warning colour only on its border; the tooltip says how to get under it);
+    a click opens Settings → Terminals.
 
 ### 4.2 Remote tab
 - R1. Implemented by spawning the system `ssh` client inside a local PTY (simplified; quoting

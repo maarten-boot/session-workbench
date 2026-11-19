@@ -144,3 +144,29 @@
   gui-smoke-cost.sh uses it and checks after its cleanup that the state folder stays removed. Two runs passed, nothing left over.
 - 48 other GUI tests still stop the app with kill/wait; only the cost test (cost script every 3 s) showed the leftover.
   Switching them to stop_app is offered to the user, not done.
+
+## CI of 35aef91 (cross-check v1.1.29)
+
+- Build run 44603889769 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+- v1.1.29 is ready to tag at 35aef91 (feature e9a6455 plus its cross-check).
+
+## CI of v1.1.29
+
+- The tag points to 35aef91.
+- Release run 44606693314 passed on the first attempt: linux-amd64, windows-amd64, macos-universal and release.
+  Release v1.1.29 has 5 assets (.deb, .rpm, linux tar.gz, macOS zip, Windows zip);
+  its notes list the 2 commits since v1.1.28.
+- Cleanup check after the release: 6 releases, no CI artifacts older than 14 days, so no warning.
+
+## A limit on active sessions (v1.1.30)
+
+- The user, on the open questions: "use the Active list, warn with a dialog and the top bar".
+- `[ui] max_active_sessions` (0: none, at most 1000; an invalid hand-edited one dropped), in Settings → Terminals.
+- frontend/src/activelimit.js counts the sessions not marked inactive (the Active list) and gives the dialog and the top bar mark.
+- New session, Activate session (menu and the inactive notice's button) and Import session… ask first when they would go over:
+  Add / Activate / Import anyway, or Cancel (nothing happens).
+- The top bar shows "⚠ 3 active (limit 2)" while over (black text, danger-coloured border); a click opens Settings → Terminals.
+- Tests: TestActiveLimit, activelimit.test.mjs (4 tests), gui-smoke-activelimit.sh (11 checks, passed).
+- The new field moved the idle time select to the right column: gui-smoke-idle.sh clicked the old place and failed; fixed (863,289), passed;
+  gui-smoke-settings passed.
+- Go tests, npm test (96 pass) passed.

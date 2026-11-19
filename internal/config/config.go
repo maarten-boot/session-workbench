@@ -215,6 +215,10 @@ type UI struct {
 	CostDailyLimit float64 `toml:"cost_daily_limit,omitempty" json:"cost_daily_limit"`
 	Usage5hLimit   int     `toml:"usage_5h_limit,omitempty" json:"usage_5h_limit"`
 	Usage7dLimit   int     `toml:"usage_7d_limit,omitempty" json:"usage_7d_limit"`
+	// MaxActiveSessions warns when more sessions are active (not inactive)
+	// than this (SPEC F19; 0 = no limit): making one more active asks first,
+	// and the top bar marks it while over. Going over is allowed.
+	MaxActiveSessions int `toml:"max_active_sessions,omitempty" json:"max_active_sessions"`
 	// RecordRemote records every session's Remote tab (input and output as
 	// readable text, see internal/reclog) unless the session says "off";
 	// RecordEvery (a Go duration, 5m to 24h) starts a new file per segment;
@@ -390,6 +394,9 @@ func (c *Config) applyDefaults() {
 	if CostLimits(c.UI) != nil { // a hand-edited limit that cannot be right: none
 		c.UI.CostDailyLimit, c.UI.Usage5hLimit, c.UI.Usage7dLimit = 0, 0, 0
 	}
+	if ActiveLimit(c.UI) != nil {
+		c.UI.MaxActiveSessions = 0
+	}
 	for m, p := range c.Prices {
 		if m == "" || !p.valid() {
 			delete(c.Prices, m) // a hand-edited price that cannot be right
@@ -467,6 +474,14 @@ func RecordEvery(u UI) (time.Duration, error) {
 		return 0, fmt.Errorf("recording segment %q: use 5m to 24h, e.g. 1h", u.RecordEvery)
 	}
 	return d, nil
+}
+
+// ActiveLimit checks the limit on active sessions: 0 (none) to 1000.
+func ActiveLimit(u UI) error {
+	if u.MaxActiveSessions < 0 || u.MaxActiveSessions > 1000 {
+		return fmt.Errorf("active sessions limit %d: use 0 (none) to 1000", u.MaxActiveSessions)
+	}
+	return nil
 }
 
 // CostLimits checks the warning limits: dollars 0 to 1,000,000, percent 0
@@ -682,6 +697,9 @@ func ValidateUI(u UI) error {
 		return err
 	}
 	if err := CostLimits(u); err != nil {
+		return err
+	}
+	if err := ActiveLimit(u); err != nil {
 		return err
 	}
 	if _, err := RecordEvery(u); err != nil {

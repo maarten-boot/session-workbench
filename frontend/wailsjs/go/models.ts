@@ -191,6 +191,7 @@ export namespace config {
 	    cost_daily_limit: number;
 	    usage_5h_limit: number;
 	    usage_7d_limit: number;
+	    max_active_sessions: number;
 	    record_remote: boolean;
 	    record_every: string;
 	    record_dir: string;
@@ -241,6 +242,7 @@ export namespace config {
 	        this.cost_daily_limit = source["cost_daily_limit"];
 	        this.usage_5h_limit = source["usage_5h_limit"];
 	        this.usage_7d_limit = source["usage_7d_limit"];
+	        this.max_active_sessions = source["max_active_sessions"];
 	        this.record_remote = source["record_remote"];
 	        this.record_every = source["record_every"];
 	        this.record_dir = source["record_dir"];

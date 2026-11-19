@@ -176,6 +176,14 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- v1.1.30 (2026-11-19): a limit on active sessions that warns (SPEC F19). The user (noted for
+  the future): "add a configurable limit on the amount of active sessions with a warning when
+  exceeded, allow the addition but warn", then "use the Active list, warn with a dialog and the
+  top bar". `max_active_sessions` (Settings → Terminals; 0: none, at most 1000); New session,
+  Activate session and Import session… ask first when they would go over it (Add / Activate /
+  Import anyway), and the top bar shows "⚠ 3 active (limit 2)" while over (a click opens
+  Settings → Terminals). Checked in the frontend from the session list (activelimit.js), as the
+  Active list counts. Tests: TestActiveLimit, activelimit.test.mjs, gui-smoke-activelimit.sh.
 - v1.1.29 (2026-11-19): the day each session's cost started, in the Cost table (SPEC F18). The
   user: "can we add the start date of a session to the cost view ?", and of the two meanings
   (the day added in the workbench, not stored; or its first claude conversation) chose the
@@ -542,12 +550,6 @@ implementation differs from the original plan.
   Settings name a Claude Code model.
 
 ## Next (ideas, not started)
-- **A limit on the number of active sessions** (noted 2026-11-19). The user: "add a
-  configurable limit on the amount of active sessions with a warning when exceeded, allow the
-  addition but warn." A setting (Settings and config.toml; empty or 0: no limit); making a
-  session active beyond it (new, or an inactive one started) still happens, with a warning.
-  To settle when built: what counts as active (the sidebar's Active list, F5a), and where the
-  warning shows (a dialog that still lets it go ahead, the top bar, or both).
 - **D2 to `github.com/d2lang/d2`.** D2 v0.8+ moved there and needs Go 1.27: move the build
   (go.mod, CI `GO_VERSION`) to Go 1.27, then the import paths in `internal/diagram`.
 - **Output folding in the Remote tab.** Collapse long output blocks (large code blocks) and jump

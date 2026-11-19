@@ -47,6 +47,7 @@
         <span id="sync-actions"></span>
         <span id="session-path"></span>
         <button id="cost" class="cost" hidden></button>
+        <button id="active-limit" type="button" hidden></button>
     </header>
     <div id="panes"></div>
     <div id="empty" hidden>
@@ -391,6 +392,9 @@
                         <option value="lazy">when first viewed</option>
                         <option value="eager">all at startup (not inactive sessions)</option>
                     </select>
+                </label>
+                <label>Warn above this many active sessions
+                    <input name="max_active_sessions" type="number" min="0" max="1000" step="1" placeholder="no limit">
                 </label>
                 <label>Stop claude when it waited for input
                     <select name="idle_stop"></select>

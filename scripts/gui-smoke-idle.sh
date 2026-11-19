@@ -144,7 +144,7 @@ k Escape
 k ctrl+shift+comma; sleep 1                                    # Settings
 xdotool mousemove 510 159 click 1; sleep 1                # → Terminals
 shot 7-settings
-xdotool mousemove 535 289 click 1; sleep 0.8; k Home; k Return   # the idle time: never
+xdotool mousemove 863 289 click 1; sleep 0.8; k Home; k Return   # the idle time: never (right of the active sessions limit)
 xdotool mousemove 990 574 click 1; sleep 2                # Save
 check "Settings saves it (never: no idle_stop left)" sh -c "! grep -q idle_stop $CFG"
 alive
