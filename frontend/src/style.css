@@ -1667,6 +1667,28 @@ dialog .buttons .whats-new {
     font-size: inherit;
 }
 
+/* The logo with the name and version beside it in black text (the
+   logo's green name is a picture, below 4.5:1). */
+.about-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.about-logo {
+    height: 100px;
+    width: auto;
+    flex: none;
+    border-radius: 6px;
+}
+
+.about-head .about-version {
+    margin: 0;
+    color: var(--text-strong);
+    font-weight: 600;
+}
+
 .about-page .changes {
     max-height: 26rem;
     overflow-y: auto;

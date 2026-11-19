@@ -296,7 +296,7 @@ It keeps that place and size until you quit the app.
 
 All of it is stored in `config.toml` (section 17), which you can also edit by hand.
 **What's new** at the bottom left, before the version,
-  lists what changed in this and the previous releases.
+  shows the logo and the version, and lists what changed in this and the previous releases.
 
 ## 7. Hosts
 

@@ -14,7 +14,7 @@ read its security section if the agent host can write to your repositories.
 New here? **[docs/TUTORIAL.md](docs/TUTORIAL.md)** takes you from the download to your first
 claude session, with screenshots (`make tutorial-pdf` makes a PDF of it).
 
-Status: v1.1.26: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
+Status: v1.1.27: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
 Notes (page trees with formatting, lists and check lists, spelling, D2 diagrams), Web and Q&A tabs, what changed per release (What's new), Remote tab recordings, session folders and tags,
 themes and color modes, quick switcher, a command menu and a prompts menu in the Local and Remote tabs, editable
 start commands, private shell history per session, activity badges, desktop notifications,
@@ -1183,7 +1183,8 @@ build/                 app icon, Windows/macOS resources for Wails
 packaging/             .desktop file, icons, man page, copyright, nfpm config for .deb/.rpm,
                        gen-docs.sh (changelog and man page per version)
 docs/                  CONNECTIVITY.md: agent host setup, file access modes, security;
-                       logo.png (the README's logo)
+                       logo.png (the README's logo; frontend/src/assets/logo.png is its copy
+                       for Settings → About)
 scripts/deps.sh        make check / make deps
 scripts/gui-smoke*.sh  headless GUI tests; scripts/smoke-lib.sh holds their shared checks,
                        scripts/fake-notifyd.py stands in for the desktop's notification service

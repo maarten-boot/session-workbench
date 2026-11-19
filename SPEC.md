@@ -1,6 +1,6 @@
 # Session Workbench — Specification
 
-Status: v1.36 (2026-11-18, app v1.1.26) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
+Status: v1.37 (2026-11-19, app v1.1.27) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
 narrow and resizable sidebar (F6), Claude backups (F7), one instance per config (F8), working
 copies and backups without rsync (F9), desktop notifications (F4), git status and the
 repository check in the Files tab (B5, B6), Notes and Web tabs (N1, W1), notes for all sessions
@@ -24,7 +24,8 @@ commands and prompts (T7), tags (also automatic ones for host, folder and state)
 filter for Active and Inactive (F5a), a sortable Cost table (F18), copying where claude uses
 the mouse and OSC 52 (T2a), D2 diagrams in Notes and Q&A (N1d), what changed per release
 in Settings and the release notes (§4.6 About), Check share and VM share setup… in the
-host dialog (F2c), and Settings and the host dialogs moved and resized (§4.7).
+host dialog (F2c), Settings and the host dialogs moved and resized (§4.7), and the logo on the
+About page (§4.6 About).
 Sections describe the implemented behaviour.
 
 ## 1. Problem
@@ -1020,7 +1021,8 @@ found), Containers (`container_engine`, with the one found), Cost (F18), Keys. T
 one line, the open one in bold.
 
 About: the dialog's footer shows a *What's new* button (underlined) and the version; the button opens the About
-page (no tab; not the page that opens next time): the version, then what changed per release,
+page (no tab; not the page that opens next time): the logo (frontend/src/assets/logo.png, a
+copy of the README's docs/logo.png) with the name and version beside it in black, then what changed per release,
 the subject line of each commit (merges left out), newest first: the commits since the last tag
 ("Since vX (not released)", when there are any), then the last 5 releases with their dates, at
 most 60 commits each, drawn with `textContent`. `scripts/changes.sh` writes them at build time

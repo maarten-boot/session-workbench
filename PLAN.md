@@ -176,6 +176,11 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- v1.1.27 (2026-11-19): the logo on Settings → About (SPEC §4.6 About). The user: "add the
+  logo to settings about". The frontend build cannot load docs/logo.png (outside its folder), so
+  frontend/src/assets/logo.png is a copy; TestLogoCopy keeps them the same. The name and
+  version stay black text beside it (the logo's green name is below 4.5:1). Tests:
+  TestLogoCopy, gui-smoke-about (the logo's blue at its place).
 - v1.1.26 (2026-11-18): Settings, Add/Edit host and VM share setup… move by their heading and
   resize by their corner (SPEC §4.7). The user: "what happened with the settings popup resize
   and move ?"; it had never been asked for (only the Dockerfile window, v1.1.2), then "yes add
@@ -517,9 +522,9 @@ implementation differs from the original plan.
   Settings name a Claude Code model.
 
 ## Next (ideas, not started)
-- **The logo in the app** (noted 2026-11-18): docs/logo.png (the README's, from the user) in
-  Settings → About, possibly as the app icon (build/appicon.png) too. Its green "WORKBENCH" on
-  the light background is below 4.5:1, so in the app the name stays black text beside it.
+- **The logo as the app icon** (noted 2026-11-18): docs/logo.png (from the user) could also
+  become build/appicon.png (window, menus, packages); it would need a square version without
+  the name.
 - **D2 to `github.com/d2lang/d2`.** D2 v0.8+ moved there and needs Go 1.27: move the build
   (go.mod, CI `GO_VERSION`) to Go 1.27, then the import paths in `internal/diagram`.
 - **Output folding in the Remote tab.** Collapse long output blocks (large code blocks) and jump

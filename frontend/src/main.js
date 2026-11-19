@@ -16,6 +16,7 @@ import {commandItems, commandLabel, homeItem, missingCommands} from './cmdmenu';
 import {$, balloon, el, hideBalloon, hideMenu, movable, showMenu, store, textMenu, toast, toastButton} from './ui';
 import {loadChanges, newVersion} from './changes';
 import {guideSections, shareLines} from './vmshare';
+import logoUrl from './assets/logo.png'; // a copy of docs/logo.png (logo_test.go)
 import {ClipboardSetText, EventsOff, EventsOn, WindowSetTitle} from '../wailsjs/runtime/runtime';
 import {TOOLCHAINS, addToolchain} from './dockerfile';
 import {SERVICES, addService, hasService} from './services';
@@ -2241,6 +2242,7 @@ const ACTION_LABELS = {
 // version and what changed per release (SPEC §4.6), drawn with textContent.
 function aboutPage(dlg) {
     const page = dlg.querySelector('.settings-page[data-page="about"]');
+    page.querySelector('.about-logo').src = logoUrl;
     Version().then(v => page.querySelector('.about-version').textContent = `${app.appName ?? 'Session Workbench'} ${v}`);
     loadChanges().then(sections => {
         const box = page.querySelector('.changes');

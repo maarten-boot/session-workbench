@@ -1,5 +1,5 @@
 #!/bin/bash
-# Headless GUI test of Settings → About (SPEC §4.6): the binary carries the
+# Headless GUI test of Settings → About (SPEC §4.6): the logo; the binary carries the
 # list of changes (scripts/changes.sh at build time); a release build shows
 # "What's new" once on its first start, its button opens Settings → About
 # with the version and the changes per release; the next start shows no
@@ -66,6 +66,9 @@ check "What's new turns the page to About" differ 4-top 5-top
 # text there: not one plain colour
 written() { [ "$(convert $OUT/$1.png -colorspace gray -format '%[fx:standard_deviation>0.02]' info:)" = 1 ]; }
 check "the About page lists changes" written 5-top
+# The logo at the top left (its blue icon): mostly blue there, not the page's grey.
+blue() { [ "$(convert $OUT/$1.png -crop 40x40+425+205 +repage -format '%[fx:mean.b-mean.r>0.2]' info:)" = 1 ]; }
+check "the About page shows the logo" blue 5-about
 k Escape
 alive
 kill $APP; wait $APP 2>/dev/null
