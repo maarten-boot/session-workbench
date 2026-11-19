@@ -1020,18 +1020,19 @@ suggestions; Claude Code model `qa_claude_model`; Claude Code program `qa_claude
 found), Containers (`container_engine`, with the one found), Cost (F18), Keys. The tabs fit on
 one line, the open one in bold.
 
-About: the dialog's footer shows a *What's new* button (underlined) and the version; the button opens the About
-page (no tab; not the page that opens next time): the logo (frontend/src/assets/logo.png, a
-copy of the README's docs/logo.png) with the name and version beside it in black, then what changed per release,
-the subject line of each commit (merges left out), newest first: the commits since the last tag
-("Since vX (not released)", when there are any), then the last 5 releases with their dates, at
-most 60 commits each, drawn with `textContent`. `scripts/changes.sh` writes them at build time
-(`make build`, `make dev`, CI) to `frontend/public/changes.txt` (not in git), which the build
-carries as `/changes.txt`; a build without it says it has no list. A release build (version
-`vX.Y.Z`) shows "Session Workbench vX.Y.Z" with a *What's new* button once, at its first start
-(15 s; the version seen is kept per profile); builds between releases and development builds
-never do. The GitHub release notes list the commits since the previous tag
-(`scripts/changes.sh --release <tag>`), followed by GitHub's Full Changelog link.
+About: the dialog's footer shows a *What's new* button (underlined) and the version; the button
+opens the About page (no tab; not the page that opens next time): the logo
+(frontend/src/assets/logo.png, a copy of the README's docs/logo.png) with the name and version
+beside it in black, then what changed per release, the subject line of each commit (merges left
+out), newest first: the commits since the last tag ("Since vX (not released)", when there are
+any), then the last 5 releases with their dates, at most 60 commits each, drawn with
+`textContent`. `scripts/changes.sh` writes them at build time (`make build`, `make dev`, CI) to
+`frontend/public/changes.txt` (not in git), which the build carries as `/changes.txt`; a build
+without it says it has no list. A release build (version `vX.Y.Z`) shows "Session Workbench
+vX.Y.Z" with a *What's new* button once, at its first start (15 s; the version seen is kept per
+profile); builds between releases and development builds never do. The GitHub release notes list
+the commits since the previous tag (`scripts/changes.sh --release <tag>`), followed by GitHub's
+Full Changelog link.
 
 ### 4.7 Configuration
 - Single TOML file: `$XDG_CONFIG_HOME` (default `~/.config`)`/session-workbench/config.toml` (Linux),

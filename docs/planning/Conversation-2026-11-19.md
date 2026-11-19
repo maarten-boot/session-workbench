@@ -17,3 +17,15 @@
 - PLAN Next keeps one idea: the logo as the app icon (needs a square version without the name).
 - Tests: go test ./... and npm test (91) pass; gui-smoke-about passes.
 - Next, by the rule of 2026-11-18: after this commit's CI, a cross-check before the tag.
+
+## CI of 1913d56 (v1.1.27, the logo on About)
+
+- Build run 44503984673 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+  TestLogoCopy ran on all three (the logo file is binary: no CRLF on Windows).
+
+## Cross-check v1.1.27 (before the tag)
+
+- SPEC §4.6 About, PLAN, Tests.md, README (status, layout) and TUTORIAL section 6 match the code;
+  the two logo files are equal; version 1.1.27 in wails.json, README and SPEC.
+- No tutorial screenshot shows the About page, so none is out of date.
+- Fixed: SPEC's About paragraph had lines of up to 117 characters; rewrapped to at most 96.
