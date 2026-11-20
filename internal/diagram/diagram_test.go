@@ -34,6 +34,9 @@ func TestSVG(t *testing.T) {
 	if string(dark) == string(light) {
 		t.Error("dark is the same as light")
 	}
+	if !strings.Contains(string(dark), `fill="#FFFFFF"`) || strings.Contains(string(dark), `fill="#000000"`) {
+		t.Error("dark text not white")
+	}
 }
 
 func TestSVGErrors(t *testing.T) {

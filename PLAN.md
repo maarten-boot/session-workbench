@@ -184,6 +184,14 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- v1.1.32 (2026-11-20): D2 from its new home, `github.com/d2lang/d2` v0.9.0 (was
+  `oss.terrastruct.com/d2` v0.7.2, the last release under that name; util-go likewise), and the
+  build on Go 1.27 (go.mod `go 1.27.0`, CI `GO_VERSION: '1.27.x'`), which v0.9.0 needs.
+  The user: "explain the D2 move to github.com/d2lang/d2", then "yes start B as v1.1.32".
+  Only the import paths changed; D2's API calls stayed the same.
+  D2 now lays out with Go ports of dagre and ELK instead of their JavaScript run in goja,
+  so the Linux binary (make build) shrinks from 52.2 to 47.9 MB.
+  Drawings look as before (system fonts, black text); TestSVG now also checks that dark text is white.
 - v1.1.31 (2026-11-19): Settings with its pages as tabs on the left (SPEC §4.6). The user:
   "what about having the settings popup use a left sided notebook tab design ?" (confirmed),
   "yes left tabs in v1.1.31". A column of page names beside the pages, the open one bold and
@@ -567,8 +575,6 @@ implementation differs from the original plan.
   Settings name a Claude Code model.
 
 ## Next (ideas, not started)
-- **D2 to `github.com/d2lang/d2`.** D2 v0.8+ moved there and needs Go 1.27: move the build
-  (go.mod, CI `GO_VERSION`) to Go 1.27, then the import paths in `internal/diagram`.
 - **Output folding in the Remote tab.** Collapse long output blocks (large code blocks) and jump
   between interactive prompts.
   - Frontend: hook into `frontend/src/terminal.js`. Explore xterm.js markers

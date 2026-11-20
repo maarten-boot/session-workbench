@@ -20,7 +20,7 @@ env:
   WAILS_VERSION: v2.16.0
   # Release binaries are built with the newest patch of this Go series
   # (security fixes); go.mod's go line is only the minimum.
-  GO_VERSION: '1.26.x'
+  GO_VERSION: '1.27.x'
   # .deb / .rpm packaging: official nfpm release binary, checksum-verified.
   NFPM_VERSION: 2.48.0
   NFPM_SHA256: 6d7f9a28b2f397934403950fcbba83f598b08d02edbe79a0815b3b4897341750

@@ -14,15 +14,15 @@ import (
 	"sync"
 	"time"
 
-	"oss.terrastruct.com/d2/d2graph"
-	"oss.terrastruct.com/d2/d2layouts/d2dagrelayout"
-	"oss.terrastruct.com/d2/d2layouts/d2elklayout"
-	"oss.terrastruct.com/d2/d2lib"
-	"oss.terrastruct.com/d2/d2renderers/d2svg"
-	"oss.terrastruct.com/d2/d2target"
-	"oss.terrastruct.com/d2/lib/log"
-	"oss.terrastruct.com/d2/lib/textmeasure"
-	"oss.terrastruct.com/util-go/go2"
+	"github.com/d2lang/d2/d2graph"
+	"github.com/d2lang/d2/d2layouts/d2dagrelayout"
+	"github.com/d2lang/d2/d2layouts/d2elklayout"
+	"github.com/d2lang/d2/d2lib"
+	"github.com/d2lang/d2/d2renderers/d2svg"
+	"github.com/d2lang/d2/d2target"
+	"github.com/d2lang/d2/lib/log"
+	"github.com/d2lang/d2/lib/textmeasure"
+	"github.com/d2lang/util-go/go2"
 )
 
 // MaxSource is the largest diagram text drawn (bytes).

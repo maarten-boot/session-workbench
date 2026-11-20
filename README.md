@@ -14,7 +14,7 @@ read its security section if the agent host can write to your repositories.
 New here? **[docs/TUTORIAL.md](docs/TUTORIAL.md)** takes you from the download to your first
 claude session, with screenshots (`make tutorial-pdf` makes a PDF of it).
 
-Status: v1.1.31: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
+Status: v1.1.32: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
 Notes (page trees with formatting, lists and check lists, spelling, D2 diagrams), Web and Q&A tabs, what changed per release (What's new), Remote tab recordings, session folders and tags,
 themes and color modes, quick switcher, a command menu and a prompts menu in the Local and Remote tabs, editable
 start commands, private shell history per session, activity badges, desktop notifications,
@@ -53,7 +53,7 @@ previous tag (`scripts/changes.sh --release vX.Y.Z`).
 
 ## Build
 
-Requirements: Go 1.26+, Node 18+ with npm, Wails CLI v2.16
+Requirements: Go 1.27+, Node 18+ with npm, Wails CLI v2.16
 (`go install github.com/wailsapp/wails/v2/cmd/wails@v2.16.0`).
 
 Linux also needs `libgtk-3-dev libwebkit2gtk-4.1-dev build-essential pkg-config`.
@@ -1210,5 +1210,5 @@ scripts/changes.sh     what changed per release: Settings → About, the release
 ## Third-party code
 
 The app is MIT-licensed (LICENSE). It includes, among others,
-[D2](https://github.com/terrastruct/d2) (Mozilla Public License 2.0, unchanged) to draw diagrams
+[D2](https://github.com/d2lang/d2) (Mozilla Public License 2.0, unchanged) to draw diagrams
 and [golang.design/x/clipboard](https://github.com/golang-design/clipboard) (MIT) to copy them as images.

@@ -1,6 +1,6 @@
 # Session Workbench — Specification
 
-Status: v1.41 (2026-11-19, app v1.1.31) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
+Status: v1.42 (2026-11-20, app v1.1.32) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
 narrow and resizable sidebar (F6), Claude backups (F7), one instance per config (F8), working
 copies and backups without rsync (F9), desktop notifications (F4), git status and the
 repository check in the Files tab (B5, B6), Notes and Web tabs (N1, W1), notes for all sessions
@@ -846,7 +846,7 @@ host's `local_prefix`), e.g. `~/share-local/workspace`.
   files, so edits outside the app count), and after every save in the Notes tab. The notes for
   all sessions mark their tree the same way.
 - N1d. D2 diagrams: a closed ```` ```d2 ```` block (Notes, Q&A answers) is drawn by the app with
-  D2's Go library (`internal/diagram`, `oss.terrastruct.com/d2` v0.7.2, MPL-2.0; no `d2` program
+  D2's Go library (`internal/diagram`, `github.com/d2lang/d2` v0.9.0, MPL-2.0; no `d2` program
   needed): layout dagre, or elk when the diagram's `vars.d2-config.layout-engine` says so (TALA
   refused); D2's default theme, Dark Mauve in the dark theme, text black (white when dark);
   the system's fonts (the web view draws no text with fonts embedded in an SVG image), bold and
@@ -1137,7 +1137,7 @@ large for one X request, so the 1024 px one never showed.
             │ PTY: local shell              │ PTY: ssh → agent host → tmux → claude
 ```
 
-- **Language/framework**: Go 1.26+ + Wails v2.16 (v3 is still beta). On Ubuntu 24.04+ build with
+- **Language/framework**: Go 1.27+ + Wails v2.16 (v3 is still beta). On Ubuntu 24.04+ build with
   `-tags webkit2_41` (libwebkit2gtk-4.1). Frontend is vanilla JS with xterm.js (terminals) and
   CodeMirror 6 (notes editor) installed via npm and bundled by Vite 6 (Node 18+); no frontend framework.
 - **PTY**: `github.com/aymanbagabas/go-pty` (Unix pty via creack/pty + Windows ConPTY behind one
