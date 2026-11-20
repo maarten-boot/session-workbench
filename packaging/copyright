@@ -22,8 +22,10 @@ Comment: D2 draws the diagrams in Notes and Q&A, built into the program unchange
  /usr/share/doc/session-workbench/THIRD-PARTY-NOTICES.txt.
 
 Files: (built in) Go modules under the Apache License 2.0
-Copyright: Anthropic, PBC (anthropic-sdk-go); The OpenTelemetry Authors; The logr Authors;
- the authors of purego, ordered-map, go-reflector and go.yaml.in/yaml/v4
+Copyright: 2023 Anthropic, PBC (anthropic-sdk-go); The OpenTelemetry Authors (otel, metric,
+ trace, auto/sdk); 2019-2021 The logr Authors (logr, stdr); 2022-2025 The Ebitengine Authors
+ (purego); 2011-2016 Canonical Ltd. and 2006-2010 Kirill Simonov (go.yaml.in/yaml/v4); the
+ authors of ordered-map and go-reflector (no names given)
 License: Apache-2.0
 Comment: The list of modules, their licence files and NOTICE files are in
  /usr/share/doc/session-workbench/THIRD-PARTY-NOTICES.txt (part 4).

@@ -116,3 +116,20 @@
   THIRD-PARTY-NOTICES.txt 64 → 115 KB.
 - TestThirdPartyNotices checks the listed versions against go.mod; a wrong version fails it (tried).
 - Version 1.2.0: wails.json, README, SPEC v1.43, PLAN.
+
+## CI of 413bf68 (v1.2.0)
+
+- The scratchpad poll script had been removed (scratchpad cleared); recreated, the run polled again.
+- Build run 44821172928 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+- The Linux tar.gz carries the new THIRD-PARTY-NOTICES.txt (115 KB, the same as in git).
+
+## Cross-check of v1.2.0
+
+- The user: "do a crosscheck".
+- scripts/notices.sh run again: THIRD-PARTY-NOTICES.txt identical to the committed one.
+- packaging/copyright's Apache section named holders without checking them; now from the modules' sources:
+  2023 Anthropic, PBC; The OpenTelemetry Authors; 2019-2021 The logr Authors; 2022-2025 The Ebitengine Authors (purego, missing before);
+  2011-2016 Canonical Ltd. and 2006-2010 Kirill Simonov (yaml/v4, missing before); ordered-map and go-reflector name nobody.
+- README, SPEC §7.6, Tests.md, Makefile and the version (wails.json 1.2.0, README, SPEC v1.43, PLAN) agree.
+- Limit, not changed: TestThirdPartyNotices catches a listed module whose version changed, not a new Apache-licensed module;
+  `make notices` after module updates covers that.
