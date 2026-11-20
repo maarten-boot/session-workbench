@@ -51,9 +51,10 @@ packages: build
 # The smaller icons from build/appicon.png (ImageMagick: magick in 7, convert in 6 as on
 # Ubuntu 24.04 and Debian); TestAppIcon checks them.
 MAGICK ?= $(shell command -v magick || echo convert)
-# Licences and notices of D2 and of the Apache-licensed Go modules, for the
-# versions in go.mod (THIRD-PARTY-NOTICES.txt, shipped beside the binary);
-# after updating a module (TestThirdPartyNotices says when).
+# Licences and notices of everything the program is built from, for the
+# versions in go.mod and frontend/package-lock.json (THIRD-PARTY-NOTICES.txt,
+# shipped beside the binary); after updating a module or package
+# (TestThirdPartyNotices says when). Needs frontend/node_modules (npm ci).
 notices:
 	scripts/notices.sh
 

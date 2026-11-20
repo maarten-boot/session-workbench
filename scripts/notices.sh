@@ -1,77 +1,139 @@
 #!/bin/bash
-# Write THIRD-PARTY-NOTICES.txt, shipped beside the binary, from the Go module
-# cache for the versions in go.mod, the texts unchanged:
-#   - D2 and what it builds on (dagre, ELK, Rough.js, MathJax ports, ...);
-#   - the Go modules under the Apache License 2.0 (or with a NOTICE file) that
-#     the program is built from on Linux, Windows or macOS: their licence
-#     files (a text already given is named, not repeated) and NOTICE files.
-# usage: scripts/notices.sh   (run from the repository root; `make notices`)
+# Write THIRD-PARTY-NOTICES.txt, shipped beside the binary: the licences and
+# notices of everything the program is built from, the texts unchanged (a text
+# already given, apart from spacing, is named instead of repeated):
+#   1-3. D2 and what it builds on (dagre, ELK, Rough.js, MathJax ports, ...);
+#   4.   the other Go modules the program is built from on Linux, Windows or
+#        macOS (versions from go.mod, texts from the module cache);
+#   5.   Go itself (standard library and runtime);
+#   6.   the JavaScript packages of the frontend (versions from
+#        frontend/package-lock.json, texts from frontend/node_modules);
+#   7.   the spelling dictionary (internal/spell/dict).
+# usage: scripts/notices.sh   (from the repository root, after `npm ci` in
+# frontend; `make notices`). TestThirdPartyNotices checks it against go.mod
+# and package-lock.json.
 set -euo pipefail
 OUT=THIRD-PARTY-NOTICES.txt
 TAGS=desktop,production,webkit2_41
+TMP=$(mktemp -d); trap 'rm -rf "$TMP"' EXIT
 go mod download github.com/d2lang/d2 github.com/d2lang/util-go
 dir() { go list -m -f '{{.Dir}}' "$1"; }
 ver() { go list -m -f '{{.Version}}' "$1"; }
 D2=$(dir github.com/d2lang/d2); D2V=$(ver github.com/d2lang/d2)
 UT=$(dir github.com/d2lang/util-go); UTV=$(ver github.com/d2lang/util-go)
 
-# The modules the program is built from, on any of the three systems (D2's own
-# are covered by D2's notices).
-mods=$(for os in linux windows darwin; do
+# Go modules on any of the three systems; D2's own are in its notices.
+for os in linux windows darwin; do
 	CGO_ENABLED=1 GOOS=$os go list -deps -tags "$TAGS" \
 		-f '{{with .Module}}{{if not .Main}}{{.Path}} {{.Version}} {{.Dir}}{{end}}{{end}}' .
-done | LC_ALL=C sort -u | grep -v '^github.com/d2lang/')
-apache=()
-while read -r m v d; do
-	lic=$(find "$d" -maxdepth 1 -type f \( -iname 'licen[cs]e*' -o -iname 'copying*' \) | LC_ALL=C sort)
-	notice=$(find "$d" -maxdepth 1 -type f -iname 'notice*' | LC_ALL=C sort)
-	if [ -n "$notice" ] || { [ -n "$lic" ] && grep -q 'Apache License' $lic; }; then
-		apache+=("$m $v $d")
-	fi
-done <<<"$mods"
+done | LC_ALL=C sort -u | grep -v '^github.com/d2lang/' >"$TMP/go"
+# JavaScript packages: the production tree of the lock file.
+(cd frontend && npm ls --omit=dev --all --parseable 2>/dev/null) | grep '/node_modules/' >"$TMP/js"
 
-{
-	cat <<EOF
-Third-party notices for Session Workbench
+python3 -I - "$TMP/go" "$TMP/js" frontend/package-lock.json "$(go env GOROOT)" \
+	"$D2" "$D2V" "$UT" "$UTV" <<'PY' | sed 's/\r$//' >"$OUT"
+import glob, hashlib, json, os, re, sys
+gofile, jsfile, lockfile, goroot, d2, d2v, ut, utv = sys.argv[1:]
 
-Session Workbench is MIT-licensed (LICENSE). It includes, unchanged, the
+def files(d, notice=True):
+    pat = r'^(licen[cs]e|copying' + (r'|notice' if notice else '') + r')'
+    return sorted(os.path.join(d, f) for f in os.listdir(d)
+                  if re.match(pat, f, re.I) and os.path.isfile(os.path.join(d, f)))
+
+def kind(paths):
+    """The licences these files name, e.g. "MIT" or "Apache-2.0, MIT" (both
+    apply, or either: the texts say which)."""
+    names = []
+    for p in paths:
+        if re.match(r'notice', os.path.basename(p), re.I):
+            continue
+        t = open(p, encoding='utf-8', errors='replace').read()
+        for pat, name in [(r'Apache License', 'Apache-2.0'),
+                          (r'Permission is hereby granted, free of charge', 'MIT'),
+                          (r'Redistribution and use in source and binary forms', 'BSD'),
+                          (r'Permission to use, copy, modify, and(/or)? distribute', 'ISC'),
+                          (r'Mozilla Public License', 'MPL-2.0'),
+                          (r'free and unencumbered', 'Unlicense')]:
+            if re.search(pat, t) and name not in names:
+                if name == 'BSD':
+                    name = 'BSD-3-Clause' if re.search(r'Neither the name', t) else 'BSD-2-Clause'
+                names.append(name)
+    return ', '.join(names) or 'see the text'
+
+seen = {}
+def text(label, path):
+    print(f'\n--- {label}: {os.path.basename(path)} ---\n')
+    t = open(path, encoding='utf-8', errors='replace').read()
+    h = hashlib.sha256(re.sub(r'\s+', '', t).encode()).hexdigest()
+    if h in seen:
+        print(f'(the same text as {seen[h]} above)')
+    else:
+        seen[h] = f'{label}: {os.path.basename(path)}'
+        print(t.rstrip('\n'))
+
+gomods = []
+for line in open(gofile):
+    m, v, d = line.split(' ', 2)
+    d = d.strip()
+    fs = files(d)
+    if not fs:
+        sys.exit(f'notices.sh: {m} {v} has no licence file')
+    gomods.append((m, v, fs))
+
+lock = json.load(open(lockfile))['packages']
+jsmods = []
+for p in sorted(set(open(jsfile).read().split())):
+    name = p.split('/node_modules/')[-1]
+    want = lock['node_modules/' + name]['version']
+    have = json.load(open(os.path.join(p, 'package.json')))['version']
+    if have != want:
+        sys.exit(f'notices.sh: {name} is {have} in node_modules, {want} in package-lock.json: run npm ci')
+    fs = files(p)
+    if not fs:
+        sys.exit(f'notices.sh: {name} {want} has no licence file')
+    jsmods.append((name, want, fs))
+
+print(f'''Third-party notices for Session Workbench
+
+Session Workbench is MIT-licensed (LICENSE). It is built from, unchanged, the
 following software. Generated by scripts/notices.sh.
 
-1. github.com/d2lang/d2 $D2V
+1. github.com/d2lang/d2 {d2v}
    Mozilla Public License 2.0 (part 1 below).
-   Source code: https://github.com/d2lang/d2/tree/$D2V
-2. github.com/d2lang/util-go $UTV
+   Source code: https://github.com/d2lang/d2/tree/{d2v}
+2. github.com/d2lang/util-go {utv}
    ISC-style licence (part 2 below).
 3. The software D2 builds on: dagro (dagre), elk-go (Eclipse Layout Kernel,
    Eclipse Public License 2.0), rough-go (Rough.js), mathjax-go (MathJax),
    go-text/typesetting, golang.org/x/image and others, with their licences
    and notices as D2 lists them (part 3 below).
-4. Go modules under the Apache License 2.0 or with a NOTICE file (part 4 below):
-EOF
-	for a in "${apache[@]}"; do set -- $a; echo "   - $1 $2"; done
-	echo
-	echo "=== 1. D2 $D2V: LICENSE.txt ==="; echo
-	cat "$D2/LICENSE.txt"; echo
-	echo "=== 2. util-go $UTV: LICENSE ==="; echo
-	cat "$UT/LICENSE"; echo
-	echo "=== 3. D2 $D2V: THIRD_PARTY_NOTICES.txt ==="; echo
-	cat "$D2/THIRD_PARTY_NOTICES.txt"; echo
-	echo "=== 4. Go modules under the Apache License 2.0 or with a NOTICE file ==="
-	declare -A seen=()
-	for a in "${apache[@]}"; do
-		set -- $a; m=$1 v=$2 d=$3
-		for f in $(find "$d" -maxdepth 1 -type f \( -iname 'licen[cs]e*' -o -iname 'copying*' -o -iname 'notice*' \) | LC_ALL=C sort); do
-			name="$m $v: $(basename "$f")"
-			echo; echo "--- $name ---"; echo
-			# The same text (apart from spacing) as one already given: named only.
-			h=$(tr -d ' \t\r\n' <"$f" | sha256sum | cut -c1-16)
-			if [ -n "${seen[$h]:-}" ]; then
-				echo "(the same text as ${seen[$h]} above)"
-			else
-				seen[$h]=$name
-				cat "$f"
-			fi
-		done
-	done
-} | sed 's/\r$//' >"$OUT"
-echo "wrote $OUT (D2 $D2V, util-go $UTV, ${#apache[@]} Apache/NOTICE modules)"
+4. Go modules, with the licences their files name (part 4 below):''')
+for m, v, fs in gomods:
+    print(f'   - {m} {v} ({kind(fs)})')
+print('''5. Go, the standard library and runtime (BSD-3-Clause; part 5 below).
+6. JavaScript packages in the frontend, with the licences their files name
+   (part 6 below):''')
+for n, v, fs in jsmods:
+    print(f'   - {n} {v} ({kind(fs)})')
+print('''7. The en_US spelling dictionary (SCOWL, Hunspell; part 7 below).
+''')
+print(f'=== 1. D2 {d2v}: LICENSE.txt ===\n')
+print(open(os.path.join(d2, 'LICENSE.txt')).read().rstrip('\n'))
+print(f'\n=== 2. util-go {utv}: LICENSE ===\n')
+print(open(os.path.join(ut, 'LICENSE')).read().rstrip('\n'))
+print(f'\n=== 3. D2 {d2v}: THIRD_PARTY_NOTICES.txt ===\n')
+print(open(os.path.join(d2, 'THIRD_PARTY_NOTICES.txt')).read().rstrip('\n'))
+print('\n=== 4. Go modules ===')
+for m, v, fs in gomods:
+    for f in fs:
+        text(f'{m} {v}', f)
+print('\n=== 5. Go ===')
+text('Go', os.path.join(goroot, 'LICENSE'))
+print('\n=== 6. JavaScript packages ===')
+for n, v, fs in jsmods:
+    for f in fs:
+        text(f'{n} {v}', f)
+print('\n=== 7. Spelling dictionary ===')
+text('internal/spell/dict', 'internal/spell/dict/LICENSE')
+PY
+echo "wrote $OUT (D2 $D2V, $(wc -l <"$TMP/go") Go modules, $(sort -u "$TMP/js" | wc -l) JavaScript packages)"

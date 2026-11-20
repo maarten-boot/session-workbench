@@ -133,3 +133,13 @@
 - README, SPEC §7.6, Tests.md, Makefile and the version (wails.json 1.2.0, README, SPEC v1.43, PLAN) agree.
 - Limit, not changed: TestThirdPartyNotices catches a listed module whose version changed, not a new Apache-licensed module;
   `make notices` after module updates covers that.
+
+## CI of ea20994
+
+- Build run 44831922778 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+- v1.2.0 is ready to tag (cross-check done).
+
+## v1.2.0 tagged
+
+- The user pushed and tagged v1.2.0 (tag object 19f73c8 on ea20994); release build run 44832934289.
+- The user changed origin to git@github.com:maarten-boot/session-workbench.git (ssh, the repository's new name).

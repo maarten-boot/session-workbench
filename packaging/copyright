@@ -30,6 +30,16 @@ License: Apache-2.0
 Comment: The list of modules, their licence files and NOTICE files are in
  /usr/share/doc/session-workbench/THIRD-PARTY-NOTICES.txt (part 4).
 
+Files: (built in) the other Go modules, Go itself and the frontend's JavaScript packages
+Copyright: their authors, among them 2018-present Lea Anthony (Wails); 2009 The Go Authors
+ (Go, golang.org/x); 2017-2019 The xterm.js authors, 2014-2016 SourceLair Private Company and
+ 2012-2013 Christopher Jeffrey (xterm.js); 2018-2021 Marijn Haverbeke and others (CodeMirror,
+ Lezer)
+License: MIT and BSD-2-Clause and BSD-3-Clause and others
+Comment: Each module and package with its version and licence, and their licence texts with
+ the copyright notices, are in /usr/share/doc/session-workbench/THIRD-PARTY-NOTICES.txt
+ (parts 4, 5 and 6).
+
 License: Apache-2.0
  The full text is in /usr/share/doc/session-workbench/THIRD-PARTY-NOTICES.txt
  (and, on Debian systems, in /usr/share/common-licenses/Apache-2.0).

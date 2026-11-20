@@ -14,7 +14,7 @@ read its security section if the agent host can write to your repositories.
 New here? **[docs/TUTORIAL.md](docs/TUTORIAL.md)** takes you from the download to your first
 claude session, with screenshots (`make tutorial-pdf` makes a PDF of it).
 
-Status: v1.2.0: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
+Status: v1.2.1: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
 Notes (page trees with formatting, lists and check lists, spelling, D2 diagrams), Web and Q&A tabs, what changed per release (What's new), Remote tab recordings, session folders and tags,
 themes and color modes, quick switcher, a command menu and a prompts menu in the Local and Remote tabs, editable
 start commands, private shell history per session, activity badges, desktop notifications,
@@ -1215,10 +1215,12 @@ The app is MIT-licensed (LICENSE). It includes, among others,
 and [golang.design/x/clipboard](https://github.com/golang-design/clipboard) (MIT) to copy them as images.
 D2 builds on ports of other software, among them the Eclipse Layout Kernel (Eclipse Public
 License 2.0) and dagre, Rough.js and MathJax.
-Some Go modules are under the Apache License 2.0, among them the Anthropic SDK and OpenTelemetry.
-Their licences and notices are in [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt),
-which every download carries:
+It is further built from Go modules (MIT, BSD, Apache 2.0; among them Wails, the Anthropic SDK
+and OpenTelemetry), Go itself (BSD), JavaScript packages in the frontend (MIT: xterm.js,
+CodeMirror, nspell) and the en_US spelling dictionary (SCOWL).
+The licences and notices of all of them are in [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt),
+each module and package listed with its version and licence, which every download carries:
 beside the program in the tar.gz and the zips, under `/usr/share/doc/session-workbench/`
 (.deb) or `/usr/share/licenses/session-workbench/` (.rpm).
-`make notices` writes it again after a module update (scripts/notices.sh; TestThirdPartyNotices
-checks that it matches go.mod).
+`make notices` writes it again after a module or package update (scripts/notices.sh, after
+`npm ci` in frontend; TestThirdPartyNotices checks it against go.mod and package-lock.json).

@@ -1,14 +1,16 @@
 package main
 
 import (
+	"encoding/json"
 	"os"
 	"regexp"
 	"strings"
 	"testing"
 )
 
-// THIRD-PARTY-NOTICES.txt (shipped beside the binary) is made for the D2
-// versions in go.mod: after updating D2, run `make notices`.
+// THIRD-PARTY-NOTICES.txt (shipped beside the binary) is made for the module
+// versions in go.mod and frontend/package-lock.json: after updating a module
+// or package, run `make notices`.
 func TestThirdPartyNotices(t *testing.T) {
 	mod, err := os.ReadFile("go.mod")
 	if err != nil {
@@ -28,14 +30,34 @@ func TestThirdPartyNotices(t *testing.T) {
 			t.Errorf("THIRD-PARTY-NOTICES.txt is not for %s %s: run make notices", m, v[1])
 		}
 	}
-	// Part 4, the Apache-licensed modules: each listed version is go.mod's.
-	listed := regexp.MustCompile(`(?m)^   - (\S+) (v\S+)$`).FindAllStringSubmatch(notices, -1)
-	if len(listed) == 0 {
-		t.Error("THIRD-PARTY-NOTICES.txt lists no Apache-licensed modules")
+	// Part 4, the Go modules: each listed version is go.mod's.
+	gomods := regexp.MustCompile(`(?m)^   - (\S+) (v\S+) \(.+\)$`).FindAllStringSubmatch(notices, -1)
+	if len(gomods) < 10 {
+		t.Errorf("THIRD-PARTY-NOTICES.txt lists %d Go modules", len(gomods))
 	}
-	for _, l := range listed {
+	for _, l := range gomods {
 		if !regexp.MustCompile(`(?m)^\s*` + regexp.QuoteMeta(l[1]) + ` ` + regexp.QuoteMeta(l[2]) + `\b`).MatchString(string(mod)) {
 			t.Errorf("THIRD-PARTY-NOTICES.txt lists %s %s, go.mod has another version: run make notices", l[1], l[2])
+		}
+	}
+	// Part 6, the JavaScript packages: each listed version is the lock file's.
+	lb, err := os.ReadFile("frontend/package-lock.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var lock struct {
+		Packages map[string]struct{ Version string } `json:"packages"`
+	}
+	if err := json.Unmarshal(lb, &lock); err != nil {
+		t.Fatal(err)
+	}
+	jsmods := regexp.MustCompile(`(?m)^   - (\S+) ([0-9]\S*) \(.+\)$`).FindAllStringSubmatch(notices, -1)
+	if len(jsmods) < 10 {
+		t.Errorf("THIRD-PARTY-NOTICES.txt lists %d JavaScript packages", len(jsmods))
+	}
+	for _, l := range jsmods {
+		if v := lock.Packages["node_modules/"+l[1]].Version; v != l[2] {
+			t.Errorf("THIRD-PARTY-NOTICES.txt lists %s %s, package-lock.json has %q: run make notices", l[1], l[2], v)
 		}
 	}
 	for _, want := range []string{
@@ -44,6 +66,11 @@ func TestThirdPartyNotices(t *testing.T) {
 		"Apache License",                     // part 4
 		"--- go.yaml.in/yaml/v4 ",            // a NOTICE file
 		"--- github.com/anthropics/anthropic-sdk-go/v2 ",
+		"--- github.com/wailsapp/wails/v2 ", // MIT
+		"--- golang.org/x/sys ",             // BSD
+		"=== 5. Go ===",
+		"--- @xterm/xterm ",
+		"=== 7. Spelling dictionary ===",
 		"Source code: https://github.com/d2lang/d2/tree/",
 	} {
 		if !strings.Contains(notices, want) {

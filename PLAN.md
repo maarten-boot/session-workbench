@@ -184,6 +184,16 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- v1.2.1 (2026-11-21): MIT and BSD licence notices (SPEC §7.6). The user: "add the MIT and
+  BSD notices in v1.2.1". THIRD-PARTY-NOTICES.txt now covers everything the program is built from:
+  part 4 every Go module (59, on Linux, Windows or macOS) with the licences its files name,
+  part 5 Go itself (the same BSD text as golang.org/x, so named), part 6 the frontend's
+  JavaScript packages (29: the lock file's production tree; a source-map build showed 26 of them in
+  the bundle), part 7 the spelling dictionary (SCOWL). 64 → 115 → 208 KB.
+  scripts/notices.sh now writes the file with Python (licence names from the texts; it stops when
+  a module has no licence file or node_modules differs from the lock file).
+  TestThirdPartyNotices checks each listed Go module against go.mod and each JavaScript package
+  against package-lock.json. packaging/copyright: a section for the rest.
 - v1.2.0 (2026-11-20): Apache licence notices (SPEC §7.6). The user: "on the next release go
   to v1.2.0", then "add the Apache licence notices in v1.2.0".
   scripts/notices.sh adds part 4 to THIRD-PARTY-NOTICES.txt: the Go modules the program is built
