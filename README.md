@@ -14,7 +14,7 @@ read its security section if the agent host can write to your repositories.
 New here? **[docs/TUTORIAL.md](docs/TUTORIAL.md)** takes you from the download to your first
 claude session, with screenshots (`make tutorial-pdf` makes a PDF of it).
 
-Status: v1.1.32: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
+Status: v1.2.0: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
 Notes (page trees with formatting, lists and check lists, spelling, D2 diagrams), Web and Q&A tabs, what changed per release (What's new), Remote tab recordings, session folders and tags,
 themes and color modes, quick switcher, a command menu and a prompts menu in the Local and Remote tabs, editable
 start commands, private shell history per session, activity badges, desktop notifications,
@@ -1215,9 +1215,10 @@ The app is MIT-licensed (LICENSE). It includes, among others,
 and [golang.design/x/clipboard](https://github.com/golang-design/clipboard) (MIT) to copy them as images.
 D2 builds on ports of other software, among them the Eclipse Layout Kernel (Eclipse Public
 License 2.0) and dagre, Rough.js and MathJax.
+Some Go modules are under the Apache License 2.0, among them the Anthropic SDK and OpenTelemetry.
 Their licences and notices are in [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt),
 which every download carries:
 beside the program in the tar.gz and the zips, under `/usr/share/doc/session-workbench/`
 (.deb) or `/usr/share/licenses/session-workbench/` (.rpm).
-`make notices` writes it again after a D2 update (scripts/notices.sh; TestThirdPartyNotices
+`make notices` writes it again after a module update (scripts/notices.sh; TestThirdPartyNotices
 checks that it matches go.mod).

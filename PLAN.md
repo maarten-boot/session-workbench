@@ -184,6 +184,16 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- v1.2.0 (2026-11-20): Apache licence notices (SPEC §7.6). The user: "on the next release go
+  to v1.2.0", then "add the Apache licence notices in v1.2.0".
+  scripts/notices.sh adds part 4 to THIRD-PARTY-NOTICES.txt: the Go modules the program is built
+  from on Linux, Windows or macOS (`go list -deps` per system, the Wails tags) whose licence is the
+  Apache License 2.0 or that have a NOTICE file, D2's own left to its notices: anthropic-sdk-go
+  (also its LICENSE-MIT), purego (Windows and macOS), go-logr/logr and stdr, ordered-map,
+  go-reflector, OpenTelemetry (otel, metric, trace, auto/sdk), go.yaml.in/yaml/v4 (with NOTICE).
+  Their licence and NOTICE files unchanged; a text already given (apart from spacing) is named, not
+  repeated. The file grows from 64 to 115 KB. packaging/copyright has an Apache-2.0 section.
+  TestThirdPartyNotices checks each listed module against go.mod's version.
 - v1.1.32 (2026-11-20): D2 from its new home, `github.com/d2lang/d2` v0.9.0 (was
   `oss.terrastruct.com/d2` v0.7.2, the last release under that name; util-go likewise), and the
   build on Go 1.27 (go.mod `go 1.27.0`, CI `GO_VERSION: '1.27.x'`), which v0.9.0 needs.

@@ -85,3 +85,34 @@
   Checked locally: tar, 7z and zip listings, dpkg-deb -c, the rpm's file names.
 - TestThirdPartyNotices: the file names the d2 and util-go versions in go.mod; a wrong version fails it (tried).
 - Not covered yet: other Apache-2.0 Go modules (anthropic-sdk-go, OpenTelemetry, go-logr, go.yaml.in/yaml/v4 with a NOTICE).
+
+## CI of 6bfb340
+
+- Build run 44742003192 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+- THIRD-PARTY-NOTICES.txt is in every artifact (checked after download):
+  the tar.gz and the Windows zip beside the program, the macOS zip beside session-workbench.app,
+  the .deb under /usr/share/doc/session-workbench/, the .rpm's file list.
+- The Windows copy has CRLF line endings (Windows checkout), the same text otherwise (63873 bytes without the CRs).
+
+## v1.1.32 tagged; next version
+
+- The user pushed and tagged v1.1.32 (tag object 0ba42b3 on 6bfb340); release build run 44743067750.
+- The user: "on the next release go to v1.2.0".
+
+## CI of v1.1.32
+
+- Release run 44743067750 passed on the first attempt: linux-amd64, windows-amd64, macos-universal and release.
+- The release has the .deb, .rpm, Linux tar.gz, Windows zip and macOS zip; the notes list the three commits since v1.1.31.
+- Release check: 9 releases, no artifacts older than 14 days, so no cleanup warning.
+
+## v1.2.0: Apache licence notices
+
+- The user: "add the Apache licence notices in v1.2.0".
+- The modules the program is built from: `go list -deps` for linux, windows and darwin with the Wails tags, 65 modules;
+  the Linux list matches `go version -m` of the binary exactly (the other six are Windows or macOS only).
+- Apache-2.0 or with a NOTICE file, outside D2's own: anthropic-sdk-go, purego, go-logr/logr and stdr, ordered-map, go-reflector,
+  OpenTelemetry (4), go.yaml.in/yaml/v4 (NOTICE).
+- scripts/notices.sh adds them as part 4, licence and NOTICE files unchanged, a repeated text named instead of repeated:
+  THIRD-PARTY-NOTICES.txt 64 → 115 KB.
+- TestThirdPartyNotices checks the listed versions against go.mod; a wrong version fails it (tried).
+- Version 1.2.0: wails.json, README, SPEC v1.43, PLAN.

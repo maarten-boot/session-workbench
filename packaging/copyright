@@ -21,6 +21,17 @@ Comment: D2 draws the diagrams in Notes and Q&A, built into the program unchange
  software it builds on (including the Eclipse Layout Kernel, EPL-2.0) are in
  /usr/share/doc/session-workbench/THIRD-PARTY-NOTICES.txt.
 
+Files: (built in) Go modules under the Apache License 2.0
+Copyright: Anthropic, PBC (anthropic-sdk-go); The OpenTelemetry Authors; The logr Authors;
+ the authors of purego, ordered-map, go-reflector and go.yaml.in/yaml/v4
+License: Apache-2.0
+Comment: The list of modules, their licence files and NOTICE files are in
+ /usr/share/doc/session-workbench/THIRD-PARTY-NOTICES.txt (part 4).
+
+License: Apache-2.0
+ The full text is in /usr/share/doc/session-workbench/THIRD-PARTY-NOTICES.txt
+ (and, on Debian systems, in /usr/share/common-licenses/Apache-2.0).
+
 License: MPL-2.0
  The full text is in /usr/share/doc/session-workbench/THIRD-PARTY-NOTICES.txt
  (and, on Debian systems, in /usr/share/common-licenses/MPL-2.0).

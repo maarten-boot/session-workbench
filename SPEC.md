@@ -1,6 +1,6 @@
 # Session Workbench — Specification
 
-Status: v1.42 (2026-11-20, app v1.1.32) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
+Status: v1.43 (2026-11-20, app v1.2.0) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
 narrow and resizable sidebar (F6), Claude backups (F7), one instance per config (F8), working
 copies and backups without rsync (F9), desktop notifications (F4), git status and the
 repository check in the Files tab (B5, B6), Notes and Web tabs (N1, W1), notes for all sessions
@@ -1270,5 +1270,6 @@ repository config and warns again whenever they change.
    copies (mode C), host setting `files`; see docs/CONNECTIVITY.md.
 6. Distribution: Linux `.deb` (Debian/Ubuntu) and `.rpm` (Fedora) with dependencies, menu entry
    and icon, alongside a plain tarball; Windows zip; macOS app zip. All unsigned.
-   Each carries THIRD-PARTY-NOTICES.txt (the licences and notices of D2 and what it builds on;
-   beside the program, or in the package's doc or licences folder).
+   Each carries THIRD-PARTY-NOTICES.txt (the licences and notices of D2 and what it builds on,
+   and of the Go modules under the Apache License 2.0 or with a NOTICE file, on any of the three
+   systems; beside the program, or in the package's doc or licences folder).
