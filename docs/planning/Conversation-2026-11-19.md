@@ -222,3 +222,11 @@
   role="tab" on the buttons, role="tabpanel" on the pages, Up/Down (round) and Home/End open a page and keep the focus on its tab.
 - gui-smoke-settings.sh: Down Down from Appearance = a click on Commands, End = a click on Keys (page areas compared); passed.
 - SPEC §4.6, TUTORIAL and Tests.md say so.
+
+## CI of v1.1.31
+
+- The tag points to 159cea0.
+- Release run 44630715599 passed on the first attempt: linux-amd64, windows-amd64, macos-universal and release.
+  Release v1.1.31 has 5 assets (.deb, .rpm, linux tar.gz, macOS zip, Windows zip); its notes list the 2 commits since v1.1.30.
+- Cleanup check after the release: 8 releases, no CI artifacts older than 14 days, so no warning.
+- Build run 44630230846 (main, 159cea0): all jobs passed (linux-amd64, windows-amd64, macos-universal; release skipped).

@@ -154,6 +154,14 @@ implementation differs from the original plan.
   the folder path problems the config check reports.
 - v0.9.2: github.com/labstack/echo/v4 4.15.3 → 4.16.1 (Dependabot, critical; only in Wails'
   dev server, not in release builds), with the golang.org/x modules it needs; Go 1.26+.
+- 2026-11-20 (no version of its own; not in the release binary): github.com/labstack/echo/v4
+  4.16.1 → 4.16.5, the newest v4, only in Wails' dev server. The user: "do the echo/v4 update".
+  v4.16.3 fixes the v4 exposure of Dependabot #6 (GHSA-99jh-6h7p-pp36) and #7
+  (GHSA-246p-cpwv-v3jq: X-Real-IP / X-Forwarded-For trusted by default), 4.16.4 an open
+  redirect (GHSA-3f6j-cw5h-qw9c), 4.16.5 X-Forwarded-Proto dropped by the proxy
+  (GHSA-h6x5-phvw-c55c). The two advisories still give only v5 versions (5.1.0, 5.4.0) as fixed,
+  so Dependabot may keep the alerts open until GitHub updates them (or they are dismissed).
+  No other module moved; built also with the dev tag; Go tests pass.
 - v0.9.3: the window title ends with the active session's name: `(2) Session Workbench — alpha`.
 - v0.9.4: Q&A tab (Q1) after Web: questions to Claude through the Claude API (Go SDK,
   streamed; model `qa_model`, default claude-opus-5-5; cached conversation, server-side
@@ -572,9 +580,6 @@ implementation differs from the original plan.
     `<details>`/`<summary>` blocks.
   - Decided 2026-10-31: postponed; when built, the reading view takes its text from the
     terminal's scrollback (instant, offline), not from tmux history.
-- **echo/v4 v4.16.3** (noted 2026-11-02): fixes Dependabot alerts #6 and #7 (only Wails' dev
-  server uses echo; not in the release binary). Update around mid-November, once the
-  release is two weeks old, unless Dependabot opens a PR first.
 
 ## Testing
 - docs/planning/Tests.md lists every test with the SPEC items it covers.
