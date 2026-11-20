@@ -33,7 +33,7 @@ artifacts, kept 14 days); tagged versions (`v*`) are published under **Releases*
 |---|---|---|
 | `session-workbench_…_amd64.deb` | Ubuntu 24.04+ / Debian 13+ (x86-64) | `sudo apt install ./session-workbench_…_amd64.deb` installs the dependencies (and recommends git, rsync, xdg-utils) and a menu entry |
 | `session-workbench-…x86_64.rpm` | Fedora 40+ (x86-64) | `sudo dnf install ./session-workbench-…x86_64.rpm` installs the dependencies and a menu entry |
-| `…-linux-amd64.tar.gz` | any of the above | just the binary; needs WebKitGTK 4.1 and GTK 3 (Debian/Ubuntu: `libwebkit2gtk-4.1-0`; Fedora: `webkit2gtk4.1 gtk3`) |
+| `…-linux-amd64.tar.gz` | any of the above | just the binary (and THIRD-PARTY-NOTICES.txt); needs WebKitGTK 4.1 and GTK 3 (Debian/Ubuntu: `libwebkit2gtk-4.1-0`; Fedora: `webkit2gtk4.1 gtk3`) |
 | `…-windows-amd64.zip` | Windows 10/11 (x86-64) | uses the built-in OpenSSH client and the WebView2 runtime (both standard on current Windows). The exe is unsigned: SmartScreen asks once (*More info → Run anyway*). |
 | `…-macos-universal.zip` | macOS 12+ (Apple silicon and Intel) | contains `session-workbench.app`; unsigned: the first time, right-click the app → *Open*, or run `xattr -dr com.apple.quarantine session-workbench.app` |
 
@@ -53,7 +53,8 @@ previous tag (`scripts/changes.sh --release vX.Y.Z`).
 
 ## Build
 
-Requirements: Go 1.27+, Node 18+ with npm, Wails CLI v2.16
+Requirements: Go 1.27+ (an older Go, 1.21 or later, downloads 1.27 by itself in this folder,
+unless `GOTOOLCHAIN=local`), Node 18+ with npm, Wails CLI v2.16
 (`go install github.com/wailsapp/wails/v2/cmd/wails@v2.16.0`).
 
 Linux also needs `libgtk-3-dev libwebkit2gtk-4.1-dev build-essential pkg-config`.
@@ -1212,3 +1213,11 @@ scripts/changes.sh     what changed per release: Settings → About, the release
 The app is MIT-licensed (LICENSE). It includes, among others,
 [D2](https://github.com/d2lang/d2) (Mozilla Public License 2.0, unchanged) to draw diagrams
 and [golang.design/x/clipboard](https://github.com/golang-design/clipboard) (MIT) to copy them as images.
+D2 builds on ports of other software, among them the Eclipse Layout Kernel (Eclipse Public
+License 2.0) and dagre, Rough.js and MathJax.
+Their licences and notices are in [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt),
+which every download carries:
+beside the program in the tar.gz and the zips, under `/usr/share/doc/session-workbench/`
+(.deb) or `/usr/share/licenses/session-workbench/` (.rpm).
+`make notices` writes it again after a D2 update (scripts/notices.sh; TestThirdPartyNotices
+checks that it matches go.mod).

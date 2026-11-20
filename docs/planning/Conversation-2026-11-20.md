@@ -51,3 +51,37 @@
   gui-smoke-about first failed because the binary was built with `wails build` alone (no `make changes`, so no list of changes);
   after `make build` it passes.
   That first build also lacked the Makefile's flags (43.9 MB); `make build` gives 47.9 MB.
+
+## CI of 46df6ed (v1.1.32)
+
+- Build run 44739485135 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal on Go 1.27; release skipped.
+- The Linux binary in CI: 47.9 MB (v1.1.31's release: 52.2 MB), as measured locally.
+  The compressed downloads barely change (the tar.gz about 16 MB, the macOS zip 31 MB, the Windows zip 15.8 MB):
+  the JavaScript that left compressed well.
+
+## Cross-check of v1.1.32
+
+- The user: "do a crosscheck".
+- Searched for the old module path, goja, Go 1.26 and ELK across the code and docs.
+- `scripts/deps.sh` still required Go ≥ 1.26: now `GO_MIN=1.27`.
+  In this folder an older Go fetches 1.27.0 itself (go.mod; `go env GOVERSION` says go1.27.0 with Go 1.26.8 installed),
+  so the check passed anyway; README's build requirements now say so.
+- PLAN's v1.1.22 entry claimed D2 v0.8+ needs Go 1.27: corrected in place (only v0.8.2 and later).
+- Left as they are: `go >= 1.26` in the Requirements examples (README, the Requirements dialog, requirements tests)
+  and `GO_VERSION=1.26.0` in the Dockerfile template are about the user's projects, not this build.
+- Found, not changed (older than v1.1.32): packaging/copyright (the .deb/.rpm licence file) lists only the app (MIT) and the spelling dictionaries;
+  D2 (MPL-2.0) is named in README's "Third-party code" only, and ELK (EPL-2.0, before as JavaScript, now elk-go) nowhere.
+
+## Licence notices in v1.1.32
+
+- The user: "add the licence notices in v1.1.32, then commit, i push".
+- D2 v0.9.0 ships a THIRD_PARTY_NOTICES.txt for what it builds on:
+  dagro (dagre), rough-go (Rough.js), mathjax-go, go-text/typesetting, golang.org/x/image, Noto Color Emoji, elk-go (EPL-2.0).
+- New scripts/notices.sh (`make notices`) writes THIRD-PARTY-NOTICES.txt from the module cache:
+  D2's MPL-2.0 licence with its source link, util-go's licence, D2's notices file, unchanged.
+- Shipped: in the Linux tar.gz and the Windows and macOS zips beside the program (CI Package step),
+  in the .deb (/usr/share/doc/session-workbench/) and the .rpm (/usr/share/licenses/session-workbench/);
+  packaging/copyright has a D2 section pointing to it.
+  Checked locally: tar, 7z and zip listings, dpkg-deb -c, the rpm's file names.
+- TestThirdPartyNotices: the file names the d2 and util-go versions in go.mod; a wrong version fails it (tried).
+- Not covered yet: other Apache-2.0 Go modules (anthropic-sdk-go, OpenTelemetry, go-logr, go.yaml.in/yaml/v4 with a NOTICE).

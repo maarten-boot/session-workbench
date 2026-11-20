@@ -123,9 +123,11 @@ jobs:
           base="session-workbench-${{ steps.version.outputs.version }}-${{ matrix.name }}"
           mkdir dist
           case "$RUNNER_OS" in
-            Linux)   tar czf "dist/$base.tar.gz" -C build/bin session-workbench ;;
-            Windows) (cd build/bin && 7z a -tzip "../../dist/$base.zip" session-workbench.exe >/dev/null) ;;
-            macOS)   ditto -c -k --keepParent build/bin/session-workbench.app "dist/$base.zip" ;;
+            Linux)   tar czf "dist/$base.tar.gz" -C build/bin session-workbench -C "$PWD" THIRD-PARTY-NOTICES.txt ;;
+            Windows) (cd build/bin && 7z a -tzip "../../dist/$base.zip" session-workbench.exe >/dev/null)
+                     7z a -tzip "dist/$base.zip" THIRD-PARTY-NOTICES.txt >/dev/null ;;
+            macOS)   ditto -c -k --keepParent build/bin/session-workbench.app "dist/$base.zip"
+                     zip -q -X "dist/$base.zip" THIRD-PARTY-NOTICES.txt ;;   # beside the .app
           esac
 
       - name: Linux packages (.deb, .rpm)

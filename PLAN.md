@@ -192,6 +192,16 @@ implementation differs from the original plan.
   D2 now lays out with Go ports of dagre and ELK instead of their JavaScript run in goja,
   so the Linux binary (make build) shrinks from 52.2 to 47.9 MB.
   Drawings look as before (system fonts, black text); TestSVG now also checks that dark text is white.
+  Cross-check: scripts/deps.sh asks for Go 1.27; README says an older Go fetches 1.27 itself.
+  Licence notices (the user: "add the licence notices in v1.1.32"): D2 (MPL-2.0) was named only
+  in README, ELK (EPL-2.0; JavaScript before, Go now) nowhere.
+  THIRD-PARTY-NOTICES.txt (scripts/notices.sh, `make notices`) holds D2's licence with where its
+  source is, util-go's licence and D2's own notices file (dagro, elk-go, rough-go, mathjax-go,
+  go-text/typesetting, x/image, ...), unchanged; in the tar.gz and the zips beside the program,
+  in the .deb and .rpm; packaging/copyright names it.
+  TestThirdPartyNotices checks that it is for the D2 versions in go.mod.
+  Other Go modules with Apache-2.0 licences (anthropic-sdk-go, OpenTelemetry, go-logr,
+  go.yaml.in/yaml/v4 with a NOTICE) are not in it yet.
 - v1.1.31 (2026-11-19): Settings with its pages as tabs on the left (SPEC §4.6). The user:
   "what about having the settings popup use a left sided notebook tab design ?" (confirmed),
   "yes left tabs in v1.1.31". A column of page names beside the pages, the open one bold and
@@ -269,7 +279,8 @@ implementation differs from the original plan.
 - v1.1.22 (2026-11-17): D2 diagrams in Notes and Q&A (SPEC N1d). The user: "could we embed
   D2 graphs in the Notes tab ?"; offered D2's Go library in the app (A) or a `d2` program
   (B), and Mermaid (drawn by GitHub); "A with D2, also in Q&A". D2 v0.8+ (`github.com/d2lang/d2`)
-  needs Go 1.27, so `oss.terrastruct.com/d2` v0.7.2 (Go 1.26). The app grows 27.8 → 51.8 MB
+  needs Go 1.27 (corrected 2026-11-20: only v0.8.2 and later; v0.8.0 and v0.8.1 need Go 1.25),
+  so `oss.terrastruct.com/d2` v0.7.2 (Go 1.26). The app grows 27.8 → 51.8 MB
   (ELK 3.7 MB of it). Embedded fonts draw no text in an SVG image: replaced by system fonts;
   text black (white when dark); imports read no files; D2's logger silenced. Tests:
   internal/diagram, qaparse.test.mjs, gui-smoke-d2.

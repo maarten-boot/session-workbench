@@ -13,7 +13,7 @@ endif
 VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 LDFLAGS = -X main.version=$(VERSION)
 
-.PHONY: check deps changes dev build build-windows packages run test test-ssh vet clean clean-smoke smoke smoke-sessions smoke-files smoke-ui smoke-container smoke-all tutorial-shots tutorial-pdf icons
+.PHONY: check deps changes dev build build-windows packages run test test-ssh vet clean clean-smoke smoke smoke-sessions smoke-files smoke-ui smoke-container smoke-all tutorial-shots tutorial-pdf icons notices
 
 check:
 	@scripts/deps.sh check
@@ -51,6 +51,11 @@ packages: build
 # The smaller icons from build/appicon.png (ImageMagick: magick in 7, convert in 6 as on
 # Ubuntu 24.04 and Debian); TestAppIcon checks them.
 MAGICK ?= $(shell command -v magick || echo convert)
+# Licences and notices of D2 and what it builds on, for the versions in go.mod
+# (THIRD-PARTY-NOTICES.txt, shipped beside the binary); after updating D2.
+notices:
+	scripts/notices.sh
+
 icons:
 	for s in 256 128 48; do $(MAGICK) build/appicon.png -filter Lanczos -resize $${s}x$${s} \
 		-strip -define png:color-type=6 packaging/icons/$$s.png; done

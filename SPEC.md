@@ -1270,3 +1270,5 @@ repository config and warns again whenever they change.
    copies (mode C), host setting `files`; see docs/CONNECTIVITY.md.
 6. Distribution: Linux `.deb` (Debian/Ubuntu) and `.rpm` (Fedora) with dependencies, menu entry
    and icon, alongside a plain tarball; Windows zip; macOS app zip. All unsigned.
+   Each carries THIRD-PARTY-NOTICES.txt (the licences and notices of D2 and what it builds on;
+   beside the program, or in the package's doc or licences folder).

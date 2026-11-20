@@ -12,6 +12,19 @@ Copyright: 2000-2020 Kevin Atkinson and the SCOWL contributors (en_US Hunspell d
  via the dictionary-en package by Titus Wormer)
 License: SCOWL
 
+Files: (built in) github.com/d2lang/d2, github.com/d2lang/util-go and the modules D2 uses
+Copyright: 2022 Terrastruct Inc.; for the modules D2 uses (dagro, elk-go, rough-go,
+ mathjax-go, go-text/typesetting, golang.org/x/image, ...) see THIRD-PARTY-NOTICES.txt
+License: MPL-2.0 and others
+Comment: D2 draws the diagrams in Notes and Q&A, built into the program unchanged; its source
+ is at https://github.com/d2lang/d2. The licence texts and notices of D2 and of the
+ software it builds on (including the Eclipse Layout Kernel, EPL-2.0) are in
+ /usr/share/doc/session-workbench/THIRD-PARTY-NOTICES.txt.
+
+License: MPL-2.0
+ The full text is in /usr/share/doc/session-workbench/THIRD-PARTY-NOTICES.txt
+ (and, on Debian systems, in /usr/share/common-licenses/MPL-2.0).
+
 License: MIT
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal

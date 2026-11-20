@@ -80,6 +80,15 @@ contents:
     type: license
     file_info: *doc
     packager: rpm
+  - src: THIRD-PARTY-NOTICES.txt
+    dst: /usr/share/doc/session-workbench/THIRD-PARTY-NOTICES.txt
+    file_info: *doc
+    packager: deb
+  - src: THIRD-PARTY-NOTICES.txt
+    dst: /usr/share/licenses/session-workbench/THIRD-PARTY-NOTICES.txt
+    type: license
+    file_info: *doc
+    packager: rpm
 
 overrides:
   deb:
