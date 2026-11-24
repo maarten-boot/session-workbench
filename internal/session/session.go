@@ -63,6 +63,8 @@ type View struct {
 	TmuxOwn *bool `json:"tmux_own"`
 	// Inactive: kept for later; nothing connects (config Session.Inactive).
 	Inactive bool `json:"inactive"`
+	// Disconnected: the user disconnected it (config Session.Disconnected).
+	Disconnected bool `json:"disconnected"`
 	// Claude: its start command runs claude in tmux (Stop claude now).
 	Claude bool `json:"claude"`
 	// Hosts: the other agent hosts it has worked on, the most recent first.
@@ -251,7 +253,7 @@ func (m *Manager) State() State {
 		v := View{ID: se.ID, Name: se.Name, Description: se.Description, Host: se.Host, LocalPath: se.LocalPath, StartMode: se.StartMode,
 			ColorMode: se.ColorMode, Group: se.Group, Tags: se.Tags, TrustedGit: se.TrustedGit, TmuxName: remote.TmuxName(se.ID), Record: se.Record,
 			History: se.History, IdleStop: se.IdleStop, Commands: se.Commands, OwnClaudeVolume: se.OwnClaudeVolume, RemoteDir: se.RemoteDir,
-			Inactive: se.Inactive, Hosts: se.Hosts}
+			Inactive: se.Inactive, Disconnected: se.Disconnected, Hosts: se.Hosts}
 		v.TmuxOwn = se.Tmux
 		if h, ok := findHost(m.cfg, se.Host); ok {
 			v.Plain = !config.HasLocalDir(h, se)
@@ -1010,6 +1012,22 @@ func (m *Manager) SetActive(id string, active bool) error {
 			return fmt.Errorf("unknown session %q", id)
 		}
 		c.Sessions[i].Inactive = !active
+		c.Sessions[i].Disconnected = false
+		return nil
+	})
+}
+
+// SetDisconnected remembers that the user disconnected a session (or that
+// it connected again).
+func (m *Manager) SetDisconnected(id string, disconnected bool) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	return m.update(func(c *config.Config) error {
+		i := indexOf(c, id)
+		if i < 0 {
+			return fmt.Errorf("unknown session %q", id)
+		}
+		c.Sessions[i].Disconnected = disconnected
 		return nil
 	})
 }
@@ -1134,6 +1152,16 @@ func (m *Manager) SaveGroup(oldName, name string) error {
 		for j := range c.Sessions {
 			c.Sessions[j].Group = rename(c.Sessions[j].Group)
 		}
+		moved := map[string]string{} // the folders' colors go with them
+		for g, col := range c.UI.FolderColors {
+			if inFolder(g, oldName) {
+				moved[rename(g)] = col
+				delete(c.UI.FolderColors, g)
+			}
+		}
+		for g, col := range moved {
+			c.UI.FolderColors[g] = col
+		}
 		return nil
 	})
 }
@@ -1151,6 +1179,11 @@ func (m *Manager) DeleteGroup(name string) error {
 		for j := range c.Sessions {
 			if inFolder(c.Sessions[j].Group, name) {
 				c.Sessions[j].Group = parentFolder(name)
+			}
+		}
+		for g := range c.UI.FolderColors {
+			if inFolder(g, name) {
+				delete(c.UI.FolderColors, g)
 			}
 		}
 		return nil
@@ -1299,6 +1332,10 @@ func (m *Manager) SaveHost(oldName string, h config.Host) error {
 			return fmt.Errorf("unknown host %q", oldName)
 		}
 		c.Hosts[i] = h
+		if col, ok := c.UI.HostColors[oldName]; ok && h.Name != oldName { // its color goes with it
+			delete(c.UI.HostColors, oldName)
+			c.UI.HostColors[h.Name] = col
+		}
 		for j := range c.Sessions {
 			for k, o := range c.Sessions[j].Hosts { // the hosts it worked on before
 				if o == oldName {
@@ -1387,6 +1424,7 @@ func (m *Manager) DeleteHost(name string) error {
 			return fmt.Errorf("unknown host %q", name)
 		}
 		c.Hosts = slices.Delete(c.Hosts, i, i+1)
+		delete(c.UI.HostColors, name)
 		return nil
 	})
 }

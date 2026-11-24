@@ -184,6 +184,33 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- v1.2.1 (2026-11-24): sidebar colors (SPEC §4.6 Sidebar). The user: "we should probably allow
+  users to configure the sidebar colors"; chosen: background, selected row, status dot colors,
+  per folder / host, in v1.2.1. Settings page Sidebar (after Checks): a field per color (#rrggbb,
+  a picker, "Aa" showing the text on it, × back to the theme's), lists of hosts and folders.
+  `[ui] sidebar_bg`, `sidebar_selected`, `sidebar_selected_bar`, `dot_idle`, `dot_connected`,
+  `dot_exited`, `dot_error`, `host_colors`, `folder_colors` (config.SidebarColors; folder and
+  host colors follow renames and go with deletes). Text black unless it misses 4.5:1 (or the
+  Appearance minimum); dots below 3:1 against the background are named. frontend/src/sidebarcolors.js.
+  Tests: TestSidebarColors, TestSidebarColorsFollow, sidebarcolors.test.mjs, gui-smoke-sidebarcolors.
+- v1.2.1 (2026-11-24): Disconnect remembered (SPEC R3, F1). The user: "if we press disconnect on
+  a session , that is currently not rememebered right ?", then "yes remember disconnect in v1.2.1
+  (and show its color button after a restart)" (confirmed: the sidebar status dot).
+  `disconnected` in the session's config (session.SetDisconnected, App.SetSessionDisconnected);
+  after a restart its Local and Remote tabs wait for Enter ("Disconnected."), the dot is orange
+  ("exited"), the sidebar line says "· disconnected"; connecting again or activating clears it.
+  The dot now has a tooltip saying its state in words (it was color only).
+  Tests: TestDisconnected, gui-smoke-disconnect.
+- v1.2.1 (2026-11-24): intervals in Settings (SPEC §4.6). The user: "add the check interval time
+  on web to the settings menue, any other internal constants we currently have make sense in
+  settings ?"; offered the repository check, message time, notification gap and cost update; all
+  four chosen. New page Checks (before Keys): `repo_check_every` (2m; 30s to 1h),
+  `web_runs_every` (2m; 30s to 1h), `web_runs_active_every` (15s; 5s to 10m), `cost_every` (1m;
+  15s to 1h). Appearance: `message_seconds` (4; 2 to 60; errors twice, with a button at least
+  15 s). Terminals: `notify_every` (1m; 0s to 1h). config.Intervals validates them (bad
+  hand-edits fall back to the default); frontend/src/intervals.js reads them; the repository
+  check and the cost loop take a new value from Save (the cost loop is woken). The idle check
+  stays at one minute. Tests: TestIntervals, intervals.test.mjs, gui-smoke-checks.
 - v1.2.1 (2026-11-21): MIT and BSD licence notices (SPEC §7.6). The user: "add the MIT and
   BSD notices in v1.2.1". THIRD-PARTY-NOTICES.txt now covers everything the program is built from:
   part 4 every Go module (59, on Linux, Windows or macOS) with the licences its files name,

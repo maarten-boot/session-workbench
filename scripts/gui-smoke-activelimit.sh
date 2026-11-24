@@ -98,7 +98,7 @@ click 390 66 1 1.5
 shot 7-settings
 check "the mark opens Settings" differ 6-new-cancelled 7-settings
 click 632 245 1 0.3; k ctrl+a; xdotool type --delay 20 '5'      # Warn above this many active sessions
-click 1090 530 1 2                                              # Save
+click 1090 595 1 2                                              # Save
 shot 8-limit-5
 check "the limit is saved" grep -q 'max_active_sessions = 5' $CFG
 crop 8-limit-5 $TOPBAR 8-top

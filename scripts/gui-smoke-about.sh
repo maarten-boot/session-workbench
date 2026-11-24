@@ -59,7 +59,7 @@ fi
 k ctrl+shift+comma; sleep 1
 xdotool mousemove 330 161 click 1; sleep 0.5; xdotool mousemove 1250 830; sleep 0.5
 shot 4-appearance
-xdotool mousemove 310 496 click 1; sleep 1; xdotool mousemove 1250 830; sleep 0.5
+xdotool mousemove 310 578 click 1; sleep 1; xdotool mousemove 1250 830; sleep 0.5
 shot 5-about
 crop 4-appearance 640x60+475+250 4-top
 crop 5-about 640x60+475+250 5-top

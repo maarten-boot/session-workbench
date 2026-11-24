@@ -349,6 +349,8 @@
             <button type="button" role="tab" data-page="qa" data-label="Q&amp;A">Q&amp;A</button>
             <button type="button" role="tab" data-page="containers" data-label="Containers">Containers</button>
             <button type="button" role="tab" data-page="cost" data-label="Cost">Cost</button>
+            <button type="button" role="tab" data-page="checks" data-label="Checks">Checks</button>
+            <button type="button" role="tab" data-page="sidebar" data-label="Sidebar">Sidebar</button>
             <button type="button" role="tab" data-page="keys" data-label="Keys">Keys</button>
         </div>
         <section class="settings-page" role="tabpanel" data-page="appearance">
@@ -377,6 +379,9 @@
                 <label>Seconds before a session's description shows (mouse on it in the list)
                     <input name="description_delay" type="number" min="0" max="10" step="0.1">
                 </label>
+                <label>Seconds a message stays on screen (errors twice as long)
+                    <input name="message_seconds" type="number" min="2" max="60" step="1">
+                </label>
             </div>
             <div class="tab-order">
                 <div class="caption">Tabs (order and which are shown)</div><!-- the key hint is filled in by main.js -->
@@ -399,6 +404,15 @@
                 </label>
                 <label>Stop claude when it waited for input
                     <select name="idle_stop"></select>
+                </label>
+                <label>Desktop notifications: at most one per session every
+                    <select name="notify_every">
+                        <option value="0s">bell (no gap)</option>
+                        <option value="30s">30 seconds</option>
+                        <option value="1m">minute</option>
+                        <option value="5m">5 minutes</option>
+                        <option value="15m">15 minutes</option>
+                    </select>
                 </label>
                 <p class="hint wide-hint">Frees its memory on the agent host; it resumes (<code>claude --resume</code>) when you open the session. Not the session on screen, not while it asks a question or runs a command. Edit… sets a session's own; the session menu has Stop claude now.</p>
                 <div class="checks">
@@ -536,6 +550,61 @@
             </table>
             <p class="hint">Started is the first day with a reply of claude counted in the session's transcripts, where its cost begins (— when there is none yet). The cost is counted also when the top bar does not show it: this page, the balloons and the warnings stay up to date. A warning marks the figure in the top bar with ⚠ and shows one desktop notification (once a day, once per usage window). Two sessions in the same folder share its transcripts, so the sum can be more than the top bar's total; the reset only changes the top bar's total.</p>
             <button type="button" name="reset_cost">Reset the total…</button>
+        </section>
+        <section class="settings-page" role="tabpanel" data-page="checks">
+            <p class="hint">How often the app looks again on its own. More often shows changes sooner; each check of a session on an agent host is an ssh call.</p>
+            <div class="grid">
+                <label>Repository of each session (git status, Files tab)
+                    <select name="repo_check_every">
+                        <option value="30s">30 seconds</option>
+                        <option value="1m">minute</option>
+                        <option value="2m">2 minutes</option>
+                        <option value="5m">5 minutes</option>
+                        <option value="15m">15 minutes</option>
+                        <option value="1h">hour</option>
+                    </select>
+                </label>
+                <label>Build runs (Web tab, while it is shown)
+                    <select name="web_runs_every">
+                        <option value="30s">30 seconds</option>
+                        <option value="1m">minute</option>
+                        <option value="2m">2 minutes</option>
+                        <option value="5m">5 minutes</option>
+                        <option value="15m">15 minutes</option>
+                        <option value="1h">hour</option>
+                    </select>
+                </label>
+                <label>Build runs while one runs
+                    <select name="web_runs_active_every">
+                        <option value="5s">5 seconds</option>
+                        <option value="10s">10 seconds</option>
+                        <option value="15s">15 seconds</option>
+                        <option value="30s">30 seconds</option>
+                        <option value="1m">minute</option>
+                        <option value="5m">5 minutes</option>
+                    </select>
+                </label>
+                <label>What claude cost (Cost, top bar)
+                    <select name="cost_every">
+                        <option value="15s">15 seconds</option>
+                        <option value="30s">30 seconds</option>
+                        <option value="1m">minute</option>
+                        <option value="2m">2 minutes</option>
+                        <option value="5m">5 minutes</option>
+                        <option value="15m">15 minutes</option>
+                        <option value="1h">hour</option>
+                    </select>
+                </label>
+            </div>
+        </section>
+        <section class="settings-page sidebar-colors" role="tabpanel" data-page="sidebar">
+            <p class="hint">Colors as #rrggbb (or pick one); empty is the theme's. Text on a color is black, white where black would not reach the minimum contrast. “Aa” shows the text on it.</p>
+            <div class="color-grid" data-list="main"></div>
+            <p class="hint color-warn" role="status"></p>
+            <div class="caption">Host headings</div>
+            <div class="color-grid" data-list="hosts"></div>
+            <div class="caption">Folder headings</div>
+            <div class="color-grid" data-list="folders"></div>
         </section>
         <section class="settings-page shortcuts" role="tabpanel" data-page="keys">
             <table></table>

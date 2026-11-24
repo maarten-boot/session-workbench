@@ -1,6 +1,7 @@
 // Shared DOM helpers.
 
 import {ClipboardGetText, ClipboardSetText} from '../wailsjs/runtime/runtime';
+import {messageMs} from './intervals';
 
 export const $ = sel => document.querySelector(sel);
 export const el = (tag, props = {}, ...children) => {
@@ -29,15 +30,16 @@ export const store = {
     },
 };
 
-// toast shows a short message at the bottom right.
+// toast shows a short message at the bottom right, for as long as Settings
+// → Appearance says (an error twice as long).
 export function toast(text, bad = false) {
     const t = el('div', {className: 'toast' + (bad ? ' bad' : ''), textContent: text});
     document.body.append(t);
-    setTimeout(() => t.remove(), bad ? 8000 : 4000);
+    setTimeout(() => t.remove(), messageMs(bad ? 'error' : 'info'));
 }
 
-// toastButton shows a message with a button for 15 seconds; the button
-// runs action and closes it.
+// toastButton shows a message with a button (at least 15 seconds, see
+// messageMs); the button runs action and closes it.
 export function toastButton(text, label, action) {
     const b = el('button', {type: 'button', textContent: label});
     const t = el('div', {className: 'toast with-button'}, el('span', {textContent: text}), b);
@@ -46,7 +48,7 @@ export function toastButton(text, label, action) {
         action();
     };
     document.body.append(t);
-    setTimeout(() => t.remove(), 15000);
+    setTimeout(() => t.remove(), messageMs('button'));
 }
 
 // balloon shows a balloon next to target once the mouse has rested on it

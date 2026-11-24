@@ -28,7 +28,7 @@ shot 1-first
 P1=$OUT/first/notes/_app/Prompts.md
 check "first start: the Prompts page is written" grep -q '^## CrossCheck' $P1
 k ctrl+shift+comma; sleep 1
-click 1030 446                                  # Save writes the config
+click 1030 528                                  # Save writes the config
 check "first start: the example commands are saved" grep -q 'claude-compact' $OUT/first/config.toml
 stop
 

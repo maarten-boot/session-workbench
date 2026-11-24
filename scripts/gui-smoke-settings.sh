@@ -57,7 +57,7 @@ xdotool mousemove 330 229 click 1; sleep 0.5; xdotool mousemove 1330 840; sleep 
 shot 5d-click-commands; pagecrop 5d-click-commands
 k End; xdotool mousemove 1330 840; sleep 0.5
 shot 5e-keys-end; pagecrop 5e-keys-end
-xdotool mousemove 330 433 click 1; sleep 0.5; xdotool mousemove 1330 840; sleep 0.5   # Keys
+xdotool mousemove 330 501 click 1; sleep 0.5; xdotool mousemove 1330 840; sleep 0.5   # Keys
 shot 5f-click-keys; pagecrop 5f-click-keys
 xdotool mousemove 330 161 click 1; sleep 0.5       # back to Appearance (opens there next time)
 k Escape; sleep 0.5

@@ -1,6 +1,7 @@
 import {SetLinks, WebInfo, WebRuns} from '../wailsjs/go/main/App';
 import {BrowserOpenURL} from '../wailsjs/runtime/runtime';
 import {el} from './ui';
+import {every} from './intervals';
 
 const errText = err => err?.message ?? String(err);
 
@@ -131,7 +132,7 @@ export class WebView {
         } catch (err) {
             this.runsStatus.textContent = '';
             this.runsEl.replaceChildren(el('span', {className: 'bad', textContent: errText(err)}));
-            this.schedule(120000);
+            this.schedule(every('web_runs_every'));
             return;
         }
         this.runsStatus.textContent = `updated ${new Date().toLocaleTimeString()}`;
@@ -147,8 +148,8 @@ export class WebView {
             return row;
         }));
         if (!runs.length) this.runsEl.append(el('span', {className: 'muted', textContent: 'No runs yet.'}));
-        // Poll faster while something is still running.
-        this.schedule(runs.some(r => r.status !== 'completed') ? 15000 : 120000);
+        // Poll faster while something is still running (Settings → Checks).
+        this.schedule(every(runs.some(r => r.status !== 'completed') ? 'web_runs_active_every' : 'web_runs_every'));
     }
 
     schedule(ms) {

@@ -8,6 +8,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"slices"
 	"strings"
@@ -94,6 +95,10 @@ type Session struct {
 	// start nothing, no live share, no notifications (session menu →
 	// Deactivate session… / Activate session).
 	Inactive bool `toml:"inactive,omitempty" json:"inactive"`
+	// Disconnected: the user chose Disconnect; after a restart its Local and
+	// Remote tabs wait for Enter instead of connecting (until one connects
+	// again, or the session is activated).
+	Disconnected bool `toml:"disconnected,omitempty" json:"disconnected"`
 	// Hosts are the other agent hosts the session has worked on, the most
 	// recent first (session menu → Switch host…); Host is the current one.
 	Hosts []string `toml:"hosts,omitempty" json:"hosts"`
@@ -239,6 +244,33 @@ type UI struct {
 	// (1 to 720) and the last of each day for SavedCopiesDays (0 to 365).
 	SavedCopiesHours int  `toml:"saved_copies_hours,omitempty" json:"saved_copies_hours"`
 	SavedCopiesDays  *int `toml:"saved_copies_days,omitempty" json:"saved_copies_days"`
+	// How often the app checks (Settings → Checks; Go durations, see
+	// Intervals): every session's repository (git status, Files tab), the
+	// Web tab's build runs (more often while one runs) and what claude cost.
+	RepoCheckEvery     string `toml:"repo_check_every,omitempty" json:"repo_check_every"`
+	WebRunsEvery       string `toml:"web_runs_every,omitempty" json:"web_runs_every"`
+	WebRunsActiveEvery string `toml:"web_runs_active_every,omitempty" json:"web_runs_active_every"`
+	CostEvery          string `toml:"cost_every,omitempty" json:"cost_every"`
+	// MessageSeconds is how long a message stays on screen (2 to 60; an
+	// error twice as long, one with a button at least 15 s).
+	MessageSeconds int `toml:"message_seconds,omitempty" json:"message_seconds"`
+	// NotifyEvery: at most one desktop notification per session per this
+	// (a Go duration, 0s = every bell, to 1h).
+	NotifyEvery string `toml:"notify_every,omitempty" json:"notify_every"`
+	// Sidebar colors (Settings → Sidebar; "#rrggbb", "" = the theme's):
+	// its background, the row of the session on screen and its bar, the
+	// status dot per state, and the heading of a host (HostColors, by host
+	// name) or folder (FolderColors, by folder path). Text on them is black,
+	// white where black would not reach the minimum contrast.
+	SidebarBg          string            `toml:"sidebar_bg,omitempty" json:"sidebar_bg"`
+	SidebarSelected    string            `toml:"sidebar_selected,omitempty" json:"sidebar_selected"`
+	SidebarSelectedBar string            `toml:"sidebar_selected_bar,omitempty" json:"sidebar_selected_bar"`
+	DotIdle            string            `toml:"dot_idle,omitempty" json:"dot_idle"`
+	DotConnected       string            `toml:"dot_connected,omitempty" json:"dot_connected"`
+	DotExited          string            `toml:"dot_exited,omitempty" json:"dot_exited"`
+	DotError           string            `toml:"dot_error,omitempty" json:"dot_error"`
+	HostColors         map[string]string `toml:"host_colors,omitempty" json:"host_colors"`
+	FolderColors       map[string]string `toml:"folder_colors,omitempty" json:"folder_colors"`
 	// SpellCheck marks misspelled words in the notes, in SpellLanguage (a
 	// Hunspell dictionary name, see internal/spell); SpellWords are the
 	// words added with "Add to dictionary".
@@ -397,6 +429,15 @@ func (c *Config) applyDefaults() {
 	if ActiveLimit(c.UI) != nil {
 		c.UI.MaxActiveSessions = 0
 	}
+	for _, iv := range Intervals {
+		if _, err := iv.Parse(c.UI); err != nil {
+			*iv.Get(&c.UI) = iv.Default
+		}
+	}
+	if MessageSecondsOK(c.UI) != nil {
+		c.UI.MessageSeconds = 4
+	}
+	tidyColors(&c.UI)
 	for m, p := range c.Prices {
 		if m == "" || !p.valid() {
 			delete(c.Prices, m) // a hand-edited price that cannot be right
@@ -474,6 +515,108 @@ func RecordEvery(u UI) (time.Duration, error) {
 		return 0, fmt.Errorf("recording segment %q: use 5m to 24h, e.g. 1h", u.RecordEvery)
 	}
 	return d, nil
+}
+
+// An Interval is a setting of how often something happens: a Go duration
+// from Min to Max, Default when not set or not valid.
+type Interval struct {
+	Name     string // for messages
+	Get      func(*UI) *string
+	Min, Max time.Duration
+	Default  string
+}
+
+// Intervals are the UI's intervals (SPEC §4.6 Checks).
+var Intervals = []Interval{
+	{"repository check", func(u *UI) *string { return &u.RepoCheckEvery }, 30 * time.Second, time.Hour, "2m"},
+	{"build runs check", func(u *UI) *string { return &u.WebRunsEvery }, 30 * time.Second, time.Hour, "2m"},
+	{"build runs check while one runs", func(u *UI) *string { return &u.WebRunsActiveEvery }, 5 * time.Second, 10 * time.Minute, "15s"},
+	{"cost update", func(u *UI) *string { return &u.CostEvery }, 15 * time.Second, time.Hour, "1m"},
+	{"notification gap", func(u *UI) *string { return &u.NotifyEvery }, 0, time.Hour, "1m"},
+}
+
+// Parse reads the interval of u.
+func (iv Interval) Parse(u UI) (time.Duration, error) {
+	v := *iv.Get(&u)
+	d, err := time.ParseDuration(v)
+	if err != nil || d < iv.Min || d > iv.Max {
+		return 0, fmt.Errorf("%s %q: use %s to %s, e.g. %s", iv.Name, v, short(iv.Min), short(iv.Max), iv.Default)
+	}
+	return d, nil
+}
+
+// short writes a duration without zero parts: 1m, not 1m0s.
+func short(d time.Duration) string {
+	s := d.String()
+	if strings.HasSuffix(s, "m0s") {
+		s = strings.TrimSuffix(s, "0s")
+	}
+	if strings.HasSuffix(s, "h0m") {
+		s = strings.TrimSuffix(s, "0m")
+	}
+	return s
+}
+
+// CostEvery is how often what claude cost is read.
+func CostEvery(u UI) time.Duration {
+	d, err := Intervals[3].Parse(u)
+	if err != nil {
+		return time.Minute
+	}
+	return d
+}
+
+var hexColor = regexp.MustCompile(`^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$`)
+
+// ValidColor: "" (the theme's) or #rgb / #rrggbb.
+func ValidColor(s string) bool { return s == "" || hexColor.MatchString(s) }
+
+// sidebarColors are the UI's single sidebar colors, by name for messages.
+func sidebarColors(u *UI) map[string]*string {
+	return map[string]*string{"sidebar background": &u.SidebarBg, "selected row": &u.SidebarSelected,
+		"selected row bar": &u.SidebarSelectedBar, "dot not connected yet": &u.DotIdle,
+		"dot connected": &u.DotConnected, "dot not connected": &u.DotExited, "dot error": &u.DotError}
+}
+
+// SidebarColors checks the sidebar colors.
+func SidebarColors(u UI) error {
+	for name, c := range sidebarColors(&u) {
+		if !ValidColor(*c) {
+			return fmt.Errorf("%s %q: use #rrggbb, or empty for the theme's", name, *c)
+		}
+	}
+	for what, m := range map[string]map[string]string{"host": u.HostColors, "folder": u.FolderColors} {
+		for k, c := range m {
+			if !ValidColor(c) {
+				return fmt.Errorf("%s %q color %q: use #rrggbb, or empty for the theme's", what, k, c)
+			}
+		}
+	}
+	return nil
+}
+
+// tidyColors drops colors that cannot be right and empty entries.
+func tidyColors(u *UI) {
+	for _, c := range sidebarColors(u) {
+		if !ValidColor(*c) {
+			*c = ""
+		}
+	}
+	for _, m := range []map[string]string{u.HostColors, u.FolderColors} {
+		for k, c := range m {
+			if c == "" || !ValidColor(c) {
+				delete(m, k)
+			}
+		}
+	}
+}
+
+// MessageSecondsOK checks how long messages stay: 2 to 60 seconds.
+func MessageSecondsOK(u UI) error {
+	if u.MessageSeconds < 2 || u.MessageSeconds > 60 {
+		return fmt.Errorf("messages stay %d seconds: use 2 to 60", u.MessageSeconds)
+	}
+	return nil
 }
 
 // ActiveLimit checks the limit on active sessions: 0 (none) to 1000.
@@ -700,6 +843,17 @@ func ValidateUI(u UI) error {
 		return err
 	}
 	if err := ActiveLimit(u); err != nil {
+		return err
+	}
+	for _, iv := range Intervals {
+		if _, err := iv.Parse(u); err != nil {
+			return err
+		}
+	}
+	if err := MessageSecondsOK(u); err != nil {
+		return err
+	}
+	if err := SidebarColors(u); err != nil {
 		return err
 	}
 	if _, err := RecordEvery(u); err != nil {

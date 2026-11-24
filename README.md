@@ -292,7 +292,7 @@ open page); a right-click on empty space in the tree makes a *New page…*;
 
 - **Web** (Ctrl+Shift+5): the repository's latest **GitHub Actions runs** (the last 12:
   status, workflow, title, branch, age; refreshed while shown, every 15 s while one is
-  running, otherwise every 2 minutes; click to open it in your browser), buttons for the
+  running, otherwise every 2 minutes (Settings → Checks); click to open it in your browser), buttons for the
   repository's pages read from its git remote (`origin`, else the first one), and your own
   links per session (http/https). github.com repositories get Repository, Actions, Pull
   requests, Issues and Releases; GitLab (a host name containing "gitlab") the equivalents;
@@ -409,7 +409,7 @@ Files tab a banner; **Details…** lists each item with why it matters and a com
 inspect or remove it. An agent host that can write the repository could have planted
 them. **Mark as reviewed** if they are yours; the warning returns when anything flagged
 changes. The check runs at start, when you switch sessions or return to the window, when
-the Files tab refreshes, when Details… opens, and every two minutes. Background:
+the Files tab refreshes, when Details… opens, and every two minutes (Settings → Checks). Background:
 [docs/CONNECTIVITY.md](docs/CONNECTIVITY.md).
 
 Terminals: Ctrl+Shift+F (Cmd+F) opens a find bar (Enter / Shift+Enter for next /
@@ -488,10 +488,13 @@ Off: Settings → Terminals (`private_history = false`), or per session in *Edit
 - History files may hold secrets you typed on a command line; they are as private as your
   shell's usual history.
 
-**Settings** (Ctrl+Shift+, or *Settings…*) has nine pages, listed as tabs on its left: Appearance (theme, colors, fonts,
-the delay before a session's description shows, tab order), Terminals, Commands, Backups and recordings, Notes (spelling), Q&A (who answers by default, the Claude API and
+**Settings** (Ctrl+Shift+, or *Settings…*) has eleven pages, listed as tabs on its left: Appearance (theme, colors, fonts,
+the delay before a session's description shows, how long messages stay on screen, tab order), Terminals, Commands, Backups and recordings, Notes (spelling), Q&A (who answers by default, the Claude API and
 Claude Code models, the Claude Code program with where it is found), Containers (Podman or Docker for
-container hosts, with the one found), Cost (see *What claude cost*) and Keys (the current shortcuts).
+container hosts, with the one found), Cost (see *What claude cost*), Checks (how often the app
+checks each session's repository, the Web tab's build runs and the cost), Sidebar (its colors:
+background, selected row, status dots, and a color per host and folder heading; text stays black
+unless it would be hard to read) and Keys (the current shortcuts).
 *What's new*, at the bottom left before the version, lists what changed per release (the commit
 messages since the last tag, then the last 5 releases); a release build offers it once after an
 update. `scripts/changes.sh` writes the list at build time (`make build`, CI).
@@ -540,8 +543,8 @@ the window is in the background. The tab that caused it is marked too; the mark 
 when you look at it, and the window title shows how many sessions want attention, then the
 name of the session you are looking at: `(2) alpha — Session Workbench`. A bell in
 a session you are not looking at (or while the window is in the background) also shows a
-desktop notification — *Claude is waiting* for the Remote tab — at most once a minute per
-session (`<name> · <host>`; "Bell in Local" etc. for other tabs); clicking it opens that session
+desktop notification — *Claude is waiting* for the Remote tab — at most once a minute
+(Settings → Terminals) per session (`<name> · <host>`; "Bell in Local" etc. for other tabs); clicking it opens that session
 on the tab that rang, and looking at the session withdraws it (Settings → Terminals:
 *Desktop notification when claude waits*; Linux uses the desktop's notification service,
 macOS may refuse notifications for the unsigned app). To have claude ring the bell when it
@@ -558,6 +561,9 @@ grey not connected yet.
 Esc stops it; off with *Reconnect dropped connections automatically* in Settings → Terminals).
 Detaching tmux, ending the remote session or *Disconnect* does not reconnect; press Enter
 when you want to.
+*Disconnect* is remembered: after a restart the session's Local and Remote tabs show
+"Disconnected." and wait for Enter, the sidebar shows "· disconnected" and an orange dot
+(its tooltip says so), and "all at startup" skips it; connecting again (or *Activate session*) ends that.
 
 **One project on two agent hosts** (say a machine at work and one at home, the app on your
 laptop). Session menu → **Switch host…** moves the session to another host: pick it (hosts it
@@ -599,7 +605,7 @@ such as a permission mode switched with Shift+Tab (start options like `--model` 
 replies in your sessions cost at API prices (with a subscription: what they would have cost
 with an API key). It is counted from Claude Code's transcripts on each agent host (the
 sessions' project folders under `~/.claude/projects`, including claude runs the app did not
-start) and updated every minute; the tooltip says what is counted. With a Pro, Max or Ultra
+start) and updated every minute (Settings → Checks); the tooltip says what is counted. With a Pro, Max or Ultra
 subscription the figure also shows its usage, **5h 23% · 7d 41%**: Claude Code reports it to a
 status line, so the app gives the claudes it starts a small status line command that saves it
 (your own status line from `~/.claude/settings.json` still shows; without one you see the

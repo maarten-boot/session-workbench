@@ -19,3 +19,8 @@
 - TestThirdPartyNotices checks Go modules against go.mod and JavaScript packages against package-lock.json; a wrong version of each fails it (tried).
 - packaging/copyright: a section for the rest, the holders checked against the licence files (Wails, Go, xterm.js, CodeMirror).
 - Version 1.2.1: wails.json, README, SPEC v1.44, PLAN. Go tests, frontend tests (96) and gui-smoke-about pass.
+
+## CI of c3731e9 (v1.2.1)
+
+- Build run 44838565024 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+  TestThirdPartyNotices passed on all three, Windows with its CRLF checkout.

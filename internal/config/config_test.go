@@ -486,3 +486,90 @@ func TestActiveLimit(t *testing.T) {
 		t.Errorf("read %d, want 6", got.UI.MaxActiveSessions)
 	}
 }
+
+// TestIntervals: how often the app checks, messages and notifications (SPEC
+// §4.6 Checks): defaults for missing or hand-edited bad values, the limits
+// with readable messages, good values read and kept.
+func TestIntervals(t *testing.T) {
+	c := &Config{UI: UI{RepoCheckEvery: "5s", WebRunsEvery: "x", NotifyEvery: "2h", MessageSeconds: 99}}
+	c.applyDefaults()
+	u := c.UI
+	if u.RepoCheckEvery != "2m" || u.WebRunsEvery != "2m" || u.WebRunsActiveEvery != "15s" ||
+		u.CostEvery != "1m" || u.NotifyEvery != "1m" || u.MessageSeconds != 4 {
+		t.Errorf("defaults: %+v", u)
+	}
+	if err := ValidateUI(u); err != nil {
+		t.Errorf("defaults not valid: %v", err)
+	}
+	if CostEvery(u) != time.Minute {
+		t.Errorf("CostEvery %v", CostEvery(u))
+	}
+	bad := u
+	bad.WebRunsActiveEvery = "1s"
+	err := ValidateUI(bad)
+	if err == nil || !strings.Contains(err.Error(), "build runs check while one runs \"1s\": use 5s to 10m, e.g. 15s") {
+		t.Errorf("1s: %v", err)
+	}
+	bad = u
+	bad.RepoCheckEvery = "2h"
+	if err := ValidateUI(bad); err == nil || !strings.Contains(err.Error(), "use 30s to 1h,") {
+		t.Errorf("2h: %v", err)
+	}
+	bad = u
+	bad.MessageSeconds = 1
+	if ValidateUI(bad) == nil {
+		t.Error("message_seconds 1 accepted")
+	}
+	good := u
+	good.NotifyEvery, good.CostEvery, good.MessageSeconds = "0s", "1m30s", 60
+	if err := ValidateUI(good); err != nil {
+		t.Errorf("good: %v", err)
+	}
+	if CostEvery(good) != 90*time.Second {
+		t.Errorf("CostEvery %v", CostEvery(good))
+	}
+	file := filepath.Join(t.TempDir(), "config.toml")
+	if err := os.WriteFile(file, []byte("[ui]\nweb_runs_every = \"5m\"\nmessage_seconds = 10\nnotify_every = \"0s\"\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	got, err := Load(file)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.UI.WebRunsEvery != "5m" || got.UI.MessageSeconds != 10 || got.UI.NotifyEvery != "0s" {
+		t.Errorf("read %+v", got.UI)
+	}
+}
+
+// TestSidebarColors: #rgb / #rrggbb or empty; bad ones refused with the
+// field named, hand-edited bad ones dropped (maps too).
+func TestSidebarColors(t *testing.T) {
+	for _, c := range []string{"", "#fff", "#1E8e3e"} {
+		if !ValidColor(c) {
+			t.Errorf("%q refused", c)
+		}
+	}
+	for _, c := range []string{"fff", "#ffff", "#12345g", "red", "#1234567"} {
+		if ValidColor(c) {
+			t.Errorf("%q accepted", c)
+		}
+	}
+	u := UI{SidebarBg: "#ffffff", DotError: "#c00", HostColors: map[string]string{"esx": "#ffe0e0"}}
+	if err := SidebarColors(u); err != nil {
+		t.Error(err)
+	}
+	u.DotExited = "orange"
+	if err := SidebarColors(u); err == nil || !strings.Contains(err.Error(), `dot not connected "orange"`) {
+		t.Errorf("orange: %v", err)
+	}
+	u.DotExited = ""
+	u.FolderColors = map[string]string{"work": "#12"}
+	if err := SidebarColors(u); err == nil || !strings.Contains(err.Error(), `folder "work" color "#12"`) {
+		t.Errorf("#12: %v", err)
+	}
+	c := &Config{UI: UI{SidebarBg: "blue", DotIdle: "#abc", HostColors: map[string]string{"a": "x", "b": "#000", "c": ""}}}
+	c.applyDefaults()
+	if c.UI.SidebarBg != "" || c.UI.DotIdle != "#abc" || len(c.UI.HostColors) != 1 || c.UI.HostColors["b"] != "#000" {
+		t.Errorf("tidied: %+v %v", c.UI.SidebarBg, c.UI.HostColors)
+	}
+}

@@ -1,6 +1,6 @@
 # Session Workbench — Specification
 
-Status: v1.44 (2026-11-21, app v1.2.1) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
+Status: v1.45 (2026-11-24, app v1.2.1) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
 narrow and resizable sidebar (F6), Claude backups (F7), one instance per config (F8), working
 copies and backups without rsync (F9), desktop notifications (F4), git status and the
 repository check in the Files tab (B5, B6), Notes and Web tabs (N1, W1), notes for all sessions
@@ -121,7 +121,9 @@ host's `local_prefix`), e.g. `~/share-local/workspace`.
 ### 4.1 Session list
 - F0. Multiple agent hosts are a first-class use case: sidebar groups sessions by host profile
   (collapsible); a host profile can be added/edited from the UI; a session's host is fixed at creation.
-- F1. Left sidebar lists sessions (name, local path — `ssh login: <folder>` for a plain login, F2a —, status dot, number for Ctrl+Alt+n) grouped
+- F1. Left sidebar lists sessions (name, local path — `ssh login: <folder>` for a plain login, F2a —, status dot (grey not connected yet,
+  green connected, orange not connected / disconnected, pulsing orange reconnecting, red a configuration error; its tooltip says
+  it in words), number for Ctrl+Alt+n) grouped
   under their host. The session menu (right-click or ⋯) starts with the host's file mode
   (shared folder / live share (sshfs), mounted or not / working copy (sync)). Drag (or menu Move up/down) to reorder within its folder and host. Edit
   (shows the session id, read-only, with the config entry, folders and tmux session it names;
@@ -203,7 +205,8 @@ host's `local_prefix`), e.g. `~/share-local/workspace`.
   A bell in such a terminal also shows a desktop notification (`notifications`, default on; Wails
   runtime notifications: freedesktop D-Bus on Linux, toasts on Windows, Notification Center on
   macOS, which may refuse an unsigned app): "Claude is waiting" for a Remote tab, "Bell in
-  <tab>" otherwise, with the session name and host; at most one per session per minute, and
+  <tab>" otherwise, with the session name and host; at most one per session per minute
+  (`notify_every`, Settings → Terminals: 0s = every bell, up to 1h), and
   none again until the session was looked at, which withdraws it and resets the minute. A click
   brings the window forward and opens that session's tab that rang. Without a notification service nothing is shown.
 - F5. Folders: sessions can be put in folders (e.g. "Work", "Private"); `groups` in the config
@@ -521,7 +524,8 @@ host's `local_prefix`), e.g. `~/share-local/workspace`.
   cost), then the subscription usage "· 5h 23% · 7d 41%" (with "(12 min ago)" when older than
   2 minutes). `[ui] show_cost` (Settings → Cost, on by default) shows it; `cost_per_session`
   (off by default) puts "Cost: today … · total …" in each session's list balloon.
-  Clicking the figure opens Settings → Cost. Updated every minute, also with show_cost off: it
+  Clicking the figure opens Settings → Cost. Updated every minute (`cost_every`, Settings →
+  Checks: 15s to 1h; a change counts from Save), also with show_cost off: it
   only hides the figure, while Settings → Cost, the balloons (cost_per_session) and the
   warnings (with their notifications) stay current, and claude still gets the usage status line.
   - Settings → Cost: the two settings, the warning limits, the usage in words ("5-hour 23%
@@ -634,7 +638,10 @@ host's `local_prefix`), e.g. `~/share-local/workspace`.
   dropped connections (ssh exit 255), and a Remote tab that could not start (e.g. the live share
   did not mount), reconnect automatically after 1, 2, 4, 8, 16, then every 30 s (back to 1 s after
   a connection that lasted 30 s; on/off with `auto_reconnect`; Esc stops). tmux detach / session
-  end (exit 0) and a user Disconnect do not.
+  end (exit 0) and a user Disconnect do not. A Disconnect is remembered (`disconnected = true` in
+  the session's config): after a restart its Local and Remote tabs start nothing and show
+  "Disconnected." with *Connect (Enter)* / *Start (Enter)*, its dot is orange and its sidebar line
+  says "· disconnected"; a tab that connects again, or *Activate session*, clears it.
 - R4. "End remote session" action (runs `tmux kill-session -t '=cw-<id>'` over ssh, exact match,
   `BatchMode=yes`, 20 s timeout; a session that is not running counts as ended), with confirm;
   not offered for a session without tmux (F2b).
@@ -776,7 +783,7 @@ host's `local_prefix`), e.g. `~/share-local/workspace`.
   names with a SHA-256 of their contents (first MB, plus the size), names and values of the flagged keys) and the warning
   returns when it changes; changes to keys that are not flagged don't count. Read-only; runs at
   start, on session switch and window focus, on Files refresh, when Details… opens, and every 2
-  minutes for all sessions.
+  minutes for all sessions (`repo_check_every`, Settings → Checks: 30s to 1h).
 
 ### 4.4a Notes tab
 - N1. Notes per session as a tree of pages (like the Zim desktop wiki): page tree on the left
@@ -879,7 +886,8 @@ host's `local_prefix`), e.g. `~/share-local/workspace`.
   host the repository page. Per-session custom links (`links`, http/https only). The last 12
   GitHub Actions runs via the user's GitHub CLI (`gh run list -R owner/repo`, so gh does not run
   git in the project; 30 s timeout), refreshed while visible (15 s while a run is in progress,
-  else 2 min, also after an error). Without gh the tab says how to install and log in. Everything
+  else 2 min, also after an error; Settings → Checks: `web_runs_active_every` 5s to 10m,
+  `web_runs_every` 30s to 1h). Without gh the tab says how to install and log in. Everything
   opens in the system browser; web pages are not embedded (GitHub forbids framing). No tokens are
   stored.
 
@@ -1032,12 +1040,23 @@ copy/paste/interrupt keys (Ctrl+C/V, Ctrl+Shift+C/V) is allowed with a warning. 
 
 Settings is one dialog with pages behind tabs in a column on its left, like a notebook (the
 last one used opens again):
-Appearance (theme, colors, fonts, description delay, tab order), Terminals (scrollback, connecting, the limit on active sessions (F19), stopping an idle claude
-(F17), reconnecting, badges, copy/paste, notifications, private shell history), Commands (command menu, start commands), Backups and
+Appearance (theme, colors, fonts, description delay, how long messages stay (`message_seconds`, 2
+to 60, default 4; an error twice as long, one with a button at least 15 s), tab order), Terminals
+(scrollback, connecting, the limit on active sessions (F19), stopping an idle claude (F17), the gap
+between desktop notifications (F4), reconnecting, badges, copy/paste, notifications, private shell
+history), Commands (command menu, start commands), Backups and
 recordings, Notes (spelling on/off, language, own words), Q&A (default engine `qa_engine`: automatic,
 Claude API, Claude Code or an own command; Claude API model `qa_model` with the API's models as
 suggestions; Claude Code model `qa_claude_model`; Claude Code program `qa_claude`, with where it is
-found), Containers (`container_engine`, with the one found), Cost (F18), Keys. The open tab is
+found), Containers (`container_engine`, with the one found), Cost (F18), Checks (how often the app
+checks on its own: each session's repository (B6), the Web tab's build runs (W1), what claude cost
+(F18); Go durations from a list, a hand-edited one kept; bad ones fall back to the default),
+Sidebar (colors: background, selected row and its bar, the status dot per state, a heading color
+per host (`host_colors`) and folder (`folder_colors`, following renames, dropped with the folder);
+`#rrggbb` or empty for the theme's, typed or picked; text on a chosen color black, white where
+black misses 4.5:1 (or the higher Appearance minimum); a dot below 3:1 against the background is
+named in a warning), Keys.
+The open tab is
 bold and joined to its page (its own border, no line between them); the column keeps the width
 of the longest name in bold, so the pages do not move when another opens, and more pages fit
 below. The dialog is 840 px wide, the pages beside the column. The column is a vertical tab

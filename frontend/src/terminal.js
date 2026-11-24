@@ -203,6 +203,15 @@ export class TermView {
         ]);
     }
 
+    // showDisconnected starts nothing: the session was disconnected before
+    // the app restarted; Enter (or the button) connects.
+    showDisconnected() {
+        this.exited = true;
+        this.onState('exited');
+        this.showOverlay('Disconnected.', [{label: `${cap(this.exitHint.again === 'reconnect' ? 'connect' : 'start')} (Enter)`,
+            primary: true, action: () => this.restart()}]);
+    }
+
     restart() {
         clearTimeout(this.reconnectTimer);
         this.reconnectTimer = null;

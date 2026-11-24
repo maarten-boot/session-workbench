@@ -3,6 +3,7 @@ package session
 import (
 	"errors"
 	"fmt"
+	"maps"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -1350,5 +1351,92 @@ func TestTagsProblem(t *testing.T) {
 		Sessions: []config.Session{{ID: "s-1", Name: "p", Host: "h", LocalPath: "/p", StartMode: "claude", Tags: []string{"go", "Go"}}}}
 	if ps := Problems(c); !slices.ContainsFunc(ps, func(p string) bool { return strings.Contains(p, "tags") }) {
 		t.Errorf("no problem for repeated tags: %q", ps)
+	}
+}
+
+// TestDisconnected: a Disconnect is remembered (in the file, after an Edit
+// and reopening) until it is cleared or the session is activated.
+func TestDisconnected(t *testing.T) {
+	file := filepath.Join(t.TempDir(), "config.toml")
+	m := Open(file)
+	no := false
+	if err := m.SaveHost("", config.Host{Name: "esx", SSHTarget: "root@esx", LocalDir: &no}); err != nil {
+		t.Fatal(err)
+	}
+	v, err := m.Create(NewSession{Host: "esx", StartMode: "shell"})
+	if err != nil || v.Disconnected {
+		t.Fatalf("new: %+v %v", v, err)
+	}
+	if err := m.SetDisconnected(v.ID, true); err != nil {
+		t.Fatal(err)
+	}
+	if b, _ := os.ReadFile(file); !strings.Contains(string(b), "disconnected = true") {
+		t.Errorf("not in the file:\n%s", b)
+	}
+	if err := m.Update(v.ID, Edit{Name: "renamed", StartMode: "shell"}); err != nil {
+		t.Fatal(err)
+	}
+	if !Open(file).State().Sessions[0].Disconnected {
+		t.Error("lost after Edit and reopening")
+	}
+	if err := m.SetDisconnected(v.ID, false); err != nil {
+		t.Fatal(err)
+	}
+	if m.State().Sessions[0].Disconnected {
+		t.Error("not cleared")
+	}
+	_ = m.SetDisconnected(v.ID, true)
+	if err := m.SetActive(v.ID, true); err != nil {
+		t.Fatal(err)
+	}
+	if b, _ := os.ReadFile(file); strings.Contains(string(b), "disconnected") {
+		t.Errorf("activated, still disconnected:\n%s", b)
+	}
+	if err := m.SetDisconnected("nope", true); err == nil {
+		t.Error("unknown session accepted")
+	}
+}
+
+// TestSidebarColorsFollow: a folder's color (and its subfolders') follows a
+// rename and goes with a delete; a host's follows a rename and goes with a
+// delete.
+func TestSidebarColorsFollow(t *testing.T) {
+	file := filepath.Join(t.TempDir(), "config.toml")
+	m := Open(file)
+	no := false
+	for _, h := range []string{"esx", "pi"} {
+		if err := m.SaveHost("", config.Host{Name: h, SSHTarget: "root@" + h, LocalDir: &no}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	for _, g := range []string{"work", "work/sub", "home"} {
+		if err := m.SaveGroup("", g); err != nil {
+			t.Fatal(err)
+		}
+	}
+	ui := m.State().UI
+	ui.FolderColors = map[string]string{"work": "#ffe0e0", "work/sub": "#e0ffe0", "home": "#e0e0ff"}
+	ui.HostColors = map[string]string{"esx": "#fff0c0", "pi": "#c0f0ff"}
+	if err := m.SaveUI(ui); err != nil {
+		t.Fatal(err)
+	}
+	if err := m.SaveGroup("work", "job"); err != nil {
+		t.Fatal(err)
+	}
+	if err := m.SaveHost("esx", config.Host{Name: "esx2", SSHTarget: "root@esx", LocalDir: &no}); err != nil {
+		t.Fatal(err)
+	}
+	if err := m.DeleteGroup("home"); err != nil {
+		t.Fatal(err)
+	}
+	if err := m.DeleteHost("pi"); err != nil {
+		t.Fatal(err)
+	}
+	got := Open(file).State().UI
+	if want := map[string]string{"job": "#ffe0e0", "job/sub": "#e0ffe0"}; !maps.Equal(got.FolderColors, want) {
+		t.Errorf("folders %v, want %v", got.FolderColors, want)
+	}
+	if want := map[string]string{"esx2": "#fff0c0"}; !maps.Equal(got.HostColors, want) {
+		t.Errorf("hosts %v, want %v", got.HostColors, want)
 	}
 }

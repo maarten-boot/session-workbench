@@ -1,20 +1,23 @@
 package main
 
-// What claude cost at API prices (SPEC F18): every minute one ssh call per
-// agent host reads what was added to the transcripts of its sessions'
-// project folders (internal/cost); the counts are kept in <data
-// dir>/cost.json and the window shows today's and the total cost.
+// What claude cost at API prices (SPEC F18): every minute (Settings →
+// Checks) one ssh call per agent host reads what was added to the
+// transcripts of its sessions' project folders (internal/cost); the counts
+// are kept in <data dir>/cost.json and the window shows today's and the
+// total cost.
 
 import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"path/filepath"
 	"sync"
 	"time"
 
 	wruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 
+	"session-workbench/internal/config"
 	"session-workbench/internal/cost"
 	"session-workbench/internal/idle"
 	"session-workbench/internal/session"
@@ -28,6 +31,7 @@ type costState struct {
 	failed map[string]time.Time   // host → when it last could not be read
 	usage  map[string]*cost.Usage // host → the subscription usage saved there
 	round  sync.Mutex             // one round at a time
+	wake   chan struct{}          // settings saved: wait the new interval
 }
 
 func (a *App) costInit() {
@@ -39,16 +43,36 @@ func (a *App) costInit() {
 		log.Printf("cost: %v (counting again)", err)
 	}
 	a.cost.ledger = l
+	a.cost.wake = make(chan struct{}, 1)
+}
+
+// costEvery is how often what claude cost is read: Settings → Checks
+// (SW_IDLE_TICK, for the tests, wins).
+func (a *App) costEvery() time.Duration {
+	if d, err := time.ParseDuration(os.Getenv("SW_IDLE_TICK")); err == nil && d >= time.Second {
+		return d
+	}
+	return config.CostEvery(a.sessions.Config().UI)
+}
+
+// costIntervalChanged makes the cost loop wait the interval now set.
+func (a *App) costIntervalChanged() {
+	select {
+	case a.cost.wake <- struct{}{}:
+	default:
+	}
 }
 
 func (a *App) costLoop(ctx context.Context) {
 	a.costRound(ctx)
-	t := time.NewTicker(idleTick())
-	defer t.Stop()
 	for {
+		t := time.NewTimer(a.costEvery())
 		select {
 		case <-ctx.Done():
+			t.Stop()
 			return
+		case <-a.cost.wake: // the next round after the new interval
+			t.Stop()
 		case <-t.C:
 			a.costRound(ctx)
 		}

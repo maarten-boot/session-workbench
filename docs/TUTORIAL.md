@@ -513,7 +513,8 @@ Use it as a reminder that survives closing the app:
   Repository, Actions, Pull requests, Issues and Releases on GitHub (GitLab gets the same).
   They are read from the project's git remote.
 - **Build runs**: the latest GitHub Actions runs, with status, branch and age,
-  refreshed while you look and every 15 seconds while one is running.
+  refreshed while you look and every 15 seconds while one is running
+  (Settings → Checks).
   Click a run to open it in your browser.
   This uses `gh` **on your own computer**, logged in with `gh auth login`;
   the app itself stores no tokens.

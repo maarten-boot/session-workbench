@@ -370,6 +370,12 @@ func (a *App) SetSessionActive(id string, active bool) error {
 	return nil
 }
 
+// SetSessionDisconnected remembers a Disconnect across restarts (false: it
+// connected again).
+func (a *App) SetSessionDisconnected(id string, disconnected bool) error {
+	return a.sessions.SetDisconnected(id, disconnected)
+}
+
 func (a *App) SetSessionGroup(id, group string) error {
 	return a.sessions.SetGroup(id, group)
 }
@@ -390,7 +396,8 @@ func (a *App) SaveUI(ui config.UI) error {
 	if err := a.sessions.SaveUI(ui); err != nil {
 		return err
 	}
-	a.rec.Refresh() // recording on or off from now
+	a.rec.Refresh()         // recording on or off from now
+	a.costIntervalChanged() // the cost update interval from now
 	return nil
 }
 

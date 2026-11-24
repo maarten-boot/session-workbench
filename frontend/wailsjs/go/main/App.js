@@ -322,6 +322,10 @@ export function SetSessionActive(arg1, arg2) {
   return window['go']['main']['App']['SetSessionActive'](arg1, arg2);
 }
 
+export function SetSessionDisconnected(arg1, arg2) {
+  return window['go']['main']['App']['SetSessionDisconnected'](arg1, arg2);
+}
+
 export function SetSessionGroup(arg1, arg2) {
   return window['go']['main']['App']['SetSessionGroup'](arg1, arg2);
 }

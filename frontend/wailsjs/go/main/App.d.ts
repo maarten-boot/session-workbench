@@ -177,6 +177,8 @@ export function SetLinks(arg1:string,arg2:Array<config.Link>):Promise<void>;
 
 export function SetSessionActive(arg1:string,arg2:boolean):Promise<void>;
 
+export function SetSessionDisconnected(arg1:string,arg2:boolean):Promise<void>;
+
 export function SetSessionGroup(arg1:string,arg2:string):Promise<void>;
 
 export function ShareStatus(arg1:string):Promise<share.Status>;

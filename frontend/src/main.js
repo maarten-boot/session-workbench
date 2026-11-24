@@ -23,6 +23,8 @@ import {SERVICES, addService, hasService} from './services';
 import {fmtSize} from './format';
 import {idleLabel, idleOptions} from './idle';
 import {addWarning, limitMark} from './activelimit';
+import {every, setIntervals} from './intervals';
+import {DOTS, applySidebarColors, dotWarnings, expand, minText, paint} from './sidebarcolors';
 import {COST_COLUMNS, costParts, costRows, dollars, nextCostSort, sessionCost, sortCostRows, usageText, warnings} from './cost';
 import {STATES, keepKnown, matches, parseTags, tagCounts, toggleTag} from './tags';
 import {
@@ -34,7 +36,7 @@ import {
     SyncInfo, SyncSave, SyncTakeFiles, SyncSendAll, OpenSaved, SavedCopy, RemoveSaved,
     AutosaveStatus, QuitSaving, QuitNow, NotesTodos, QAModels, QAFindClaude,
     ContainerDockerfile, SaveContainerDockerfile, ContainerRebuild, ContainerStopBuild, ContainerStop, ContainerRemove,
-    ContainerCompose, SaveContainerCompose, ContainerComposeApply, SetSessionActive,
+    ContainerCompose, SaveContainerCompose, ContainerComposeApply, SetSessionActive, SetSessionDisconnected,
     SwitchTargets, SwitchHost, Requirements, SaveRequirements, CheckRequirements, IdleStopped, SessionShown, StopClaude, ResumeClaude, CostSummary, ResetCost, ExampleCommands,
     ContainerEngineInfo, ExportParts, ExportSession, ImportOpen, ImportSession, Profile, CheckShare, VMShareGuide,
 } from '../wailsjs/go/main/App';
@@ -134,19 +136,24 @@ class Tab {
     }
 
     // ensureView starts the terminal (null for an inactive session: it
-    // connects nothing).
+    // connects nothing; a disconnected one waits for Enter).
     ensureView() {
         if (this.session.data.inactive) return null;
         if (!this.view) {
+            const onState = st => {
+                if (st === 'connected' && this.session.data.disconnected) this.session.setDisconnected(false);
+                this.onState?.(st);
+            };
             this.view = new TermView(this.pane, {
                 start: this.start, exitHint: this.exitHint, ui: app.state.ui,
                 colorMode: effectiveColorMode(app.state.ui, this.session.data),
-                isAppKey: e => appKey(e) !== null, onState: this.onState,
+                isAppKey: e => appKey(e) !== null, onState,
                 onActivity: (kind, n) => this.activity(kind, n),
                 commands: () => this.commandItems(),
                 prompts: () => this.promptItems(true),
             });
-            this.view.spawn();
+            if (this.session.data.disconnected) this.view.showDisconnected();
+            else this.view.spawn();
         }
         return this.view;
     }
@@ -364,7 +371,8 @@ class FilesTab {
 class SessionUI {
     constructor(data) {
         this.data = data;
-        this.remoteState = 'idle';
+        // Disconnected before the restart: shown as after a Disconnect.
+        this.remoteState = data.disconnected ? 'exited' : 'idle';
         this.container = el('div', {className: 'session-panes', hidden: true});
         $('#panes').append(this.container);
         this.tabs = [
@@ -411,6 +419,23 @@ class SessionUI {
 
     dotClass() {
         return this.data.error ? 'error' : this.remoteState;
+    }
+
+    // dotTitle says in words what the dot's color says.
+    dotTitle() {
+        if (this.data.error) return `Remote tab: ${this.data.error}`;
+        if (this.data.disconnected) return 'Remote tab: disconnected (Enter in the tab connects)';
+        return {idle: 'Remote tab: not connected yet', connected: 'Remote tab: connected', exited: 'Remote tab: not connected',
+            reconnecting: 'Remote tab: reconnecting'}[this.remoteState] ?? '';
+    }
+
+    // setDisconnected remembers a Disconnect across restarts (false: it
+    // connected again).
+    setDisconnected(on) {
+        if (!!this.data.disconnected === on) return;
+        this.data.disconnected = on;
+        SetSessionDisconnected(this.id, on).catch(err => toast(`Disconnect not remembered: ${err?.message ?? err}`, true));
+        app.render();
     }
 
     // todoCount: the TODO lines in the session's notes; todoText says where.
@@ -613,7 +638,7 @@ const app = {
         const last = this.sessions.get(store.get('active', ''));
         if (this.state.ui.connect_on_start === 'eager') this.order.forEach(s => s.connectRemote());
         this.checkAll();
-        setInterval(() => this.checkAll(), 120000);
+        this.scheduleChecks();
         this.checkTodos();
         this.select(last || this.order[0] || null);
 
@@ -797,9 +822,12 @@ const app = {
     // terminals of sessions that still exist.
     async reload() {
         this.state = await State();
+        setIntervals(this.state.ui);
+        if (this.checkTimer) this.scheduleChecks(); // a changed interval counts from now
         configureSpelling(this.state.ui);
         applyTheme(this.state.ui.theme);
         applyFont(this.state.ui);
+        applySidebarColors(this.state.ui, $('#sidebar'));
         this.fitSidebar?.();
         keymap = buildKeymap(this.state.keys, isMac);
         const seen = new Set();
@@ -1028,6 +1056,7 @@ const app = {
                 el('span', {className: 'caret', textContent: '▾'}),
                 el('span', {className: 'label', textContent: g.name + (g.host ? '' : ' (missing)')}),
                 el('span', {className: 'backup-warn', textContent: '⚠', hidden: true}), more);
+            paint(head, this.state.ui.host_colors?.[g.name], minText(this.state.ui)); // Settings → Sidebar
             if (g.host && g.host.kind !== 'container') this.hostHeads.push({name: g.name, target: g.host.ssh_target, head});
             const toggle = this.collapsible(group, `h:${g.group}/${g.name}`);
             head.onclick = e => !more.contains(e.target) && toggle();
@@ -1055,6 +1084,7 @@ const app = {
                 el('span', {className: 'caret', textContent: '▾'}),
                 el('span', {className: 'label', textContent: sub.name + (sub.known ? '' : ' (missing)')}),
                 el('span', {className: 'count', textContent: sub.count}), more);
+            paint(head, this.state.ui.folder_colors?.[sub.group], minText(this.state.ui)); // Settings → Sidebar
             const toggle = this.collapsible(folder, 'g:' + sub.group);
             head.onclick = e => !more.contains(e.target) && toggle();
             more.onclick = e => {
@@ -1076,12 +1106,12 @@ const app = {
 
     // notifyWaiting shows a desktop notification for a bell in a session you
     // are not looking at (claude waiting, when it rings the bell): at most
-    // one per session per minute; looking at the session withdraws it and
+    // one per session per minute (Settings → Terminals); looking at the session withdraws it and
     // lets the next bell notify right away. tab is the Tab that rang.
     notifyWaiting(s, tab) {
         if (this.state.ui.notifications === false) return;
         const now = Date.now();
-        if (s.notifiedAt && now - s.notifiedAt < 60000) return;
+        if (s.notifiedAt && now - s.notifiedAt < every('notify_every')) return;
         s.notifiedAt = now;
         s.notifiedTab = tab.key;
         tab = tab.label;
@@ -1165,11 +1195,11 @@ const app = {
         const d = s.data;
         const more = el('button', {className: 'icon more', textContent: '⋯', title: 'Session actions'});
         const item = el('div', {className: 'session', draggable: true},
-            el('span', {className: 'dot ' + s.dotClass()}),
+            el('span', {className: 'dot ' + s.dotClass(), title: s.dotTitle()}),
             el('span', {className: 'abbr', textContent: initials(d.name)}),
             el('div', {className: 'text'},
                 el('div', {className: 'name', textContent: d.name}),
-                el('div', {className: 'sub', textContent: '‎' + where(d) + (d.inactive ? ' · inactive' : '') + '‎'})),
+                el('div', {className: 'sub', textContent: '‎' + where(d) + (d.inactive ? ' · inactive' : d.disconnected ? ' · disconnected' : '') + '‎'})),
             el('span', {className: 'inactive-mark', textContent: '⏸', hidden: !d.inactive,
                 title: 'Inactive: nothing connects (session menu → Activate session)'}),
             el('span', {className: 'idle-mark', textContent: '💤', hidden: !this.idleStopped?.has(d.id),
@@ -1261,6 +1291,16 @@ const app = {
         for (const s of [...this.sessions.values()]) await this.checkRepo(s);
     },
 
+    // scheduleChecks checks every session's repository again after the
+    // interval of Settings → Checks (again after each change of it).
+    scheduleChecks() {
+        clearTimeout(this.checkTimer);
+        this.checkTimer = setTimeout(async () => {
+            await this.checkAll();
+            this.scheduleChecks();
+        }, every('repo_check_every'));
+    },
+
     // renderBadges updates a session's sidebar badge, its tab badges when it
     // is the active session, and the window title.
     renderBadges(s) {
@@ -1294,7 +1334,7 @@ const app = {
     },
 
     renderDot(s) {
-        for (const it of s.items ?? []) it.querySelector('.dot').className = 'dot ' + s.dotClass();
+        for (const it of s.items ?? []) Object.assign(it.querySelector('.dot'), {className: 'dot ' + s.dotClass(), title: s.dotTitle()});
     },
 
     renderMain() {
@@ -1695,7 +1735,10 @@ function sessionMenu(s, x, y) {
         ]),
         '-',
         ...(s.data.inactive ? [{label: 'Activate session', action: () => setSessionActive(s, true)}] : [
-            {label: 'Disconnect', action: () => s.disconnect()},
+            {label: 'Disconnect', action: () => {
+                s.disconnect();
+                s.setDisconnected(true); // also after a restart
+            }},
             ...(!s.data.claude ? [] : app.idleStopped?.has(s.id)
                 ? [{label: 'Resume claude', action: () => resumeClaude(s)}]
                 : [{label: 'Stop claude now', action: () => stopClaude(s)}]),
@@ -2376,6 +2419,13 @@ async function settingsDialog(page) {
         recEvery.append(el('option', {value: ui.record_every, textContent: ui.record_every}));
     }
     recEvery.value = ui.record_every;
+    // A hand-edited interval not in the list is added, so Save keeps it.
+    for (const k of ['repo_check_every', 'web_runs_every', 'web_runs_active_every', 'cost_every', 'notify_every']) {
+        if (ui[k] && ![...f[k].options].some(o => o.value === ui[k])) f[k].append(el('option', {value: ui[k], textContent: ui[k]}));
+        f[k].value = ui[k] ?? '';
+    }
+    f.message_seconds.value = ui.message_seconds ?? 4;
+    const sidebarColors = sidebarSettings(dlg, ui);
     f.record_dir.value = ui.record_dir ?? '';
     f.spell_check.checked = ui.spell_check !== false;
     const langs = await SpellLanguages().catch(() => ['en_US']);
@@ -2457,6 +2507,13 @@ async function settingsDialog(page) {
         saved_copies_days: Number(f.saved_copies_days.value),
         record_every: f.record_every.value,
         record_dir: f.record_dir.value.trim(),
+        repo_check_every: f.repo_check_every.value,
+        web_runs_every: f.web_runs_every.value,
+        web_runs_active_every: f.web_runs_active_every.value,
+        cost_every: f.cost_every.value,
+        notify_every: f.notify_every.value,
+        message_seconds: f.message_seconds.value === '' ? 4 : Number(f.message_seconds.value), // empty: the default
+        ...sidebarColors(),
         spell_check: f.spell_check.checked,
         spell_language: f.spell_language.value,
         spell_words: f.spell_words.value.split('\n'),
@@ -2472,6 +2529,66 @@ async function settingsDialog(page) {
     }), pages.find(p => !p.hidden)?.querySelector('input, select'), // the open page's first field
     () => moveWindow(dlg).pin());
     if (ok) await app.reload();
+}
+
+// sidebarSettings fills the Sidebar page of Settings (colors, SPEC §4.6)
+// and returns a function giving its values for SaveUI.
+function sidebarSettings(dlg, ui) {
+    const min = minText(ui);
+    const field = (label, value, onChange) => {
+        const text = el('input', {value: value ?? '', placeholder: 'theme', autocomplete: 'off', spellcheck: false, size: 9,
+            'aria-label': `${label} (#rrggbb, empty: the theme's)`});
+        const pick = el('input', {type: 'color', title: `Pick the ${label.toLowerCase()} color`});
+        const swatch = el('span', {className: 'swatch', textContent: 'Aa', title: 'The text on this color'});
+        const clear = el('button', {type: 'button', className: 'icon', textContent: '×', title: "Back to the theme's"});
+        const update = () => {
+            const c = expand(text.value.trim());
+            paint(swatch, c, min);
+            swatch.style.visibility = c ? '' : 'hidden'; // keeps its place: the fields line up
+            text.setCustomValidity(text.value.trim() && !c ? 'use #rrggbb' : '');
+            if (c) pick.value = c;
+            onChange?.();
+        };
+        pick.oninput = () => {
+            text.value = pick.value;
+            update();
+        };
+        text.oninput = update;
+        clear.onclick = () => {
+            text.value = '';
+            update();
+        };
+        update();
+        return {row: el('label', {className: 'color-row'}, el('span', {className: 'name', textContent: label}), text, pick, swatch, clear),
+            value: () => text.value.trim()};
+    };
+    const warn = dlg.querySelector('.color-warn');
+    const main = {};
+    const check = () => {
+        const bg = expand(main.sidebar_bg?.value()) ?? expand(getComputedStyle(document.documentElement).getPropertyValue('--panel').trim());
+        const dots = Object.fromEntries(Object.keys(DOTS).map(k => [k, main[k]?.value()]));
+        const low = dotWarnings(dots, bg).map(k => main[k].label);
+        warn.textContent = low.length ? `⚠ Hard to see on the background (below 3:1): ${low.join(', ')}.` : '';
+    };
+    const names = {sidebar_bg: 'Background', sidebar_selected: 'Selected row', sidebar_selected_bar: 'Selected row bar',
+        dot_idle: 'Dot: not connected yet', dot_connected: 'Dot: connected', dot_exited: 'Dot: not connected / disconnected',
+        dot_error: 'Dot: error'};
+    for (const [k, label] of Object.entries(names)) main[k] = {...field(label, ui[k], check), label};
+    dlg.querySelector('[data-list=main]').replaceChildren(...Object.values(main).map(m => m.row));
+    check();
+    const list = (key, items, saved) => {
+        const rows = items.map(n => ({name: n, ...field(n, saved?.[n])}));
+        dlg.querySelector(`[data-list=${key}]`).replaceChildren(...(rows.length ? rows.map(r => r.row)
+            : [el('span', {className: 'hint', textContent: 'None yet.'})]));
+        return () => Object.fromEntries(rows.filter(r => r.value()).map(r => [r.name, r.value()]));
+    };
+    const hosts = list('hosts', app.state.hosts.map(h => h.name), ui.host_colors);
+    const folders = list('folders', app.state.groups, ui.folder_colors);
+    return () => ({
+        ...Object.fromEntries(Object.entries(main).map(([k, m]) => [k, m.value()])),
+        host_colors: hosts(),
+        folder_colors: folders(),
+    });
 }
 
 // qaSettings fills the Q&A page of Settings: who answers by default, the

@@ -255,16 +255,21 @@ button.link:hover {
 /* The current session stands out: tinted background, thick accent bar, bold name. */
 .session.active {
     background: var(--focus-selected);
-    border-left: 4px solid var(--accent);
+    border-left: 4px solid var(--selected-bar, var(--accent));
     padding-left: 16px;
+}
+
+/* A selected-row color from Settings → Sidebar brings its own text color. */
+.session.active .name {
+    color: var(--selected-text, var(--text-strong));
+}
+
+.session.active .sub {
+    color: var(--selected-text, var(--text));
 }
 
 .session.active .name {
     font-weight: 700;
-}
-
-.session.active .sub {
-    color: var(--text);
 }
 
 .session.drop-before {
@@ -284,15 +289,15 @@ button.link:hover {
 }
 
 .session .dot.connected {
-    background: var(--ok);
+    background: var(--dot-connected, var(--ok));
 }
 
 .session .dot.exited {
-    background: var(--warn);
+    background: var(--dot-exited, var(--warn));
 }
 
 .session .dot.error {
-    background: var(--danger);
+    background: var(--dot-error, var(--danger));
 }
 
 .session .text {
@@ -1057,15 +1062,15 @@ dialog.switcher[style*="height"] .switch-list {
 }
 
 .switch-item .dot.connected {
-    background: var(--ok);
+    background: var(--dot-connected, var(--ok));
 }
 
 .switch-item .dot.exited {
-    background: var(--warn);
+    background: var(--dot-exited, var(--warn));
 }
 
 .switch-item .dot.error {
-    background: var(--danger);
+    background: var(--dot-error, var(--danger));
 }
 
 .switch-item .name {
@@ -1186,7 +1191,7 @@ dialog.switcher[style*="height"] .switch-list {
 }
 
 .session .dot.reconnecting {
-    background: var(--warn);
+    background: var(--dot-exited, var(--warn));
     animation: pulse 1s ease-in-out infinite alternate;
 }
 
@@ -2943,4 +2948,53 @@ dialog h2.drag-handle {
 
 .vmshare-sections .copy {
     margin-top: 4px;
+}
+
+/* --- Settings → Sidebar: color fields --- */
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 6px 16px;
+    margin-bottom: 10px;
+}
+
+dialog label.color-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 0;
+    color: var(--text);
+}
+
+.color-row .name {
+    flex: 1;
+    min-width: 0;
+}
+
+dialog .color-row input:not([type]) {
+    flex: none;
+    width: 7.5em;
+    margin-top: 0;
+    padding: 4px 6px;
+}
+
+.color-row input[type=color] {
+    width: 28px;
+    height: 24px;
+    padding: 0;
+    border: 1px solid var(--border-strong);
+}
+
+.color-row .swatch {
+    padding: 1px 6px;
+    border: 1px solid var(--border-strong);
+    font-weight: 600;
+}
+
+.color-row input:invalid {
+    outline: 2px solid var(--danger);
+}
+
+.color-warn:empty {
+    display: none;
 }
