@@ -286,14 +286,16 @@ It keeps that place and size until you quit the app.
 
 | Page | What you set there |
 |---|---|
-| Appearance | theme, colors and minimum contrast, font and size, which tabs show and in which order |
-| Terminals | copy and paste keys, desktop notifications, reconnecting, stopping an idle claude, the limit on active sessions |
+| Appearance | theme, colors and minimum contrast, font and size, how long messages stay on screen, which tabs show and in which order |
+| Terminals | copy and paste keys, desktop notifications and how often, reconnecting, stopping an idle claude, the limit on active sessions |
 | Commands | the command menu (section 11) and the start commands of new sessions |
 | Backups and recordings | Claude backups of each agent host, Remote tab recordings, saved working copies |
 | Notes | spelling: on or off, the language, your own words |
 | Q&A | who answers in the Q&A tab and with which model |
 | Containers | Podman or Docker, for container hosts |
 | Cost | the cost figure, warnings and each session's cost (section 15) |
+| Checks | how often the app checks each session's repository, the Web tab's build runs and the cost |
+| Sidebar | the sidebar's colors: background, selected row, status dots, a color per host and folder heading |
 | Keys | keyboard shortcuts |
 
 All of it is stored in `config.toml` (section 17), which you can also edit by hand.

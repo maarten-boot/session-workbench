@@ -1000,6 +1000,21 @@ notifications = true                      # desktop notification when claude wai
 private_history = true                    # each session's shells keep their own history
 # idle_stop = "5m"                        # stop a claude that waited this long for input (1m … 24h); resumed when opened
 # max_active_sessions = 8                 # warn when more sessions are active (0: no limit; going over is allowed)
+# message_seconds = 4                     # how long a message stays on screen (2 … 60; errors twice as long)
+# notify_every = "1m"                     # at most one desktop notification per session per 0s … 1h
+# repo_check_every = "2m"                 # Settings → Checks: each session's repository (30s … 1h)
+# web_runs_every = "2m"                   # the Web tab's build runs (30s … 1h)
+# web_runs_active_every = "15s"           # … while one runs (5s … 10m)
+# cost_every = "1m"                       # what claude cost (15s … 1h)
+# sidebar_bg = "#f8f8f0"                  # Settings → Sidebar ("#rrggbb"; empty or left out: the theme's)
+# sidebar_selected = "#cce4ff"            # the row of the session on screen
+# sidebar_selected_bar = "#005fb8"        # … and its bar
+# dot_idle = "#b5b5b5"                    # status dots: not connected yet, connected, not connected, error
+# dot_connected = "#1e8e3e"
+# dot_exited = "#b06000"
+# dot_error = "#b3261e"
+# host_colors = { "agent-vm" = "#ffe0a0" } # a host heading's color, by host name
+# folder_colors = { "Work" = "#a0e0ff" }   # a folder heading's color, by folder path
 # show_cost = true                        # today's and the total cost of claude at API prices in the top bar (counted also when false)
 # cost_per_session = false                # also each session's in its balloon in the list
 # cost_daily_limit = 20                   # warn when today's cost reaches $20 (0: never)
@@ -1110,6 +1125,7 @@ history = "off"                           # optional: "on" / "off" overrides [ui
 # idle_stop = "off"                       # optional: "off" or a time, overrides [ui] idle_stop
 # own_claude_volume = true                # a container session's own Claude Code login (default: the shared sw-claude)
 # inactive = true                         # kept for later: connects nothing until activated (session menu)
+# disconnected = true                     # Disconnect, remembered: its tabs wait for Enter after a restart
 # hosts = ["work"]                        # the other agent hosts it worked on (Switch host…), most recent first
 local_init = "git status"                 # optional: typed into the Local tab
 links = [{ name = "Staging", url = "https://staging.example.com" }]   # optional: Web tab

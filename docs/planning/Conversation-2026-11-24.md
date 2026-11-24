@@ -47,3 +47,17 @@
 - All 57 GUI tests pass on the final build (3 before the session ended, 54 after).
 - The tutorial's Settings screenshots (30, 31, 32) retaken: the tab column has Checks and Sidebar, Appearance the message time.
   The other screenshots of that step differed only in the top bar's cost and the times (a few hundred pixels): kept as they were.
+
+## CI of 49ee5e2
+
+- Build run 45456551034 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+
+## Cross-check of v1.2.1
+
+- The user: "do a crosscheck".
+- THIRD-PARTY-NOTICES.txt written again: identical (no module changed).
+- Import builds a new session from chosen fields: an imported session does not take `disconnected` along (right).
+- Fixed: the tutorial's table of Settings pages lacked Checks and Sidebar (and the message time, the notification gap);
+  README's config reference lacked the new [ui] keys and the session's `disconnected`;
+  SPEC's summary did not list the intervals, the remembered Disconnect and the sidebar colors;
+  SPEC now says one sidebar color serves both themes and an own background has no hover tint.

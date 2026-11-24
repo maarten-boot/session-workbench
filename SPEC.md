@@ -26,7 +26,9 @@ the mouse and OSC 52 (T2a), D2 diagrams in Notes and Q&A (N1d), what changed per
 in Settings and the release notes (§4.6 About), Check share and VM share setup… in the
 host dialog (F2c), Settings and the host dialogs moved and resized (§4.7), the logo on
 the About page and as the app icon (§4.6 About), the day each session's cost started in
-the Cost table (F18), a limit on active sessions that warns (F19), and Settings with its tabs on the left (§4.6).
+the Cost table (F18), a limit on active sessions that warns (F19), Settings with its tabs on the left (§4.6),
+the app's check intervals, message time and notification gap in Settings (§4.6 Checks), a Disconnect
+remembered across restarts (R3), and the sidebar's colors (§4.6 Sidebar).
 Sections describe the implemented behaviour.
 
 ## 1. Problem
@@ -1055,7 +1057,8 @@ Sidebar (colors: background, selected row and its bar, the status dot per state,
 per host (`host_colors`) and folder (`folder_colors`, following renames, dropped with the folder);
 `#rrggbb` or empty for the theme's, typed or picked; text on a chosen color black, white where
 black misses 4.5:1 (or the higher Appearance minimum); a dot below 3:1 against the background is
-named in a warning), Keys.
+named in a warning; one value serves both themes; with an own background the rows have no hover
+tint), Keys.
 The open tab is
 bold and joined to its page (its own border, no line between them); the column keeps the width
 of the longest name in bold, so the pages do not move when another opens, and more pages fit
