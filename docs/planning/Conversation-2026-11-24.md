@@ -39,3 +39,11 @@
 - Tests: TestSidebarColors, TestSidebarColorsFollow, sidebarcolors.test.mjs (104 frontend tests pass), gui-smoke-sidebarcolors.
 - The user: "going home", then "ok commit first i will push": committed while the full GUI suite still runs
   (the 9 changed or new tests passed on the final build); the tutorial's Settings screenshots are not retaken yet.
+
+## CI of 2f0e70a
+
+- Build run 45428814941 passed: linux-amd64, windows-amd64 and macos-universal; release skipped.
+- The full GUI suite stopped after 3 tests when the session ended (all 3 passed); the other 54 run again.
+- All 57 GUI tests pass on the final build (3 before the session ended, 54 after).
+- The tutorial's Settings screenshots (30, 31, 32) retaken: the tab column has Checks and Sidebar, Appearance the message time.
+  The other screenshots of that step differed only in the top bar's cost and the times (a few hundred pixels): kept as they were.
