@@ -43,3 +43,17 @@
 - Left as they were: gui-smoke-autosave (quitting while saving is what it tests), gui-smoke-window (SIGTERM), the MEASURE debug exits.
 - No version bump: only the tests change; it goes out with v1.2.3.
 - All 57 GUI tests pass with stop_app; afterwards no test state folder is left in ~/.local/state.
+
+## CI of b4a651f
+
+- Build run 45622163982 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+- Only the tests changed: no tag needed; it goes out with v1.2.3.
+
+## Repository check window moves and resizes (v1.2.3)
+
+- The user: "the hooks warning popup window where we review the hooks should be resizable and movable."
+- The repository check's Details… (#dlg-repo) now moves by its heading and resizes at its corner (moveWindow, as Settings and the host dialogs).
+- First tries: a flex layout to let the list take the extra height squeezed the list to one line, then kept the window small;
+  WebKit sized the flex dialog as if the scrolling list were empty. Now the list is no box of its own: it shows whole, the window scrolls.
+- gui-smoke-repocheck drags the heading and the corner (checked) and clicks Mark as reviewed where the move put it; gui-smoke-dialogs passes.
+- Version 1.2.3 (the stop_app commit b4a651f goes out with it): wails.json, README, SPEC, PLAN, TUTORIAL, Tests.md.

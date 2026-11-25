@@ -98,7 +98,7 @@ README.md "Development" lists the make targets.
 | gui-smoke-history.sh      | L4         | private shell history                                        |
 | gui-smoke-files.sh        | B1–B4      | Files tab tree, sort, open                                   |
 | gui-smoke-git.sh          | B5         | git markers                                                  |
-| gui-smoke-repocheck.sh    | B6         | repository check, mark as reviewed                           |
+| gui-smoke-repocheck.sh    | B6, §4.7   | repository check, mark as reviewed; Details… moves by its heading and resizes at its corner |
 | gui-smoke-notes.sh        | N1, N1a    | tab order, page tree, autosave, formatting                   |
 | gui-smoke-spell.sh        | N1a, N1b   | check lists, bullets, spelling suggestions                   |
 | gui-smoke-todo.sh         | N1c        | TODO marks                                                   |

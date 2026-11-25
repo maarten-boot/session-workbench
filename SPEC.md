@@ -1,6 +1,6 @@
 # Session Workbench — Specification
 
-Status: v1.46 (2026-11-25, app v1.2.2) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
+Status: v1.47 (2026-11-25, app v1.2.3) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
 narrow and resizable sidebar (F6), Claude backups (F7), one instance per config (F8), working
 copies and backups without rsync (F9), desktop notifications (F4), git status and the
 repository check in the Files tab (B5, B6), Notes and Web tabs (N1, W1), notes for all sessions
@@ -24,7 +24,7 @@ commands and prompts (T7), tags (also automatic ones for host, folder and state)
 filter for Active and Inactive (F5a), a sortable Cost table (F18), copying where claude uses
 the mouse and OSC 52 (T2a), D2 diagrams in Notes and Q&A (N1d), what changed per release
 in Settings and the release notes (§4.6 About), Check share and VM share setup… in the
-host dialog (F2c), Settings and the host dialogs moved and resized (§4.7), the logo on
+host dialog (F2c), Settings, the host dialogs and the repository check moved and resized (§4.7), the logo on
 the About page and as the app icon (§4.6 About), the day each session's cost started in
 the Cost table (F18), a limit on active sessions that warns (F19), Settings with its tabs on the left (§4.6),
 the app's check intervals, message time and notification gap in Settings (§4.6 Checks), a Disconnect
@@ -1093,7 +1093,8 @@ large for one X request, so the 1024 px one never showed.
 - Contains: hosts, workspace roots, folders (`groups`), sessions (incl. links and the reviewed
   repository fingerprint), UI prefs (also editable in a Settings dialog), keybindings, local shell,
   API prices (`[prices]`, F18).
-- The Settings dialog, Add/Edit host and VM share setup… (F2c) move by their heading and resize
+- The Settings dialog, Add/Edit host, VM share setup… (F2c) and the repository check's Details…
+  (B6; its list shows whole, the window scrolls when it does not fit) move by their heading and resize
   by their corner, like the Dockerfile and Services windows (C6, C7). Each is fixed where it
   opens (a page or field that changes its height grows it downwards) and keeps its place and
   size while the app runs, not across restarts; its top stays in the window, with at least 80 px

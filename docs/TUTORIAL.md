@@ -279,7 +279,7 @@ Have a look before your first session; everything has a sensible default.
 Its pages are listed on the left; click one to open it
   (or, on a focused one, Up and Down).
 Drag its title to move it, and its bottom right corner to make it larger;
-  the host dialogs work the same way.
+  the host dialogs and the repository check's Details… work the same way.
 It keeps that place and size until you quit the app.
 
 ![Settings: Appearance](tutorial/30-settings.png)

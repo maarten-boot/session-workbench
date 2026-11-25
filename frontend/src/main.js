@@ -2259,7 +2259,8 @@ async function vmShareDialog(local, remote) {
 
 // moveWindow makes a dialog movable by its heading (ui.js movable) once;
 // with its CSS resize corner, the size and place it was given stay for
-// the next time in this run of the app (Settings, host dialog, VM share).
+// the next time in this run of the app (Settings, host dialog, VM share,
+// repository check).
 const movableDialogs = new WeakMap();
 function moveWindow(dlg) {
     if (!movableDialogs.has(dlg)) movableDialogs.set(dlg, movable(dlg));
@@ -2653,7 +2654,7 @@ async function repoDialog(s) {
             el('span', {textContent: ` — ${f.why}`})),
         el('code', {className: 'detail', textContent: f.detail}),
         el('code', {className: 'fix', textContent: f.fix, title: 'Run in the Local tab, in the repository'}))));
-    const ok = await runDialog(dlg, () => TrustRepo(s.id, a.fingerprint));
+    const ok = await runDialog(dlg, () => TrustRepo(s.id, a.fingerprint), null, () => moveWindow(dlg).pin());
     if (ok) {
         await app.reload();
         app.renderRepoWarn(s);

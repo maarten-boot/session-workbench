@@ -1219,9 +1219,10 @@ dialog .grid {
     max-height: 90vh;
 }
 
-/* Settings, the host dialog and VM share setup… move by their heading and
-   resize at the corner (main.js moveWindow); what does not fit scrolls. */
-#dlg-settings, #dlg-host, #dlg-vmshare {
+/* Settings, the host dialog, VM share setup… and the repository check move
+   by their heading and resize at the corner (main.js moveWindow); what does
+   not fit scrolls. */
+#dlg-settings, #dlg-host, #dlg-vmshare, #dlg-repo {
     resize: both;
     overflow: auto;
     min-width: 360px;
@@ -2997,4 +2998,16 @@ dialog .color-row input:not([type]) {
 
 .color-warn:empty {
     display: none;
+}
+
+/* The repository check: its list of hooks and settings is not a box of its
+   own (no second scroll bar); the window scrolls when they do not fit, and
+   shows more when dragged larger. */
+#dlg-repo {
+    max-height: calc(100vh - 8px);
+}
+
+#dlg-repo .findings {
+    max-height: none;
+    overflow: visible;
 }

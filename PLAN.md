@@ -184,6 +184,13 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- v1.2.3 (2026-11-25): the repository check's Details… moves and resizes (SPEC §4.7, B6). The
+  user: "the hooks warning popup window where we review the hooks should be resizable and
+  movable." It moves by its heading and resizes at its corner like Settings and the host dialogs
+  (moveWindow; place and size kept while the app runs). Its list of hooks and settings is no
+  longer a 340 px box with its own scroll bar: it shows whole, the window scrolls when it does
+  not fit, and a wider window unwraps the long commands. (A flex layout that would let only the
+  list grow made WebKit size the window as if the list were empty.) gui-smoke-repocheck drags it.
 - 2026-11-25 (no version of its own; only the tests): every GUI test stops the app with
   smoke-lib's `stop_app` (it waits up to 10 s for the app's children, e.g. an ssh cost read that
   would otherwise write ~/.local/state/<profile> again after the cleanup). The user: "switch the

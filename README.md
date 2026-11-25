@@ -14,7 +14,7 @@ read its security section if the agent host can write to your repositories.
 New here? **[docs/TUTORIAL.md](docs/TUTORIAL.md)** takes you from the download to your first
 claude session, with screenshots (`make tutorial-pdf` makes a PDF of it).
 
-Status: v1.2.2: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
+Status: v1.2.3: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
 Notes (page trees with formatting, lists and check lists, spelling, D2 diagrams), Web and Q&A tabs, what changed per release (What's new), Remote tab recordings, session folders and tags,
 themes and color modes, quick switcher, a command menu and a prompts menu in the Local and Remote tabs, editable
 start commands, private shell history per session, activity badges, desktop notifications,
@@ -406,7 +406,7 @@ directory names).
 **Repository check.** If a session's repository contains hooks or settings that git
 on your computer would run (or that redirect pushes), the session gets a ⚠ and the
 Files tab a banner; **Details…** lists each item with why it matters and a command to
-inspect or remove it. An agent host that can write the repository could have planted
+inspect or remove it (drag its heading to move it, its corner to make it larger). An agent host that can write the repository could have planted
 them. **Mark as reviewed** if they are yours; the warning returns when anything flagged
 changes. The check runs at start, when you switch sessions or return to the window, when
 the Files tab refreshes, when Details… opens, and every two minutes (Settings → Checks). Background:
