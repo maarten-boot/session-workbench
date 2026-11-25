@@ -57,7 +57,7 @@ check "the switcher before resizing is small" small 7-before-resize
 check "the switcher is resizable" big 8-resized
 check "the switcher keeps its size" big 9-reopened
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 expect "Enter picks the most recent other session" /var "$(cat $SW_OUT/1-mru 2>&1)"
 expect "\"wb\" finds workbench" /opt "$(cat $SW_OUT/2-fuzzy 2>&1)"
 expect "Escape keeps the session" /opt "$(cat $SW_OUT/3-escape 2>&1)"

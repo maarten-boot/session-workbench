@@ -92,7 +92,7 @@ shot 10-delete-dialog; k Tab; k space; k shift+Tab; k Return; sleep 2   # tick t
 check "the saved copy went with the session" test ! -e $XDG_DATA_HOME/session-workbench/working-copies/s-sync
 check "the session is gone" test -z "$(grep 's-sync' $CFG)"
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 expect "host file after Get + fast-forward, then Take" "one agent more" "$(cat $R/a.txt | xargs)"
 expect "host branch has the agent's commit" "change made on the agent|base|" "$(git -C $R log --format=%s | head -2 | tr '\n' '|')"
 expect "the agent's new branch is a branch here" "change made on the agent" "$(git -C $R log -1 --format=%s from-agent 2>&1)"

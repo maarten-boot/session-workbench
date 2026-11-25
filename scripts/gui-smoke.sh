@@ -38,7 +38,7 @@ xdotool key Return; sleep 1.5
 t 'echo restarted-ok | tee $SW_OUT/restarted'
 import -window root $OUT/5-restarted.png
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-s-smoke'" 2>/dev/null
 expect "typing arrives in order" "typed: The quick brown fox jumps over the lazy dog 0123456789" "$(cat $SW_OUT/typed 2>&1)"
 read -r r1 c1 <$SW_OUT/size1; read -r r2 c2 <$SW_OUT/size2

@@ -62,5 +62,5 @@ PY
 expect "the window icon is the logo's square (256 px, transparent corner, blue)" \
 	"256 256 corner-clear blue" "$(cat $OUT/icon-check.txt)"
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 finish

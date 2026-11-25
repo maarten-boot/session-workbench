@@ -184,6 +184,12 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- 2026-11-25 (no version of its own; only the tests): every GUI test stops the app with
+  smoke-lib's `stop_app` (it waits up to 10 s for the app's children, e.g. an ssh cost read that
+  would otherwise write ~/.local/state/<profile> again after the cleanup). The user: "switch the
+  remaining GUI tests to stop_app". 61 stops in 51 scripts and tutorial-shots.sh; left as they
+  were: gui-smoke-autosave (tests quitting while saving), gui-smoke-window (tests SIGTERM) and
+  the MEASURE debug exits.
 - v1.2.2 (2026-11-25): the notices cannot miss a dependency (SPEC §7.6). The user: "drop the
   output folding for now what is the second open item ?", then "yep build the notices check,
   output folding can be removed". TestThirdPartyNotices also checks that every production

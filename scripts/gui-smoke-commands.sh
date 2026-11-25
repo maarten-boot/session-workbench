@@ -153,6 +153,6 @@ click ${CMDX:-747} 17; sleep 0.5; shot 6-menu-with-new-command; k Escape
 xdotool mousemove 284 137 click 1; sleep 0.5; menu     # session ⋯ → Edit… (focused first): start command and own commands
 shot 7-session-dialog; k Escape
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-s-cmd'" 2>/dev/null
 finish

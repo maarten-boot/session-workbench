@@ -73,7 +73,7 @@ check "Deactivate with the tick ended its tmux session" no_tmux $B
 check "config.toml marks it inactive" inactive_in_file $B
 check "the active one is untouched" has_tmux $A
 alive
-kill $APP; wait $APP 2>/dev/null; sleep 1
+stop_app; sleep 1
 start                                                  # restart: "parked" was the last one open
 shot 7-restarted
 check "after a restart the inactive session connects nothing" no_tmux $B
@@ -89,5 +89,5 @@ check "Activate session from the menu" active_in_file $A
 check "and it connects again" has_tmux $A
 shot 8-end
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 finish

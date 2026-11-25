@@ -75,7 +75,7 @@ shot 5b-error-on-hidden-page
 k Escape; sleep 0.5
 check "a bad value is not saved" test -z "$(grep 'font_size = 99' $CFG)"
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 expect "rebound Ctrl+Tab goes to the next session" /usr "$(cat $SW_OUT/after-ctrl-tab 2>&1)"
 expect "Settings saved theme and colors" 'theme = "dark"|color_mode = "mono"|' \
 	"$(sed -n '/^\[ui\]/,/^\[/p' $CFG | grep -E '^ *(theme|color_mode) =' | sed 's/^ *//' | tr '\n' '|')"

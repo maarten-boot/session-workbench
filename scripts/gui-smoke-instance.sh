@@ -50,5 +50,5 @@ check "another config runs alongside" kill -0 $OTHER
 expect "two windows" 2 "$(windows)"
 kill $OTHER; wait $OTHER 2>/dev/null
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 finish

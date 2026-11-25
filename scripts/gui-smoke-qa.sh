@@ -74,7 +74,7 @@ expect "second question sends the first back" "3 assistant" \
 	"$(sed -n 2p $REQ | python3 -c 'import json,sys; m=json.load(sys.stdin)["body"]["messages"]; print(len(m), m[1]["role"])')"
 check "the beta header asks for fallbacks" grep -q 'server-side-fallback-2026-07-01' $REQ
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 
 start                                                  # the conversation is back after a restart
 shot 4-after-restart
@@ -140,6 +140,6 @@ for want in "**Answer** (Claude API, claude-other-model):" "**Answer** (Claude C
 	check "logged: $want" grep -qF -- "$want" $LOGF
 done
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 kill $FAKE 2>/dev/null
 finish

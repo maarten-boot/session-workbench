@@ -126,5 +126,5 @@ check "its own login volume is gone" bash -c "! $ENGINE volume ls --format '{{.N
 check "the app's files (with compose.yaml) are gone" test ! -e $XDG_DATA_HOME/session-workbench/containers/$ID
 check "the session is gone" bash -c "! grep -q $ID $CFG"
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 finish

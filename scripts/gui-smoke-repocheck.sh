@@ -44,7 +44,7 @@ printf '#!/bin/sh\ntouch %s\necho changed\n' "$OUT/HOOK-RAN" >$B/.git/hooks/pre-
 k ctrl+alt+2; sleep 1; k ctrl+alt+1; sleep 2
 shot 4-changed-again                            # warning back
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 expect "\"Mark as reviewed\" saved for the planted repository only" 1 "$(grep -c trusted_git $CFG)"
 check "the planted hook did not run" test ! -e $OUT/HOOK-RAN
 for id in s-rcb s-rcc; do ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-$id'" 2>/dev/null; done

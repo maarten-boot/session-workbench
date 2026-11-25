@@ -62,6 +62,6 @@ shot 6-missing
 check "a missing remote prefix gives another result" differ 5-checked 6-missing
 k Escape                                 # Cancel the host dialog
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 check "Cancel leaves config.toml as it was" cmp -s $OUT/config-before.toml $CFG
 finish

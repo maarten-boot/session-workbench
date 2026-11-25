@@ -53,5 +53,5 @@ xdotool type --delay 10 'Second line.'
 k shift+Tab; shot 4-edit; k Return; sleep 1
 check "Edit… saves the description" grep -qF 'description = "New text.\nSecond line."' $CFG
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 finish

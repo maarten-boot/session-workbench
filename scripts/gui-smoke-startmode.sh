@@ -44,6 +44,6 @@ shot 3-restarted
 # Each claude gets the app's hooks (--settings, SPEC F17) after its name.
 check "the new tmux session starts claude --continue, else claude" grep -qF -- "--continue || claude --settings" <<<"$(started)"
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-s-mode'" 2>/dev/null
 finish

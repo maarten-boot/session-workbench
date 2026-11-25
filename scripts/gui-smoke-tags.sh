@@ -77,7 +77,7 @@ click 113 476                                         # all of them → any of t
 shot 5-any
 click 110 619 2; expect "client-x or urgent: the third is gamma" gamma "$(title)"
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 $BIN -config $CFG >>$OUT/app.log 2>&1 &               # the filter is remembered
 APP=$!
 wait_window
@@ -97,5 +97,5 @@ click 165 357                                         # and go: beta and gamma
 shot 9-state
 click 110 549 2; expect "active and go: beta first" beta "$(title)"
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 finish

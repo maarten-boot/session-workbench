@@ -54,6 +54,6 @@ for i in $(seq 30); do [ -f $B/gone/status.json ] && break; sleep 1; done
 sleep 1; shot 2-failed
 check "failure recorded for the unreachable host" grep -q '"error": ".\+' $B/gone/status.json
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 for id in s-bk1 s-bk2; do ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-$id'" 2>/dev/null; done
 finish

@@ -119,6 +119,6 @@ check "the Remote history is on the agent host" grep -q remote-history-xyz $RH/$
 check "and no longer waits here" test ! -e $DATA/history/$NEW.remote
 alive
 k Escape; k Escape                                     # no dialog left open: quitting waits for one
-kill $APP; wait $APP 2>/dev/null
+stop_app
 for id in s-ex $NEW $NEW3; do ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-$id'" 2>/dev/null; rm -f $RH/$id; done
 finish

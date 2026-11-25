@@ -74,5 +74,5 @@ expect "back on work" "work" "$(host_of)"
 expect "home is remembered now" 'hosts=["home"]' "$(hosts_of)"
 check "the newer conversation from home came back" grep -q 'written at home' $WP/conv1.jsonl
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 finish

@@ -44,7 +44,7 @@ xdotool mousemove 1266 809 click 1; sleep 1.5; xdotool mousemove 1250 830; sleep
 shot 2-about
 k() { xdotool key "$@"; sleep 0.6; }
 k Escape
-kill $APP; wait $APP 2>/dev/null
+stop_app
 start
 shot 3-second-start
 crop 3-second-start $TOAST 3-toast
@@ -72,5 +72,5 @@ blue() { [ "$(convert $OUT/$1.png -crop 40x40+520+165 +repage -format '%[fx:mean
 check "the About page shows the logo" blue 5-about
 k Escape
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 finish

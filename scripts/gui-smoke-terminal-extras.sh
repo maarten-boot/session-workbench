@@ -39,7 +39,7 @@ k End
 xdotool type --delay 8 'echo "pasted=['; k ctrl+shift+v; xdotool type --delay 8 ']" | tee $SW_OUT/pasted'; xdotool key Return; sleep 0.8
 shot 3-copy-on-select
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 check "copy on select: a double-clicked word is pasted ($(cat $SW_OUT/pasted 2>&1))" grep -qxE 'pasted=\[line-[0-9]+\]' $SW_OUT/pasted
 ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-s-extra'" 2>/dev/null
 finish

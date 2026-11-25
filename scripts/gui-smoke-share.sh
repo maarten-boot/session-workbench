@@ -51,7 +51,7 @@ xdotool mousemove 284 137 click 1; sleep 0.3; xdotool mousemove 1000 700; sleep 
 shot 3-session-menu
 k Escape
 expect "mounted while running" 1 "$(ssh -o BatchMode=yes localhost "mount | grep -c $WD")"
-kill $APP; wait $APP 2>/dev/null; sleep 2
+stop_app; sleep 2
 expect "unmounted after closing the app" 0 "$(ssh -o BatchMode=yes localhost "mount | grep -c $WD")"
 ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-s-share'; rm -rf ~/$WD" 2>/dev/null
 finish

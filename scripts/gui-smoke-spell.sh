@@ -57,5 +57,5 @@ expect "no list in a code block" $'- plain line\n```\n- in code\nnext\n```' "$(t
 k ctrl+shift+comma; sleep 0.8
 click 270 247; shot 4-settings-notes            # the Notes page: no own words (kubectl was removed again)
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 finish

@@ -79,6 +79,6 @@ t 'echo global-rec-ok' 1.5
 check "recording again after the global switch" grep -qx 'global-rec-ok' <<<"$(logtext)"
 
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-s-rec'" 2>/dev/null
 finish

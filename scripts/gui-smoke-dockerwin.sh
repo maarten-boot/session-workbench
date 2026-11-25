@@ -80,5 +80,5 @@ check "opened again: same place" same head-1 head-6
 check "opened again: same size" same save-1 save-6
 k Escape
 alive
-kill $APP
+stop_app
 finish

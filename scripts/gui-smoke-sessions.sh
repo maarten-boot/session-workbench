@@ -46,7 +46,7 @@ start() {
 	sleep 3
 	xdotool windowactivate --sync $W 2>/dev/null; xdotool windowfocus $W
 }
-stop() { kill $APP; wait $APP 2>/dev/null; }
+stop() { stop_app; }
 typ() { xdotool type --delay 12 "$1"; }
 t() { typ "$1"; xdotool key Return; sleep ${2:-1}; }
 k() { xdotool key "$@"; sleep 0.6; }

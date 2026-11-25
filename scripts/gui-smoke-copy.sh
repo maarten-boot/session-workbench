@@ -66,5 +66,5 @@ type "clear; printf '\\033]52;c;?\\a'"; k Return; sleep 1
 paste read
 check "an OSC 52 read leaves the clipboard as it was" grep -qx 'from osc 52' $OUT/pasted-read
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 finish

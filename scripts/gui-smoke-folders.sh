@@ -64,7 +64,7 @@ click 100 350 3; menu m                        # Clients: Move folder up
 click 100 87 3; menu d; k Return; sleep 1      # Work: Delete folder… (sessions stay)
 shot 5-renamed-moved-deleted
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 expect "folders: new, renamed, moved up, deleted" 'groups = ["Clients", "Home"]' "$(grep -E '^ *groups =' $CFG | sed 's/^ *//')"
 expect "sessions' folders" "loose=Clients work-a= work-b= home=Home" \
 	"$(sessions $CFG | awk -F'\t' '{printf "%s%s=%s", sep, $2, $5; sep = " "}')"

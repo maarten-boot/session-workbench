@@ -66,7 +66,7 @@ k ctrl+alt+1; sleep 1.5
 shot 3-looked
 check "looking at the session withdrew its notification" grep -q '^CLOSE 2$' $LOG
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 kill $NOTIFYD 2>/dev/null
 for id in s-nalpha s-nbeta; do ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-$id'" 2>/dev/null; done
 finish

@@ -54,6 +54,6 @@ alive
 in_pane "auto-reconnect re-attached the same shell" s-rok "after auto-reconnect: survived"
 in_pane "Enter re-attached after detach" s-rok "after Enter: survived"
 check "Disconnect keeps the tmux session" has_tmux s-rok
-kill $APP; wait $APP 2>/dev/null
+stop_app
 ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-s-rok'" 2>/dev/null
 finish

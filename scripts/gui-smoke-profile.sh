@@ -38,7 +38,7 @@ shot 2-remote
 check "its tmux session carries the name" ssh -o BatchMode=yes localhost "tmux has-session -t '=cw-ssh-switcher-s-pf'"
 check "not the default name" bash -c "! ssh -o BatchMode=yes localhost \"tmux has-session -t '=cw-s-pf'\" 2>/dev/null"
 alive
-kill $APP; wait $APP 2>/dev/null; sleep 1
+stop_app; sleep 1
 check "its data folder" test -s $XDG_DATA_HOME/ssh-switcher/window.json
 # (WebKit's own storage stays in one place; the app keeps a profile's keys
 # apart there.)
@@ -51,7 +51,7 @@ wait_window
 sleep 3
 check "-profile wins over the variable" bash -c "xdotool getwindowname $W | grep -q 'ssh-switcher'"
 check "no folder for the variable's name" test ! -e $XDG_CONFIG_HOME/other
-kill $APP; wait $APP 2>/dev/null
+stop_app
 
 # A bad name is refused before anything starts.
 $BIN -profile 'Bad/Name' >$OUT/bad.txt 2>&1

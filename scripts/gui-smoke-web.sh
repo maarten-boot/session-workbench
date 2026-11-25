@@ -60,7 +60,7 @@ shot 3-ctrl-shift-4-is-remote                   # 4th visible tab in the custom 
 k ctrl+alt+2; sleep 1
 shot 4-other-session                            # highlight moves to the other session
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 # The repository page as the app reads it from this repository's remote (it may still use
 # an older name of the repository: GitHub redirects).
 GH=$(git -C "$REPO" remote get-url origin | sed -E 's#^git@github.com:#https://github.com/#; s#^ssh://git@github.com(:22)?/#https://github.com/#; s#\.git$##')

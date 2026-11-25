@@ -46,7 +46,7 @@ t 'echo "remote-marker-$((40+2))"; history -a; echo "$HISTFILE" >'"$OUT"'/remote
 k ctrl+alt+2; k ctrl+shift+1; sleep 1.5
 t 'echo "$HISTFILE" >$SW_OUT/shared-histfile'
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 LOCAL_HIST=$XDG_DATA_HOME/session-workbench/history/s-hist.history
 expect "Local tab: the session's own history file" "$LOCAL_HIST" "$(cat $SW_OUT/local-histfile 2>&1)"
 check "Local tab: closing the app saves them" grep -q 'local-marker-$((40+2))' "$LOCAL_HIST"

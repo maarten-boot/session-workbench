@@ -57,7 +57,7 @@ k ctrl+a; xdotool type --delay 20 "Gamma"; k Return; sleep 0.8
 click 100 231 3; menu d; k Return; sleep 1     # Private: Delete folder… (Acme goes too)
 shot 4-renamed-deleted
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 expect "folders: subfolder added, renamed; Private and Private/Acme deleted" 'groups = ["Work", "Work/Gamma"]' \
 	"$(grep -E '^ *groups =' $CFG | sed 's/^ *//')"
 expect "sessions' folders" "acme= work=Work/Gamma home=" \

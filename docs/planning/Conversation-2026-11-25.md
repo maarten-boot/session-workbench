@@ -23,3 +23,23 @@
 - The user: "do a crosscheck".
 - README, SPEC §7.6, Tests.md and PLAN describe the check; the Makefile's and scripts/notices.sh's comments named only the test: now the CI step too.
 - Noted in PLAN: a dependency update (e.g. a Dependabot pull request) fails CI until `make notices` is committed with it.
+
+## CI of 23291f7
+
+- Build run 45604733400 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+- v1.2.2 is ready to tag (cross-check done).
+
+## CI of v1.2.2
+
+- The user pushed and tagged v1.2.2 (tag object 22e9a5e on 23291f7).
+- Release run 45607643587 passed on the first attempt: linux-amd64, windows-amd64, macos-universal and release.
+- The release has the .deb, .rpm, Linux tar.gz, Windows zip and macOS zip; the notes list the two commits since v1.2.1.
+- Release check: 12 releases, no artifacts older than 14 days, so no cleanup warning.
+
+## GUI tests stop with stop_app
+
+- The user: "switch the remaining GUI tests to stop_app".
+- 61 one-for-one replacements in 51 scripts (`kill $APP; wait $APP` and the stop() helpers of examples, sessions and tutorial-shots).
+- Left as they were: gui-smoke-autosave (quitting while saving is what it tests), gui-smoke-window (SIGTERM), the MEASURE debug exits.
+- No version bump: only the tests change; it goes out with v1.2.3.
+- All 57 GUI tests pass with stop_app; afterwards no test state folder is left in ~/.local/state.

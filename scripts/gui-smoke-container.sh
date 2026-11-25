@@ -104,5 +104,5 @@ check "the app's files for it are gone" test ! -e $XDG_DATA_HOME/session-workben
 check "the session is gone" bash -c "! grep -q $ID $CFG"
 check "the project files stay" test -s $PROJ/inside.txt
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 finish

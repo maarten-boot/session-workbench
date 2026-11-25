@@ -29,7 +29,7 @@ start() {
 	env PATH=$OUT/fakebin:$PATH SW_IDLE_TICK=3s $BIN -config $1 -profile $PROF >>$OUT/app.log 2>&1 & APP=$!
 	wait_window; sleep 3; xdotool windowactivate --sync $W 2>/dev/null; sleep 1
 }
-stop() { kill $APP; wait $APP 2>/dev/null; }
+stop() { stop_app; }
 
 # 1. The first start: no hosts yet.
 if [ $STEP = all ] || [ $STEP = first ]; then

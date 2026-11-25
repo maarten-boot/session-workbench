@@ -111,12 +111,12 @@ shot 7-migrated
 expect "old notes moved to the Home page" "old notes of two" "$(cat $OUT/notes/s-nt2/Home.md 2>&1)"
 check "old file gone" test ! -e $OUT/notes/s-nt2.md
 alive
-kill $APP; wait $APP 2>/dev/null; sleep 1
+stop_app; sleep 1
 start
 k ctrl+alt+1; sleep 1.5                         # reopens on Notes, on the last page
 shot 8-after-restart
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 expect "Home unchanged after restart" "$NOTE"$'\n'"**bold** and <u>plain</u> _it_"$'\nmenu-word\nmenu-word\nmenu-word' "$(cat $N/Home.md 2>&1)"
 for id in s-nt1 s-nt2; do ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-$id'" 2>/dev/null; done
 finish

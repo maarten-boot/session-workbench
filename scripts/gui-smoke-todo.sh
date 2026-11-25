@@ -57,6 +57,6 @@ shot 4-done
 check "the ▲ goes when the TODO is gone" plain 4-done $ROW1
 check "also from its Notes tab" plain 4-done $NOTES_TAB
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 for id in s-td1 s-td2; do ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-$id'" 2>/dev/null; done
 finish

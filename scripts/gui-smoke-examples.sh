@@ -18,7 +18,7 @@ start() {
 	$BIN -config $1 >>$OUT/app.log 2>&1 & APP=$!
 	wait_window; sleep 3; xdotool windowactivate --sync $W 2>/dev/null; sleep 1
 }
-stop() { kill $APP; wait $APP 2>/dev/null; }
+stop() { stop_app; }
 ncmds() { grep -c '^ *\[\[ui.commands\]\]' $1; }
 
 # 1. A first start: no config file.

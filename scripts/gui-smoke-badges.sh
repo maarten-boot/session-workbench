@@ -33,6 +33,6 @@ shot 3-after-status-redraw "(1) gamma — Session Workbench"  # still only alpha
 k ctrl+alt+1; sleep 1
 shot 4-all-cleared "alpha — Session Workbench"
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 for n in alpha beta gamma; do ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-s-b$n'" 2>/dev/null; done
 finish

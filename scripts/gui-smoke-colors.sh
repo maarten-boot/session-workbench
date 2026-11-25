@@ -50,7 +50,7 @@ k ctrl+shift+3; sleep 2.5
 shot 5-remote-tmux
 alive
 check "Remote tab started tmux" has_tmux s-full
-kill $APP; wait $APP 2>/dev/null
+stop_app
 expect "\"Use mono colors\" saved for the session" "mono" "$(field $CFG "full colors" 6)"
 expect "the mono session kept its mode" "mono" "$(field $CFG "mono session" 6)"
 for id in s-full s-mono; do ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-$id'" 2>/dev/null; done

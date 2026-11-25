@@ -84,6 +84,6 @@ check "Add host: plain logins saved as local_dir = false" bash -c "grep -A8 'nam
 check "Add host: no tmux saved as tmux = false" bash -c "grep -A8 'name = \"switch\"' $CFG | grep -q 'tmux = false'"
 check "Add host: backups follow the logins (off, nothing stored)" bash -c "grep -q 'name = \"switch\"' $CFG && ! grep -A8 'name = \"switch\"' $CFG | grep -q 'backup ='"
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 for id in s-lg $NEW; do ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-$id'" 2>/dev/null; done
 finish

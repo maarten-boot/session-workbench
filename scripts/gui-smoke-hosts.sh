@@ -42,7 +42,7 @@ shot 06-delete-dialog
 k Tab; k Return; sleep 3               # Delete
 shot 07-deleted
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 cp $CFG $OUT/config-after.toml
 expect "host added" 'name = "local"|ssh_target = "localhost"|' "$(grep -A2 '^\[\[hosts\]\]' $CFG | sed -n 's/^ *//; 2,3p' | tr '\n' '|')"
 expect "moved down, then deleted" "var usr" "$(sessions $CFG | awk -F'\t' '{print $2}' | xargs)"

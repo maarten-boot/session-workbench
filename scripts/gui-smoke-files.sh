@@ -69,7 +69,7 @@ k shift+Tab; KD=0.8 k n; sleep 0.5             # sort: Newest first (README.md i
 click $X $(row 0); k End; k Return; sleep 1    # last row is the oldest file: README.md
 shot 07-newest-first
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 # The sort order is remembered: after a restart README.md is still last.
 env PATH=$BINDIR:$PATH DBUS_SESSION_BUS_ADDRESS=unix:path=/nonexistent $BIN -config $CFG >>$OUT/app.log 2>&1 &
 APP=$!
@@ -78,7 +78,7 @@ sleep 3; xdotool windowactivate --sync $W 2>/dev/null
 k ctrl+shift+2; sleep 1.5
 click $X $(row 0); k End; k Return; sleep 1
 shot 08-sort-after-restart
-kill $APP; wait $APP 2>/dev/null
+stop_app
 ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-s-files'" 2>/dev/null
 expect "copied remote and local paths" "remote=[/srv/agent/proj/README.md]|local=[$FIX/with space]|" "$(tr '\n' '|' <$SW_OUT/pasted 2>&1)"
 check "Local tab works in the session directory" test -e "$FIX/NEW-FILE.txt"

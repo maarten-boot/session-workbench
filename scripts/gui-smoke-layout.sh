@@ -55,7 +55,7 @@ shot 2-narrow
 expect "narrow sidebar frees the space" "$BG" "$(px 2-narrow 300 600)"
 expect "narrow sidebar still shown" "$PANEL" "$(px 2-narrow 40 600)"
 alive
-kill $APP; wait $APP 2>/dev/null; sleep 1
+stop_app; sleep 1
 start
 k ctrl+alt+2; k ctrl+shift+2; sleep 1.5
 shot 3-narrow-after-restart
@@ -70,7 +70,7 @@ xdotool mouseup 1; sleep 0.8
 shot 5-dragged
 expect "dragging the edge widens the sidebar" "$PANEL" "$(px 5-dragged 450 600)"
 alive
-kill $APP; wait $APP 2>/dev/null; sleep 1
+stop_app; sleep 1
 start
 sleep 1.5
 shot 6-width-after-restart
@@ -80,6 +80,6 @@ shot 7-default-width
 expect "double-click resets the width" "$BG" "$(px 7-default-width 450 600)"
 expect "back to the default width" "$PANEL" "$(px 7-default-width 300 600)"
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 for id in s-lay1 s-lay2; do ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-$id'" 2>/dev/null; done
 finish

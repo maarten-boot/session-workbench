@@ -98,5 +98,5 @@ shot 3b-text-menu
 xdotool mousemove 440 179 click 1; sleep 1                    # Copy
 expect "text copy works after an image copy" "the" "$($OUT/clipimage -text /dev/stdout 2>&1)"
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 finish

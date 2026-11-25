@@ -92,5 +92,5 @@ crop h4-again 200x26+350+63 h4-head; crop h4-again $EDGE h4-edge
 check "host dialog: opened again where and as large as it was" bash -c "$(declare -f same); OUT=$OUT; same h2-head h4-head && same h3-edge h4-edge"
 k Escape
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 finish

@@ -72,6 +72,6 @@ k Escape
 click 100 74 3; shot 5-session-menu
 k Escape
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-s-lm'" 2>/dev/null
 finish

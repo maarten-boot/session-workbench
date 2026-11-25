@@ -148,5 +148,5 @@ xdotool mousemove 962 245 click 1; sleep 0.8; k Home; k Return   # the idle time
 xdotool mousemove 1090 595 click 1; sleep 2               # Save
 check "Settings saves it (never: no idle_stop left)" sh -c "! grep -q idle_stop $CFG"
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 finish

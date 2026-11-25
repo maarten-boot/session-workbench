@@ -81,6 +81,6 @@ xdotool type --delay 10 ']" > $SW_OUT/menu'; xdotool key Return; sleep 0.8
 shot 3-terminal
 expect "the right-click menu pastes" "menu=[copy-me-12345]" "$(cat $SW_OUT/menu 2>&1)"
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-s-apn'" 2>/dev/null
 finish

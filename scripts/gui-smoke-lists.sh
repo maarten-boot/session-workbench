@@ -70,7 +70,7 @@ xdotool mousemove 403 189 click 1; sleep 2                 # Activate session
 shot 6-activated
 check "the row in Inactive opened it: Activate session saved" sh -c "! grep -q 'inactive = true' $CFG"
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 $BIN -config $CFG >>$OUT/app.log 2>&1 &                    # opened headings stay open
 APP=$!
 wait_window
@@ -78,5 +78,5 @@ sleep 3; xdotool windowactivate --sync $W 2>/dev/null; sleep 2
 shot 7-restart
 expect "a row in Active opens its session" $OUT/private "$(cat $SW_OUT/opened 2>&1)"
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 finish

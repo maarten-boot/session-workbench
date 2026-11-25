@@ -58,7 +58,7 @@ shot 1-git
 k ctrl+alt+2; k ctrl+shift+2; sleep 1.5
 shot 2-unsafe-skipped
 alive
-kill $APP; wait $APP 2>/dev/null
+stop_app
 for id in s-git s-gitu; do ssh -o BatchMode=yes localhost "tmux kill-session -t '=cw-$id'" 2>/dev/null; done
 check "the repository's filter program did not run" test ! -e $OUT/FILTER-RAN
 finish
