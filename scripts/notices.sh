@@ -11,7 +11,7 @@
 #   7.   the spelling dictionary (internal/spell/dict).
 # usage: scripts/notices.sh   (from the repository root, after `npm ci` in
 # frontend; `make notices`). TestThirdPartyNotices checks it against go.mod
-# and package-lock.json.
+# and package-lock.json; CI runs this script and fails when the file changes.
 set -euo pipefail
 OUT=THIRD-PARTY-NOTICES.txt
 TAGS=desktop,production,webkit2_41

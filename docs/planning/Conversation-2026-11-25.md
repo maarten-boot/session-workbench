@@ -12,3 +12,14 @@
   locally the file is written identically.
 - Output folding removed from PLAN Next (nothing queued now).
 - Version 1.2.2: wails.json, README, SPEC, PLAN.
+
+## CI of f200ab4 (v1.2.2)
+
+- Build run 45600554604 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+- The new step "Third-party notices up to date" ran on Linux and passed (the file written in CI is the committed one).
+
+## Cross-check of v1.2.2
+
+- The user: "do a crosscheck".
+- README, SPEC §7.6, Tests.md and PLAN describe the check; the Makefile's and scripts/notices.sh's comments named only the test: now the CI step too.
+- Noted in PLAN: a dependency update (e.g. a Dependabot pull request) fails CI until `make notices` is committed with it.

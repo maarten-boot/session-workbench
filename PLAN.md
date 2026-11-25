@@ -190,7 +190,8 @@ implementation differs from the original plan.
   package of package-lock.json is listed; CI (Linux job) runs scripts/notices.sh and fails when
   THIRD-PARTY-NOTICES.txt changes, which catches a Go module that is missing (go.mod also names
   modules the program is not built from, so the test cannot use it). Output folding removed from
-  Next.
+  Next. A dependency update (e.g. a Dependabot pull request) now fails CI until `make notices`
+  is run and committed with it.
 - v1.2.1 (2026-11-24): sidebar colors (SPEC §4.6 Sidebar). The user: "we should probably allow
   users to configure the sidebar colors"; chosen: background, selected row, status dot colors,
   per folder / host, in v1.2.1. Settings page Sidebar (after Checks): a field per color (#rrggbb,

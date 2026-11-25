@@ -54,7 +54,8 @@ MAGICK ?= $(shell command -v magick || echo convert)
 # Licences and notices of everything the program is built from, for the
 # versions in go.mod and frontend/package-lock.json (THIRD-PARTY-NOTICES.txt,
 # shipped beside the binary); after updating a module or package
-# (TestThirdPartyNotices says when). Needs frontend/node_modules (npm ci).
+# (TestThirdPartyNotices and CI's "Third-party notices up to date" step say
+# when). Needs frontend/node_modules (npm ci).
 notices:
 	scripts/notices.sh
 
