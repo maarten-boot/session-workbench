@@ -1618,9 +1618,8 @@ dialog .text {
     white-space: pre-line;
 }
 
+/* The repository check's list: shown whole, the window scrolls (#dlg-repo). */
 dialog .findings {
-    max-height: 340px;
-    overflow-y: auto;
     margin-bottom: 8px;
 }
 
@@ -3005,9 +3004,4 @@ dialog .color-row input:not([type]) {
    shows more when dragged larger. */
 #dlg-repo {
     max-height: calc(100vh - 8px);
-}
-
-#dlg-repo .findings {
-    max-height: none;
-    overflow: visible;
 }

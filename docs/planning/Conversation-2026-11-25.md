@@ -57,3 +57,14 @@
   WebKit sized the flex dialog as if the scrolling list were empty. Now the list is no box of its own: it shows whole, the window scrolls.
 - gui-smoke-repocheck drags the heading and the corner (checked) and clicks Mark as reviewed where the move put it; gui-smoke-dialogs passes.
 - Version 1.2.3 (the stop_app commit b4a651f goes out with it): wails.json, README, SPEC, PLAN, TUTORIAL, Tests.md.
+
+## CI of 26d02b0 (v1.2.3)
+
+- Build run 45625205495 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+
+## Cross-check of v1.2.3
+
+- The user: "do a crosscheck".
+- SPEC §4.7, README, TUTORIAL, Tests.md and the moveWindow comment name the repository check's window.
+- The general `dialog .findings` style (340 px box with its own scroll bar) was used only by this window and fully overridden: folded into one rule.
+  gui-smoke-repocheck passes on the rebuilt app.
