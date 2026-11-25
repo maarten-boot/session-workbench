@@ -61,3 +61,15 @@
   README's config reference lacked the new [ui] keys and the session's `disconnected`;
   SPEC's summary did not list the intervals, the remembered Disconnect and the sidebar colors;
   SPEC now says one sidebar color serves both themes and an own background has no hover tint.
+
+## CI of c5873be
+
+- Build run 45461911782 passed on the first attempt: linux-amd64, windows-amd64 and macos-universal; release skipped.
+- v1.2.1 is ready to tag (cross-check done).
+
+## CI of v1.2.1
+
+- The user pushed and tagged v1.2.1 (tag object 5fbd846 on c5873be).
+- Release run 45464656143 passed on the first attempt: linux-amd64, windows-amd64, macos-universal and release.
+- The release has the .deb, .rpm, Linux tar.gz, Windows zip and macOS zip; the notes list the four commits since v1.2.0.
+- Release check: 11 releases, no artifacts older than 14 days, so no cleanup warning.

@@ -14,7 +14,7 @@ read its security section if the agent host can write to your repositories.
 New here? **[docs/TUTORIAL.md](docs/TUTORIAL.md)** takes you from the download to your first
 claude session, with screenshots (`make tutorial-pdf` makes a PDF of it).
 
-Status: v1.2.1: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
+Status: v1.2.2: sessions with Local, Files (sizes, dates, sort by name or date), Remote,
 Notes (page trees with formatting, lists and check lists, spelling, D2 diagrams), Web and Q&A tabs, what changed per release (What's new), Remote tab recordings, session folders and tags,
 themes and color modes, quick switcher, a command menu and a prompts menu in the Local and Remote tabs, editable
 start commands, private shell history per session, activity badges, desktop notifications,
@@ -1245,4 +1245,6 @@ each module and package listed with its version and licence, which every downloa
 beside the program in the tar.gz and the zips, under `/usr/share/doc/session-workbench/`
 (.deb) or `/usr/share/licenses/session-workbench/` (.rpm).
 `make notices` writes it again after a module or package update (scripts/notices.sh, after
-`npm ci` in frontend; TestThirdPartyNotices checks it against go.mod and package-lock.json).
+`npm ci` in frontend; TestThirdPartyNotices checks it against go.mod and package-lock.json, and that
+every JavaScript package is listed; CI writes it again and fails when it changes, so a new Go
+module cannot be left out).

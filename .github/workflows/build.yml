@@ -101,6 +101,15 @@ jobs:
           npm run build                 # frontend/dist must exist before Go compiles (embed)
           npm test
 
+      - name: Third-party notices up to date
+        if: runner.os == 'Linux'
+        # THIRD-PARTY-NOTICES.txt must cover every Go module and JavaScript
+        # package the program is built from: written again, it must not change.
+        run: |
+          scripts/notices.sh
+          git diff --exit-code THIRD-PARTY-NOTICES.txt || {
+            echo "::error file=THIRD-PARTY-NOTICES.txt::out of date: run make notices and commit it"; exit 1; }
+
       - name: Go tests
         run: |
           if [ "$RUNNER_OS" = Linux ]; then

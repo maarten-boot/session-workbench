@@ -46,7 +46,10 @@ func TestThirdPartyNotices(t *testing.T) {
 		t.Fatal(err)
 	}
 	var lock struct {
-		Packages map[string]struct{ Version string } `json:"packages"`
+		Packages map[string]struct {
+			Version string
+			Dev     bool
+		} `json:"packages"`
 	}
 	if err := json.Unmarshal(lb, &lock); err != nil {
 		t.Fatal(err)
@@ -55,9 +58,22 @@ func TestThirdPartyNotices(t *testing.T) {
 	if len(jsmods) < 10 {
 		t.Errorf("THIRD-PARTY-NOTICES.txt lists %d JavaScript packages", len(jsmods))
 	}
+	listed := map[string]bool{}
 	for _, l := range jsmods {
+		listed[l[1]] = true
 		if v := lock.Packages["node_modules/"+l[1]].Version; v != l[2] {
 			t.Errorf("THIRD-PARTY-NOTICES.txt lists %s %s, package-lock.json has %q: run make notices", l[1], l[2], v)
+		}
+	}
+	// Every package the frontend is built from is listed (a Go module that
+	// is missing is caught in CI: scripts/notices.sh must not change the file).
+	for k, p := range lock.Packages {
+		i := strings.LastIndex(k, "node_modules/")
+		if i < 0 || p.Dev {
+			continue // the project itself, or only for building and testing
+		}
+		if name := k[i+len("node_modules/"):]; !listed[name] {
+			t.Errorf("THIRD-PARTY-NOTICES.txt does not list %s %s (package-lock.json): run make notices", name, p.Version)
 		}
 	}
 	for _, want := range []string{

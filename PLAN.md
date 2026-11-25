@@ -184,6 +184,13 @@ implementation differs from the original plan.
 - v0.9.7: Settings → Q&A: the defaults — who answers (`qa_engine`), the Claude API model
   (`qa_model`, the API's models suggested), the Claude Code model (new `qa_claude_model`) and
   program (`qa_claude`, with where it is found). Tested in gui-smoke-qa.sh.
+- v1.2.2 (2026-11-25): the notices cannot miss a dependency (SPEC §7.6). The user: "drop the
+  output folding for now what is the second open item ?", then "yep build the notices check,
+  output folding can be removed". TestThirdPartyNotices also checks that every production
+  package of package-lock.json is listed; CI (Linux job) runs scripts/notices.sh and fails when
+  THIRD-PARTY-NOTICES.txt changes, which catches a Go module that is missing (go.mod also names
+  modules the program is not built from, so the test cannot use it). Output folding removed from
+  Next.
 - v1.2.1 (2026-11-24): sidebar colors (SPEC §4.6 Sidebar). The user: "we should probably allow
   users to configure the sidebar colors"; chosen: background, selected row, status dot colors,
   per folder / host, in v1.2.1. Settings page Sidebar (after Checks): a field per color (#rrggbb,
@@ -633,17 +640,7 @@ implementation differs from the original plan.
   Settings name a Claude Code model.
 
 ## Next (ideas, not started)
-- **Output folding in the Remote tab.** Collapse long output blocks (large code blocks) and jump
-  between interactive prompts.
-  - Frontend: hook into `frontend/src/terminal.js`. Explore xterm.js markers
-    (`term.registerMarker`) or an overlay gutter that tracks the line numbers of Markdown
-    boundaries (```` ``` ```` blocks, `###` headings); toggle visibility or heights with CSS/DOM
-    without breaking the buffer's synchronisation.
-  - Alternative: a switchable "interactive view" that renders the session's text with the notes
-    Markdown parsing (`frontend/src/markup.js`, `editor.js`) into collapsible HTML
-    `<details>`/`<summary>` blocks.
-  - Decided 2026-10-31: postponed; when built, the reading view takes its text from the
-    terminal's scrollback (instant, offline), not from tmux history.
+- None queued. (Output folding in the Remote tab was dropped 2026-11-25.)
 
 ## Testing
 - docs/planning/Tests.md lists every test with the SPEC items it covers.

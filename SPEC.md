@@ -1,6 +1,6 @@
 # Session Workbench — Specification
 
-Status: v1.45 (2026-11-24, app v1.2.1) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
+Status: v1.46 (2026-11-25, app v1.2.2) — SPEC v1.0 was implemented in app v0.6.0. Since then: session folders (F5),
 narrow and resizable sidebar (F6), Claude backups (F7), one instance per config (F8), working
 copies and backups without rsync (F9), desktop notifications (F4), git status and the
 repository check in the Files tab (B5, B6), Notes and Web tabs (N1, W1), notes for all sessions
@@ -1295,4 +1295,5 @@ repository config and warns again whenever they change.
    Each carries THIRD-PARTY-NOTICES.txt (the licences and notices of everything the program is
    built from: D2 and what it builds on, every other Go module on any of the three systems, Go,
    the frontend's JavaScript packages and the spelling dictionary; beside the program, or in the
-   package's doc or licences folder).
+   package's doc or licences folder). CI writes it again (scripts/notices.sh) and fails when it
+   changes, so a new module or package cannot be left out.
